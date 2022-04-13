@@ -12,7 +12,7 @@ import tkinter as tk
 import sys #stuff??
 import subprocess #do stuff in terminal
 import platform #find info about environment
-from yt_dlp import youtubeDL as ytdlp #convert to this later
+import yt_dlp as ytdlp #convert to this later
 
 
 # ======== Environment Check ========
@@ -52,7 +52,6 @@ class Prompt(tk.Toplevel):
         super().__init__(master)
 
         self.title("Download Confirmation")
-        # self.geometry('300x200')
         master.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.URLs = URLs
@@ -93,12 +92,11 @@ class Window(tk.Tk):
 
         #initialize main window
         self.title("ytdlGUI! by molofgarb")
-        self.geometry('500x200')
         self.eval('tk::PlaceWindow . center') #puts window in center
 
         #initialize main frame (located within main window)
         self.frame = tk.Frame(self)
-        self.frame.pack(padx=20, pady=20)
+        self.frame.grid(padx=20, pady=20)
 
         # ------- WIDGETS -------
         #input text box
@@ -113,7 +111,7 @@ class Window(tk.Tk):
             "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
             "https://youtu.be/jNQXAC9IVRw\n" #me at the zoo
         ) #default text
-        self.inputtxt.pack()
+        self.inputtxt.grid(column=0, row=0, padx=5, pady=5)
         
         #button to send text box input
         self.inputButton = tk.Button(
@@ -121,20 +119,20 @@ class Window(tk.Tk):
             text = "Download", 
             command = self.inputURLs
         )
-        self.inputButton.pack(side="bottom")
+        self.inputButton.grid(column=0, row=1, padx=5, pady=5)
         
         # Label!!
         self.label1 = tk.Label(
             self.frame,
             text = "I will be overwritten!"
         )
-        self.label1.pack()
+        self.label1.grid(column=0, row=2, padx=5, pady=5)
 
     #takes inputs from <inputtxt> and stores them in <URLs>
     def inputURLs(self):
         #receive and process URLs
         self.input1 = self.inputtxt.get(1.0, "end-1c")
-        URLs = self.input1.split() #Note: next implementation dont save URLs as obj field
+        URLs = self.input1.split() 
         print(URLs)
         for i in range(len(URLs)):
             thisURL = URLs[i].split("/")
