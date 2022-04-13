@@ -3,25 +3,7 @@
 
 #Source: i made it up
 '''
-Test Videos:
-https://youtu.be/Y_pbEOem2HU - vine boom
-https://youtu.be/jNQXAC9IVRw - me at the zoo
 
-
-Implementation Notes:
-- subprocess.check_output(<cmd>, shell=True)
-- you can use \n to make labels take up multiple lines
-
-To-do List:
-- allow the user to choose where to download the files
-- allow user to choose format options
-- help the user download youtube-dl if they don't already have
-    - prioritize youtube-dlp
-- show progress bar for download (label, or some kind of graphic)
-    - prevent not responding window from happening
-- make the readme
-- put the G in GUI
-- read the youtube-dlp doc and see if there is anything useful to also add, options
 '''
 
 #test video: https://youtu.be/_vBVGjFdwk4
@@ -30,6 +12,7 @@ import tkinter as tk
 import sys #stuff??
 import subprocess #do stuff in terminal
 import platform #find info about environment
+from yt_dlp import youtubeDL as ytdlp #convert to this later
 
 
 # ======== Environment Check ========
