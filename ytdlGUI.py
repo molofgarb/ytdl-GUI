@@ -2,11 +2,6 @@
 #4/11/2022
 
 #Source: i made it up
-'''
-
-'''
-
-#test video: https://youtu.be/_vBVGjFdwk4
 
 import tkinter as tk
 import sys #stuff??
@@ -17,8 +12,8 @@ import yt_dlp as ytdlp #convert to this later
 
 # ======== Environment Check ========
 
-# ytdlCall = "yt-dlp"
-ytdlCall = "youtube-dl"
+ytdlCall = "yt-dlp"
+# ytdlCall = "youtube-dl"
 windows = False
 
 whereami = ""
