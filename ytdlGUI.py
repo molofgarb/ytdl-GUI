@@ -81,7 +81,7 @@ class DownloadPrompt(tk.Toplevel):
 
 
 
-class Window(tk.Tk):
+class MainWindow(tk.Tk):
     def __init__(self):
         #inherit all the stuff from tk.Tk
         super().__init__() 
@@ -150,7 +150,7 @@ class Window(tk.Tk):
 
 
 def main():
-    root = Window()
+    root = MainWindow()
     root.mainloop()
 
 
