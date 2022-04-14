@@ -39,8 +39,12 @@ else: #macOS or linux
 
 # ======== Window Construction ========
 
-class Prompt(tk.Toplevel):
-    def __init__(self, master, URLs):
+def updateLabel(root, label, text):
+    label.configure(text=text)
+    root.update()
+
+class DownloadPrompt(tk.Toplevel):
+    def __init__(self, master, URLs = []):
         super().__init__(master)
 
         self.title("Download Confirmation")
@@ -125,7 +129,7 @@ class Window(tk.Tk):
         #receive and process URLs
         self.input1 = self.inputtxt.get(1.0, "end-1c")
         URLs = self.input1.split() 
-        print(URLs)
+        # print(URLs)
         for i in range(len(URLs)):
             thisURL = URLs[i].split("/")
             if (thisURL[2] != "youtu.be" and thisURL[2] != "www.youtube.com"):
@@ -133,20 +137,22 @@ class Window(tk.Tk):
             else:
                 if (thisURL[3] == "shorts"):
                     URLs[i] = thisURL[4]
-        self.label1.configure(text="URLs Received!")
-        self.update()
+        updateLabel(self, self.label1, "URLs Received!")
         # print(URLs)
-        Prompt(self, URLs)
+        DownloadPrompt(self, URLs)
         
     #downloads URLs in array
     def downloadURLs(self, URLs):
         for i in range(len(URLs)):
             ytdl().download(URLs[i])
-            self.label1.configure(text="Downloading video " + str(i + 1) + "...")
-        self.label1.configure(text="Done downloading!")
-        self.update()
+            updateLabel(self, self.label1, "Downloading video " + str(i + 1) + "...")
+        updateLabel(self, self.label1, "Done downloading!")
 
 
+def main():
+    root = Window()
+    root.mainloop()
 
-root = Window()
-root.mainloop()
+
+if __name__ == "__main__":
+    main()
