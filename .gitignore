@@ -20,7 +20,5 @@ __pycache__
 *.ytdl
 *.swp
 
-LICENSE
-
 # VS Code related files
 .vscode
