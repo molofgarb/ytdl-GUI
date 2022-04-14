@@ -1,19 +1,16 @@
 #ytdlGUI.py -- Ethan Shieh
-#4/11/2022
-
-#Source: i made it up
+#4/13/2022
 
 import tkinter as tk
-import sys #stuff??
-import subprocess #do stuff in terminal
-import platform #find info about environment
-import yt_dlp as ytdlp #convert to this later
+import sys 
+import subprocess 
+import platform 
+from yt_dlp import YoutubeDL as ytdl
 
 
 # ======== Environment Check ========
 
 ytdlCall = "yt-dlp"
-# ytdlCall = "youtube-dl"
 windows = False
 
 whereami = ""
@@ -34,11 +31,11 @@ if (opsys == "Windows"):
 else: #macOS or linux
     whereami = subprocess.check_output(['pwd'], shell=True)
 
-#make sure yt-dlp/youtube-dl is accessible by the program
-if (subprocess.run([ytdlCall], shell=True, stderr=subprocess.DEVNULL).returncode != 2): #yt-dlp
-        ytdlCall = "youtube-dl"
-        if (subprocess.run([ytdlCall], shell=True, stderr=subprocess.DEVNULL).returncode != 2): #youtube-dl
-            sys.exit("youtube-dl/yt-dlp not found")
+# #make sure yt-dlp/youtube-dl is accessible by the program
+# if (subprocess.run([ytdlCall], shell=True, stderr=subprocess.DEVNULL).returncode != 2): #yt-dlp
+#         ytdlCall = "youtube-dl"
+#         if (subprocess.run([ytdlCall], shell=True, stderr=subprocess.DEVNULL).returncode != 2): #youtube-dl
+#             sys.exit("youtube-dl/yt-dlp not found")
 
 # ======== Window Construction ========
 
@@ -143,14 +140,9 @@ class Window(tk.Tk):
         
     #downloads URLs in array
     def downloadURLs(self, URLs):
-        self.label1.configure(text="Downloading...")
-        self.update()
-        for x in URLs:
-            if (windows):
-                subprocess.run([ytdlCall, x], shell=True)
-            else: #macOS and linux
-                x = ytdlCall + " " + "\"" + x + "\""
-                subprocess.run([x], shell=True)
+        for i in range(len(URLs)):
+            ytdl().download(URLs[i])
+            self.label1.configure(text="Downloading video " + str(i + 1) + "...")
         self.label1.configure(text="Done downloading!")
         self.update()
 
