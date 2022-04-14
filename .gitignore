@@ -1,5 +1,18 @@
 __pycache__
 
+# Python (from yt-dlp's .gitignore)
+*.pyc
+*.pyo
+.pytest_cache
+wine-py2exe/
+py2exe.log
+build/
+dist/
+zip/
+tmp/
+venv/
+completions/
+
 #downloaded files 
 *.egg-info
 *.srt
