@@ -1,0 +1,26 @@
+__pycache__
+
+#downloaded files 
+*.egg-info
+*.srt
+*.ttml
+*.sbv
+*.vtt
+*.flv
+*.mp4
+*.m4a
+*.m4v
+*.mp3
+*.3gp
+*.wav
+*.ape
+*.mkv
+*.swf
+*.part
+*.ytdl
+*.swp
+
+LICENSE
+
+# VS Code related files
+.vscode
