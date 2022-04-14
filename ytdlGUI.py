@@ -31,12 +31,6 @@ if (opsys == "Windows"):
 else: #macOS or linux
     whereami = subprocess.check_output(['pwd'], shell=True)
 
-# #make sure yt-dlp/youtube-dl is accessible by the program
-# if (subprocess.run([ytdlCall], shell=True, stderr=subprocess.DEVNULL).returncode != 2): #yt-dlp
-#         ytdlCall = "youtube-dl"
-#         if (subprocess.run([ytdlCall], shell=True, stderr=subprocess.DEVNULL).returncode != 2): #youtube-dl
-#             sys.exit("youtube-dl/yt-dlp not found")
-
 # ======== Window Construction ========
 
 def updateLabel(root, label, text):
