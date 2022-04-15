@@ -1,4 +1,5 @@
 __pycache__
+archived-versions
 
 # Python (from yt-dlp's .gitignore)
 *.pyc
