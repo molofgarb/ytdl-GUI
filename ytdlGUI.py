@@ -2,10 +2,11 @@
 #4/13/2022
 
 import tkinter as tk
+from tkinter import filedialog
 import sys 
 import subprocess 
 import platform 
-from yt_dlp import YoutubeDL as ytdl
+from yt_dlp import YoutubeDL
 
 
 # ======== Environment Check ========
@@ -22,9 +23,6 @@ if (opsys == "Windows"):
 elif (opsys != "Darwin" and opsys != "Linux"):
     sys.exit("Operating System not supported")
 
-# #debug
-# print(opsys)
-
 #figure out working directory 
 if (opsys == "Windows"):
     whereami = subprocess.check_output(['cd'], shell=True) 
@@ -33,6 +31,7 @@ else: #macOS or linux
 
 # ======== Window Construction ========
 
+#updates a label with new text, text
 def updateLabel(root, label, text):
     label.configure(text=text)
     root.update()
@@ -47,11 +46,11 @@ class DownloadPrompt(tk.Toplevel):
         self.URLs = URLs
 
         # ------- WIDGETS -------
-        self.label1 = tk.Label(
+        self.questionLabel = tk.Label(
             self,
             text = "Do you want to download these youtube videos?"
         )
-        self.label1.grid(column=0, row=0, sticky="N", columnspan=2)
+        self.questionLabel.grid(column=0, row=0, sticky="N", columnspan=2)
         self.columnconfigure(0, weight=1)
         
         self.yesButton = tk.Button(
@@ -71,6 +70,7 @@ class DownloadPrompt(tk.Toplevel):
     def confirm(self):
         self.destroy()
         self.update()
+        self.master.saveDirectory()
         self.master.downloadURLs(self.URLs)     
 
 
@@ -79,6 +79,8 @@ class MainWindow(tk.Tk):
     def __init__(self):
         #inherit all the stuff from tk.Tk
         super().__init__() 
+
+        self.outDir = whereami
 
         #initialize main window
         self.title("ytdlGUI! by molofgarb")
@@ -89,19 +91,38 @@ class MainWindow(tk.Tk):
         self.frame.grid(padx=20, pady=20)
 
         # ------- WIDGETS -------
+        #directory to download to
+        self.directoryText = tk.Text(
+            self.frame,
+            height = 1,
+            width = 60,
+        )
+        self.directoryText.insert(tk.END, whereami)
+        self.directoryText.grid(column=0, row=0, padx=5, pady=5)
+
+        #button to open directory-choosing prompt
+        self.directoryButton = tk.Button(
+            self.frame,
+            height = 0,
+            width = 0,
+            text = "...",
+            command = self.setDirectory
+        )
+        self.directoryButton.grid(column=1, row=0, padx=1, pady=1)
+        
         #input text box
-        self.inputtxt = tk.Text(
+        self.inputText = tk.Text(
             self.frame,
             height = 5,
-            width = 50
+            width = 60
         )
-        self.inputtxt.insert(tk.INSERT,
+        self.inputText.insert(tk.END,
             "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
             "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
             "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
             "https://youtu.be/jNQXAC9IVRw\n" #me at the zoo
         ) #default text
-        self.inputtxt.grid(column=0, row=0, padx=5, pady=5)
+        self.inputText.grid(column=0, row=1, padx=5, pady=5)
         
         #button to send text box input
         self.inputButton = tk.Button(
@@ -109,21 +130,19 @@ class MainWindow(tk.Tk):
             text = "Download", 
             command = self.inputURLs
         )
-        self.inputButton.grid(column=0, row=1, padx=5, pady=5)
+        self.inputButton.grid(column=0, row=2, padx=5, pady=5)
         
         # Label!!
-        self.label1 = tk.Label(
+        self.statusLabel = tk.Label(
             self.frame,
             text = "I will be overwritten!"
         )
-        self.label1.grid(column=0, row=2, padx=5, pady=5)
+        self.statusLabel.grid(column=0, row=3, padx=5, pady=5)
 
     #takes inputs from <inputtxt> and stores them in <URLs>
     def inputURLs(self):
-        #receive and process URLs
-        self.input1 = self.inputtxt.get(1.0, "end-1c")
-        URLs = self.input1.split() 
-        # print(URLs)
+        input1 = self.inputText.get(1.0, tk.END)
+        URLs = input1.split() 
         for i in range(len(URLs)):
             thisURL = URLs[i].split("/")
             if (thisURL[2] != "youtu.be" and thisURL[2] != "www.youtube.com"):
@@ -131,16 +150,29 @@ class MainWindow(tk.Tk):
             else:
                 if (thisURL[3] == "shorts"):
                     URLs[i] = thisURL[4]
-        updateLabel(self, self.label1, "URLs Received!")
-        # print(URLs)
+        updateLabel(self, self.statusLabel, "URLs Received!")
         DownloadPrompt(self, URLs)
         
-    #downloads URLs in array
+    #downloads URLs in list
     def downloadURLs(self, URLs):
+        options = {"paths": {'home': self.outDir}}
+        ydl = YoutubeDL(options)
         for i in range(len(URLs)):
-            ytdl().download(URLs[i])
-            updateLabel(self, self.label1, "Downloading video " + str(i + 1) + "...")
-        updateLabel(self, self.label1, "Done downloading!")
+            updateLabel(self, self.statusLabel, "Downloading video " + str(i + 1) + "...")
+            ydl.download(URLs[i])
+        updateLabel(self, self.statusLabel, "Done downloading!")
+
+    #uses tkinter's askdirectory dialog to set directory in text box
+    def setDirectory(self):
+        dir = filedialog.askdirectory()
+        self.directoryText.delete("1.0", tk.END)
+        self.directoryText.insert(tk.END, dir)
+
+    #updates directory field with directory in text box
+    def saveDirectory(self):
+        self.outDir = self.directoryText.get(1.0, tk.END)
+
+    
 
 
 def main():
