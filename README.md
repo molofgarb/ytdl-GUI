@@ -1,7 +1,7 @@
 # ytdl-GUI
 A graphical user interface for the command line program, youtube-dl, written in Python 3, by molofgarb
 
-[![ytdl-GUI](https://github.com/molofgarb/ytdl-GUI/master/.github/banner.png)](#readme)
+![ytdl-GUI](https://github.com/molofgarb/ytdl-GUI/blob/main/.github/banner.png)
 
 ## Notes
 The program will be released as a single executable in the future, but is currently shipped as a Python script
