@@ -233,8 +233,9 @@ class MainWindow(tk.Tk):
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
         dir = filedialog.askdirectory()
-        self.directoryText.delete("1.0", tk.END)
-        self.directoryText.insert(tk.END, dir)
+        if (dir != ""):
+            self.directoryText.delete("1.0", tk.END)
+            self.directoryText.insert(tk.END, dir)
 
     #updates directory field with directory in text box
     def saveDirectory(self):
