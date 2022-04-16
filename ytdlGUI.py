@@ -4,10 +4,9 @@
 import tkinter as tk
 from tkinter import filedialog
 
-import os
-import sys 
-import subprocess 
-import platform 
+import os, sys
+from platform import system
+from subprocess import check_output
 import time
 
 import webbrowser
@@ -15,13 +14,13 @@ import webbrowser
 from yt_dlp import YoutubeDL
 
 
-# ======== Environment Check ========
+# ======== Environment ========
 
 ytdlCall = "yt-dlp"
 windows = False
 
 whereami = ""
-opsys = platform.system()
+opsys = system()
 
 #Get info about environment
 if (opsys == "Windows"):
@@ -31,9 +30,16 @@ elif (opsys != "Darwin" and opsys != "Linux"):
 
 #figure out working directory 
 if (opsys == "Windows"):
-    whereami = subprocess.check_output(['cd'], shell=True) 
+    whereami = check_output(['cd'], shell=True) 
 else: #macOS or linux
-    whereami = subprocess.check_output(['pwd'], shell=True)
+    whereami = check_output(['pwd'], shell=True)
+
+#icon stuff for windows
+iconPath = ""
+if getattr(sys, 'frozen', False):
+    iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico")
+else:
+    iconPath = "resources/logo.ico"
 
 # ======== Window Construction ========
 
@@ -47,6 +53,7 @@ class InfoWindow(tk.Toplevel):
         super().__init__(root)
 
         self.title("Info")
+        self.iconbitmap(iconPath)
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.frame = tk.Frame(self)
@@ -90,6 +97,7 @@ class DownloadPrompt(tk.Toplevel):
         super().__init__(root)
 
         self.title("Download Confirmation")
+        self.iconbitmap(iconPath)
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.frame = tk.Frame(self)
@@ -134,6 +142,7 @@ class MainWindow(tk.Tk):
 
         #initialize main window
         self.title("ytdlGUI! by molofgarb")
+        self.iconbitmap(iconPath)
         self.eval('tk::PlaceWindow . center') #puts window in center
 
         #initialize main frame (located within main window)
@@ -171,13 +180,7 @@ class MainWindow(tk.Tk):
         self.inputText = tk.Text(
             self.frame, height = 7, width = 68
         )
-        self.inputText.insert(tk.END,
-            "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
-            "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
-            "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
-            "jNQXAC9IVRw\n" + #me at the zoo
-            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
-        ) #default text
+        
         self.inputText.grid(row=3, padx=5, pady=5)
         
         #button to send text box input
@@ -189,9 +192,16 @@ class MainWindow(tk.Tk):
         
         # Label!!
         self.statusLabel = tk.Label(
-            self.frame, text = "Awaiting URL input"
+            self.frame, text = "Awaiting URL input\n"
         )
         self.statusLabel.grid(row=5, padx=2, pady=2)
+
+        #adds sample videos to download box
+        self.sampleButton = tk.Button(
+            self.frame, text = "Add sample videos",
+            command = self.addSampleVideos
+        )
+        self.sampleButton.grid(row=6, sticky="W", pady=8)
 
         #info label
         self.infoButton = tk.Button(
@@ -204,21 +214,21 @@ class MainWindow(tk.Tk):
     def inputURLs(self):
         input1 = self.inputText.get(1.0, tk.END)
         URLs = input1.split() 
-        updateLabel(self, self.statusLabel, "URLs Received!")
+        updateLabel(self, self.statusLabel, "URLs Received!\n")
         DownloadPrompt(self, URLs)
         
     #downloads URLs in list
     def downloadURLs(self, URLs):
-        options = {"paths": {'home': self.outDir}}
+        options = {"paths": {'home': self.outDir}, "nocheckcertificate": True}
         ydl = YoutubeDL(options)
         for i in range(len(URLs)):
-            updateLabel(self, self.statusLabel, "Downloading video " + str(i + 1) + "...")
+            updateLabel(self, self.statusLabel, f'Downloading video {str(i + 1)}...\n ({URLs[i]})')
             try:
                 ydl.download(URLs[i])
             except:
                 updateLabel(self, self.statusLabel, f'Error: {URLs[i]} is not a valid URL')
                 time.sleep(2)
-        updateLabel(self, self.statusLabel, "Done downloading!")
+        updateLabel(self, self.statusLabel, "Done downloading!\n")
 
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
@@ -232,14 +242,21 @@ class MainWindow(tk.Tk):
 
     def openInfoWindow(self):
         InfoWindow(self)
+    
+    def addSampleVideos(self):
+        self.inputText.insert(tk.END,
+            "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
+            "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
+            "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
+            "jNQXAC9IVRw\n" + #me at the zoo
+            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
+        ) #default text
 
 
+#defines main window
+root = MainWindow()
 
-def main():
-    root = MainWindow()
-    root.iconbitmap("resources/logo.ico")
-    root.mainloop()
+#loop!!
+root.mainloop()
 
 
-if __name__ == "__main__":
-    main()

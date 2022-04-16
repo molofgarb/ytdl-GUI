@@ -1,18 +1,22 @@
-__pycache__
-archived-versions
+.archived-versions
 
-# Python (from yt-dlp's .gitignore)
+# Python cache
 *.pyc
 *.pyo
 .pytest_cache
-wine-py2exe/
-py2exe.log
+__pycache__
+yt_dlp/__pycache__
+yt_dlp/downloader/__pycache__
+yt_dlp/extractor/__pycache__
+
+# build stuff
 build/
 dist/
 zip/
 tmp/
 venv/
 completions/
+*.spec
 
 #downloaded files 
 *.egg-info
