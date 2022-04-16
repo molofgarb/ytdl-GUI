@@ -13,6 +13,7 @@ URLs should be separated by a space or line break.
 The default directory for downloaded files is the directory that the script is run within.
 
 ## To-do:
+- reflect yt-dlp's ability to download videos from non-youtube sites
 - ~~use the yt_dlp module provided by yt-dlp~~
     - ~~maybe include support for youtube-dl again?~~
 - make window centering appear truly center
