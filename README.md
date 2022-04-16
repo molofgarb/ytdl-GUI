@@ -6,7 +6,7 @@ A graphical user interface for the command line program, youtube-dlp, written in
 ![ytdl-GUI](.github/banner.png)
 
 ## Installation
-[Download](ytdl-GUI.exe)
+[Download](https://github.com/molofgarb/ytdl-GUI/releases/tag/v0.1-alpha/ytdl-GUI.exe)
 
 I have only been able to text the executable on a Windows 10 system. OSX and Linux compatability will come in the future if the program does not work on those operating systems.
 
