@@ -141,7 +141,7 @@ class MainWindow(tk.Tk):
         self.outDir = whereami
 
         #initialize main window
-        self.title("ytdlGUI! by molofgarb")
+        self.title("ytdl-GUI")
         self.iconbitmap(iconPath)
         self.eval('tk::PlaceWindow . center') #puts window in center
 
