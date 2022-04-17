@@ -37,9 +37,9 @@ program, since this program uses yt-dlp's module.
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 - read the youtube-dlp doc and see if there is anything useful to also add, options
+- dropdown menu for picking formatting options
+- advanced mode to let user view + pick format for each video individually
 - ~~allow user to choose format options~~
-    - allow user to give specific arguments in an "advanced" text box
-    - OR create an advanced settings window for more detailed formatting and etc. options
 - ~~reflect yt-dlp's ability to download videos from non-youtube sites~~
 - ~~use the yt_dlp module provided by yt-dlp~~
     - ~~maybe include support for youtube-dl again?~~
