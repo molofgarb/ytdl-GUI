@@ -2,6 +2,7 @@
 #4/13/2022
 
 import tkinter as tk
+from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
 
 import os, sys
@@ -57,32 +58,51 @@ class InfoWindow(tk.Toplevel):
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.frame = tk.Frame(self)
-        self.frame.grid(row=0, padx=20, pady=20)
+        self.frame.grid(row=0, padx=20, pady=10)
+
+        self.name = tk.Label(
+            self.frame, text="ytdl-GUI by molofgarb (Ethan Shieh)"
+        )
+        self.name.grid(row=0, sticky="w", padx=5, pady=2)
 
         self.readmeButton = tk.Button(
-            self.frame, text = "Open Readme",
-            command = self.openReadme
+            self.frame, text="Open Readme",
+            command=self.openReadme
         )
-        self.readmeButton.grid(row=0, sticky="W", padx=5, pady=5)
+        self.readmeButton.grid(row=1, sticky="W", padx=5, pady=5)
+
+        self.thanksLabel = tk.Label(
+            self.frame, text="\nThank you for using ytdl-GUI!"
+        )
+        self.thanksLabel.grid(row=2)
 
         self.repoLabel = tk.Label(
-            self.frame, text = "\nGitHub:",
+            self.frame, text="\nytdl-GUI GitHub:",
         )
-        self.repoLabel.grid(row=1, sticky="W")
+        self.repoLabel.grid(row=3, sticky="W")
 
         self.repoLink = tk.Label(
-            self.frame, text = "https://github.com/molofgarb/ytdl-GUI",
-            fg = "blue", cursor = "hand2"
+            self.frame, text="https://github.com/molofgarb/ytdl-GUI",
+            fg="blue", cursor="hand2"
         )
-        self.repoLink.grid(row=2)
+        self.repoLink.grid(row=4, sticky="W")
         self.repoLink.bind(
             "<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/molofgarb/ytdl-GUI")
         )
 
-        self.thanksLabel = tk.Label(
-            self.frame, text = "\nThank you for using ytdl-GUI!"
+        self.ytdlpRepoLabel = tk.Label(
+            self.frame, text="\nyt-dlp GitHub:",
         )
-        self.thanksLabel.grid(row=3)
+        self.ytdlpRepoLabel.grid(row=5, sticky="W")
+
+        self.ytdlpRepoLink = tk.Label(
+            self.frame, text="https://github.com/yt-dlp/yt-dlp",
+            fg="blue", cursor="hand2"
+        )
+        self.ytdlpRepoLink.grid(row=6, sticky="W")
+        self.ytdlpRepoLink.bind(
+            "<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/yt-dlp/yt-dlp")
+        )
 
     def openReadme(self):
         try:
@@ -112,16 +132,16 @@ class DownloadPrompt(tk.Toplevel):
         self.questionLabel.grid(sticky="N", columnspan=2)
         
         self.yesButton = tk.Button(
-            self.frame, text = "Yes",
+            self.frame, text="Yes",
             width=6,
-            command = self.confirm
+            command=self.confirm
         )
         self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
 
         self.noButton = tk.Button(
             self.frame, text = "No",
             width=6, 
-            command = self.destroy
+            command=self.destroy
         )
         self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
 
@@ -145,70 +165,127 @@ class MainWindow(tk.Tk):
         self.iconbitmap(iconPath)
         self.eval('tk::PlaceWindow . center') #puts window in center
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
         #initialize main frame (located within main window)
         self.frame = tk.Frame(self)
         self.frame.grid(padx=20, pady=5)
 
         # ------- WIDGETS -------
+        # =========== DIRECTORY ===========
         #label for directory
         self.directoryLabel = tk.Label(
-            self.frame, text = "Output Path:"
+            self.frame, text="Output Path:"
         )
         self.directoryLabel.grid(sticky="W")
 
         #directory to download to
         self.directoryText = tk.Text(
-            self.frame, height = 1, width = 68,
+            self.frame, height=1, width=68,
         )
         self.directoryText.insert(tk.END, whereami)
         self.directoryText.grid(column=0, row=1, padx=5, pady=5)
 
         #button to open directory-choosing prompt
         self.directoryButton = tk.Button(
-            self.frame, height = 0, width = 0,
-            text = "...", command = self.setDirectory
+            self.frame, height=0, width=0,
+            text = "...", command=self.setDirectory
         )
         self.directoryButton.grid(column=1, row=1, padx=1, pady=1)
 
+        # =========== INPUT ===========
         #input label
         self.inputLabel = tk.Label(
             self.frame, text = "Videos to download:"
         )
         self.inputLabel.grid(row=2, sticky="W")
         
+        #input text box scroll bar
+        self.inputScroll = tk.Scrollbar(
+            self.frame, width=16
+        )
+        self.inputScroll.grid(column=1, row=3, sticky="NS")
+
         #input text box
         self.inputText = tk.Text(
-            self.frame, height = 7, width = 68
+            self.frame, height=7, width=68,
+            yscrollcommand=self.inputScroll.set
         )
-        
         self.inputText.grid(row=3, padx=5, pady=5)
-        
+        self.inputScroll.configure(command=self.inputText.yview)
+
+        # =========== FORMAT SELECTION ===========
+        self.formatGrid = tk.Frame(self.frame)
+        self.formatGrid.grid(row=4, sticky="ew")
+
+        self.format = tk.StringVar(self, "b") #default format is best of both
+
+        #label for formats
+        self.formatLabel = tk.Label(
+            self.formatGrid, text="Format: "
+        )
+        self.formatLabel.grid(column=0, sticky="W")
+
+        #format radio button selection
+        self.vidAndAud = ttk.Radiobutton(
+            self.formatGrid, text="Video and Audio", variable=self.format, value="best"
+        )
+        self.vidAndAud.grid(column=1, row=0, sticky="e", padx=18)
+        self.vidOnly = ttk.Radiobutton(
+            self.formatGrid, text="Video Only", variable=self.format, value="bestvideo"
+        )
+        self.vidOnly.grid(column=2, row=0, sticky="e", padx=18)
+        self.audOnly = ttk.Radiobutton(
+            self.formatGrid, text="Audio Only", variable=self.format, value="bestaudio"
+        )
+        self.audOnly.grid(column=3, row=0, sticky="e", padx=18)
+        self.audOnlyCons = ttk.Radiobutton(
+            self.formatGrid, text="m4a (audio)", variable=self.format, value="m4a"
+        )
+        self.audOnlyCons.grid(column=4, row=0, sticky="e", padx=18)
+
+
+        # =========== INPUT BUTTONS ===========
         #button to send text box input
         self.inputButton = tk.Button(
-            self.frame, text = "Download", 
-            command = self.inputURLs
+            self.frame, text="Download", 
+            command=self.inputURLs
         )
-        self.inputButton.grid(row=4, padx=5, pady=5)
-        
-        # Label!!
+        self.inputButton.grid(row=6, padx=5, pady=5)
+
+        #button to clear
+        self.clearButton = tk.Button(
+            self.frame, text="Clear", 
+            command=self.clearInput
+        )
+        self.clearButton.grid(row=6, sticky="E", padx=5, pady=5)
+
+        # =========== MISC ===========
+        #progress bar for downloads
+        self.progressBar = ttk.Progressbar(
+            self.frame, orient=HORIZONTAL, length=550, mode='determinate'
+        )
+
+        # status Label!!
         self.statusLabel = tk.Label(
-            self.frame, text = "Awaiting URL input\n"
+            self.frame, text = "Awaiting URL input...\n"
         )
-        self.statusLabel.grid(row=5, padx=2, pady=2)
+        self.statusLabel.grid(row=7, padx=2, pady=2)
 
         #adds sample videos to download box
         self.sampleButton = tk.Button(
             self.frame, text = "Add sample videos",
             command = self.addSampleVideos
         )
-        self.sampleButton.grid(row=6, sticky="W", pady=8)
+        self.sampleButton.grid(row=8, sticky="W", pady=8)
 
         #info label
         self.infoButton = tk.Button(
             self.frame, text = "Info",
             command = self.openInfoWindow
         )
-        self.infoButton.grid(row=6, sticky="E", pady=8)
+        self.infoButton.grid(row=8, sticky="E", pady=8)
 
     #takes inputs from <inputtxt> and stores them in <URLs>
     def inputURLs(self):
@@ -219,16 +296,20 @@ class MainWindow(tk.Tk):
         
     #downloads URLs in list
     def downloadURLs(self, URLs):
-        options = {"paths": {'home': self.outDir}, "nocheckcertificate": True}
+        self.progressBar.grid(row=5, pady=4)
+        options = {"paths": {'home': self.outDir}, "nocheckcertificate": True, "format": self.format.get()}
         ydl = YoutubeDL(options)
         for i in range(len(URLs)):
             updateLabel(self, self.statusLabel, f'Downloading video {str(i + 1)}...\n ({URLs[i]})')
             try:
                 ydl.download(URLs[i])
             except:
-                updateLabel(self, self.statusLabel, f'Error: {URLs[i]} is not a valid URL')
+                updateLabel(self, self.statusLabel, f'Error: {URLs[i]} cannot be downloaded')
                 time.sleep(2)
+            self.updateProgress(i + 1, len(URLs))
         updateLabel(self, self.statusLabel, "Done downloading!\n")
+        self.after(3000, lambda: updateLabel(self, self.statusLabel, "Awaiting URL input...\n"))
+        self.after(3000, lambda: self.progressBar.grid_remove())
 
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
@@ -253,9 +334,16 @@ class MainWindow(tk.Tk):
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
         ) #default text
 
+    def clearInput(self):
+        self.inputText.delete("1.0", tk.END)
+
+    def updateProgress(self, progress, total):
+        self.progressBar['value'] = (progress/total) * 100
+
 
 #defines main window
 root = MainWindow()
+root.iconbitmap(iconPath)
 
 #loop!!
 root.mainloop()
