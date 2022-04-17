@@ -33,21 +33,23 @@ program, since this program uses yt-dlp's module.
 
 ## To-do:
 - organize code to be less of a mess
-- ~~reflect yt-dlp's ability to download videos from non-youtube sites~~
-- ~~use the yt_dlp module provided by yt-dlp~~
-    - ~~maybe include support for youtube-dl again?~~
+- make an optional noise when all downloads finished
+- put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
-- ~~allow the user to choose where to download the files~~
+- read the youtube-dlp doc and see if there is anything useful to also add, options
 - ~~allow user to choose format options~~
     - allow user to give specific arguments in an "advanced" text box
     - OR create an advanced settings window for more detailed formatting and etc. options
+- ~~reflect yt-dlp's ability to download videos from non-youtube sites~~
+- ~~use the yt_dlp module provided by yt-dlp~~
+    - ~~maybe include support for youtube-dl again?~~
+- ~~allow the user to choose where to download the files~~
 - ~~help the user download youtube-dl if they don't already have~~ yt-dlp module now included
     - ~~prioritize youtube-dlp~~
 - ~~show progress bar for download (label, or some kind of graphic)~~
     - ~~prevent not responding window from happening~~
 - ~~make the readme look pretty~~
-- put the G in GUI (make the interface look prettier)
-- read the youtube-dlp doc and see if there is anything useful to also add, options
+
 
 ## Why?
 I made this mostly for fun, but also to do a little experimentation with tkinter. I also make youtube videos occasionally, so I wanted something quick and lightweight to use for my occasional video downloads. There are a few other yt-dlp GUI programs that are much nicer than mine, so if you're looking for a more functionality, you should check those out. 
