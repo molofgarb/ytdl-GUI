@@ -1,6 +1,3 @@
-#ytdlGUI.py -- Ethan Shieh
-#4/13/2022
-
 import tkinter as tk
 from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
@@ -61,7 +58,7 @@ class InfoWindow(tk.Toplevel):
         self.frame.grid(row=0, padx=20, pady=10)
 
         self.name = tk.Label(
-            self.frame, text="ytdl-GUI by molofgarb (Ethan Shieh)"
+            self.frame, text="ytdl-GUI by molofgarb"
         )
         self.name.grid(row=0, sticky="w", padx=5, pady=2)
 
