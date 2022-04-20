@@ -36,6 +36,7 @@ program, since this program uses yt-dlp's module.
 - clear input after download (advanced options)
 - add option to disable download prompt (advanced options)
 - dropdown menu for picking formatting options
+- add true macOS compatability
 - organize code to be less of a mess
 - make an optional noise when all downloads finished
 - put the G in GUI (make the interface look prettier)
