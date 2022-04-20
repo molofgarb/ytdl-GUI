@@ -32,12 +32,15 @@ program, since this program uses yt-dlp's module.
 - yt-dlGUI_pyinstaller.bat is used to call pyInstaller to compile the script, ytdlGUI.py, along with its assets, into the final executable.
 
 ## To-do:
+- fix grammar on download prompt
+- clear input after download (advanced options)
+- add option to disable download prompt (advanced options)
+- dropdown menu for picking formatting options
 - organize code to be less of a mess
 - make an optional noise when all downloads finished
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 - read the youtube-dlp doc and see if there is anything useful to also add, options
-- dropdown menu for picking formatting options
 - advanced mode to let user view + pick format for each video individually
 - ~~allow user to choose format options~~
 - ~~reflect yt-dlp's ability to download videos from non-youtube sites~~
