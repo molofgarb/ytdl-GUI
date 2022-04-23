@@ -298,7 +298,7 @@ class MainWindow(tk.Tk):
         if len(URLs) == 1:
             ConfirmPrompt(self, "Do you want to download this video?", URLs)
         elif len(URLs) > 1:
-            ConfirmPrompt(self, "Do you want to download this video?", URLs)
+            ConfirmPrompt(self, "Do you want to download these videos?", URLs)
         
     #downloads URLs in list
     def downloadURLs(self, URLs):
