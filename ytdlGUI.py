@@ -260,7 +260,7 @@ class MainWindow(tk.Tk):
         #button to clear
         self.clearButton = tk.Button(
             self.frame, text="Clear", 
-            command=self.clearInput
+            command=lambda:self.inputText.delete("1.0", tk.END)
         )
         self.clearButton.grid(row=6, sticky="E", padx=5, pady=5)
 
@@ -286,7 +286,7 @@ class MainWindow(tk.Tk):
         #info label
         self.infoButton = tk.Button(
             self.frame, text = "Info",
-            command = self.openInfoWindow
+            command = lambda:InfoWindow(self)
         )
         self.infoButton.grid(row=8, sticky="E", pady=8)
 
@@ -308,8 +308,7 @@ class MainWindow(tk.Tk):
             "format": self.format.get()
         }
         ydl = YoutubeDL(dl_options) #create YoutubeDL obj with above options
-        #to cancel download
-        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload(i, URLs))
+        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload(i, URLs)) #to cancel download
         for i in range(len(URLs)): #begin to download videos
             updateText(self, self.statusLabel, f'Downloading video {str(i + 1)}...\n ({URLs[i]})')
             try:
@@ -319,10 +318,7 @@ class MainWindow(tk.Tk):
                 time.sleep(2)
             self.updateProgress(i + 1, len(URLs))
         #wrap up stuff + reset
-        updateText(self, self.statusLabel, "Download finished\n")
-        self.inputButton.configure(text="Download", command=self.inputURLs)
-        self.after(3000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
-        self.after(3000, lambda: self.progressBar.grid_remove())
+        self.finishDownload("finished")
 
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
@@ -335,9 +331,23 @@ class MainWindow(tk.Tk):
     def saveDirectory(self):
         self.outDir = self.directoryText.get(1.0, tk.END)
 
-    def openInfoWindow(self):
-        InfoWindow(self)
-    
+    def updateProgress(self, progress, total):
+        self.progressBar['value'] = (progress/total) * 100
+
+    def finishDownload(self, endText):
+        updateText(self, self.statusLabel, f'Download {endText}\n') 
+        self.inputButton.configure(text="Download", command=self.inputURLs)
+        self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
+        self.after(5000, lambda: self.progressBar.grid_remove())
+
+    def cancelDownload(self, i, URLs):
+        updateText(self, self.statusLabel, f"Cancelled, deleting videos...")
+        URLs.clear() #this will cause an error with downloadURLs(), stopping it
+        #same end-of-dl stuff
+        self.finishDownload("cancelled")
+        #for deleting already-downloaded videos
+        ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
+
     def addSampleVideos(self):
         self.inputText.insert(tk.END,
             "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
@@ -346,23 +356,6 @@ class MainWindow(tk.Tk):
             "jNQXAC9IVRw\n" + #me at the zoo
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
         ) #default text
-
-    def clearInput(self):
-        self.inputText.delete("1.0", tk.END)
-
-    def updateProgress(self, progress, total):
-        self.progressBar['value'] = (progress/total) * 100
-
-    def cancelDownload(self, i, URLs):
-        updateText(self, self.statusLabel, f"Cancelled, deleting videos...")
-        URLs.clear() #this will cause an error with downloadURLs(), stopping it
-        #same end-of-dl stuff
-        updateText(self, self.statusLabel, "Download cancelled\n") 
-        self.inputButton.configure(text="Download", command=self.inputURLs)
-        self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
-        self.after(5000, lambda: self.progressBar.grid_remove())
-        #for deleting already-downloaded videos
-        ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
 
 
 
