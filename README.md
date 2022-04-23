@@ -32,11 +32,15 @@ program, since this program uses yt-dlp's module.
 - yt-dlGUI_pyinstaller.bat is used to call pyInstaller to compile the script, ytdlGUI.py, along with its assets, into the final executable.
 
 ## To-do:
-- fix grammar on download prompt
+- ~~fix grammar on download prompt~~
+- add option to delete downloaded videos if cancelled
 - clear input after download (advanced options)
 - add option to disable download prompt (advanced options)
 - dropdown menu for picking formatting options
+- change download button to a cancel button while downloading
+- download log
 - add true macOS compatability
+    - fix icon issue on mac
 - organize code to be less of a mess
 - make an optional noise when all downloads finished
 - put the G in GUI (make the interface look prettier)

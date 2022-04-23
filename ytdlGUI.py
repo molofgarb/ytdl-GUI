@@ -4,7 +4,7 @@ from tkinter import filedialog
 
 import os, sys
 from platform import system
-from subprocess import check_output
+import subprocess
 import time
 
 import webbrowser
@@ -15,10 +15,10 @@ from yt_dlp import YoutubeDL
 # ======== Environment ========
 
 ytdlCall = "yt-dlp"
-windows = False
 
-whereami = ""
 opsys = system()
+windows = False
+whereami = ""
 
 #Get info about environment
 if (opsys == "Windows"):
@@ -28,9 +28,9 @@ elif (opsys != "Darwin" and opsys != "Linux"):
 
 #figure out working directory 
 if (opsys == "Windows"):
-    whereami = check_output(['cd'], shell=True) 
+    whereami = subprocess.check_output(['cd'], shell=True) 
 else: #macOS or linux
-    whereami = check_output(['pwd'], shell=True)
+    whereami = subprocess.check_output(['pwd'], shell=True)
 
 #icon stuff for windows
 iconPath = ""
@@ -42,8 +42,8 @@ else:
 # ======== Window Construction ========
 
 #updates a label with new text, text
-def updateLabel(root, label, text):
-    label.configure(text=text)
+def updateText(root, widget, text):
+    widget.configure(text=text)
     root.update()
 
 class InfoWindow(tk.Toplevel):
@@ -84,7 +84,7 @@ class InfoWindow(tk.Toplevel):
         )
         self.repoLink.grid(row=4, sticky="W")
         self.repoLink.bind(
-            "<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/molofgarb/ytdl-GUI")
+            "<Button-1>", lambda: webbrowser.open_new_tab("https://github.com/molofgarb/ytdl-GUI")
         )
 
         self.ytdlpRepoLabel = tk.Label(
@@ -109,8 +109,8 @@ class InfoWindow(tk.Toplevel):
 
 
 
-class DownloadPrompt(tk.Toplevel):
-    def __init__(self, root, URLs = []):
+class ConfirmPrompt(tk.Toplevel):
+    def __init__(self, root, promptText, data = 0):
         super().__init__(root)
 
         self.title("Download Confirmation")
@@ -120,34 +120,40 @@ class DownloadPrompt(tk.Toplevel):
         self.frame = tk.Frame(self)
         self.frame.grid(row=0, padx=2, pady=10)
 
-        self.URLs = URLs
+        self.promptText = promptText
+        self.data = data
 
         # ------- WIDGETS -------
         self.questionLabel = tk.Label(
-            self.frame, text = "Do you want to download these videos?"
+            self.frame, text = promptText
         )
         self.questionLabel.grid(sticky="N", columnspan=2)
         
         self.yesButton = tk.Button(
             self.frame, text="Yes",
             width=6,
-            command=self.confirm
+            command=lambda: self.answer("Y")
         )
         self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
 
         self.noButton = tk.Button(
             self.frame, text = "No",
             width=6, 
-            command=self.destroy
+            command=lambda: self.answer("N")
         )
         self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
 
-    def confirm(self):
+    def answer(self, answer):
         self.destroy()
         self.update()
-        self.master.saveDirectory()
-        self.master.downloadURLs(self.URLs)     
-
+        #if download prompt
+        if self.promptText == "Do you want to download these videos?":
+            self.master.saveDirectory()
+            self.master.downloadURLs(self.data)
+        #if delete prompt
+        elif self.promptText == "Do you want to delete the already downloaded files?":
+            pass #figure out how to track what files are downloaded/find 
+        
 
 
 class MainWindow(tk.Tk):
@@ -288,24 +294,34 @@ class MainWindow(tk.Tk):
     def inputURLs(self):
         input1 = self.inputText.get(1.0, tk.END)
         URLs = input1.split() 
-        updateLabel(self, self.statusLabel, "URLs Received!\n")
-        DownloadPrompt(self, URLs)
+        if len(URLs) > 0: updateText(self, self.statusLabel, "URLs Received!\n")
+        if len(URLs) == 1:
+            ConfirmPrompt(self, "Do you want to download this video?", URLs)
+        elif len(URLs) > 1:
+            ConfirmPrompt(self, "Do you want to download this video?", URLs)
         
     #downloads URLs in list
     def downloadURLs(self, URLs):
         self.progressBar.grid(row=5, pady=4)
-        options = {"paths": {'home': self.outDir}, "nocheckcertificate": True, "format": self.format.get()}
-        ydl = YoutubeDL(options)
-        for i in range(len(URLs)):
-            updateLabel(self, self.statusLabel, f'Downloading video {str(i + 1)}...\n ({URLs[i]})')
+        dl_options = {"paths": {'home': self.outDir}, 
+            "nocheckcertificate": True, 
+            "format": self.format.get()
+        }
+        ydl = YoutubeDL(dl_options) #create YoutubeDL obj with above options
+        #to cancel download
+        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload(i, URLs))
+        for i in range(len(URLs)): #begin to download videos
+            updateText(self, self.statusLabel, f'Downloading video {str(i + 1)}...\n ({URLs[i]})')
             try:
-                ydl.download(URLs[i])
+                ydl.download(URLs[i]) #done one-by-one on purpose
             except:
-                updateLabel(self, self.statusLabel, f'Error: {URLs[i]} cannot be downloaded')
+                updateText(self, self.statusLabel, f'Error: {URLs[i]} cannot be downloaded')
                 time.sleep(2)
             self.updateProgress(i + 1, len(URLs))
-        updateLabel(self, self.statusLabel, "Done downloading!\n")
-        self.after(3000, lambda: updateLabel(self, self.statusLabel, "Awaiting URL input...\n"))
+        #wrap up stuff + reset
+        updateText(self, self.statusLabel, "Download finished\n")
+        self.inputButton.configure(text="Download", command=self.inputURLs)
+        self.after(3000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
         self.after(3000, lambda: self.progressBar.grid_remove())
 
     #uses tkinter's askdirectory dialog to set directory in text box
@@ -336,6 +352,18 @@ class MainWindow(tk.Tk):
 
     def updateProgress(self, progress, total):
         self.progressBar['value'] = (progress/total) * 100
+
+    def cancelDownload(self, i, URLs):
+        updateText(self, self.statusLabel, f"Cancelled, deleting videos...")
+        URLs.clear() #this will cause an error with downloadURLs(), stopping it
+        #same end-of-dl stuff
+        updateText(self, self.statusLabel, "Download cancelled\n") 
+        self.inputButton.configure(text="Download", command=self.inputURLs)
+        self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
+        self.after(5000, lambda: self.progressBar.grid_remove())
+        #for deleting already-downloaded videos
+        ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
+
 
 
 #defines main window

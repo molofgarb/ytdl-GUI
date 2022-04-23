@@ -5,10 +5,7 @@
 *.pyc
 *.pyo
 .pytest_cache
-__pycache__
-yt_dlp/__pycache__
-yt_dlp/downloader/__pycache__
-yt_dlp/extractor/__pycache__
+**/__pycache__
 
 # build stuff
 build/
