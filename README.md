@@ -41,10 +41,9 @@ program, since this program uses yt-dlp's module.
     - use 'listformats' option on YoutubeDL object
     - toggleable ability to have individual format selection (off by default)
 
-- change download button to a cancel button while downloading
-    - and have it actually work
-
 - download log
+
+- show all of progress_hooks information as advanced setting
 
 - add true macOS compatability
     - fix icon issue on mac
