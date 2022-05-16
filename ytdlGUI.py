@@ -18,7 +18,7 @@ ytdlCall = "yt-dlp"
 
 opsys = system()
 windows = False
-whereami = ""
+whereami = os.getcwd()
 
 #Get info about environment
 if (opsys == "Windows"):
@@ -26,13 +26,7 @@ if (opsys == "Windows"):
 elif (opsys != "Darwin" and opsys != "Linux"):
     sys.exit("Operating System not supported")
 
-#figure out working directory 
-if (opsys == "Windows"):
-    whereami = subprocess.check_output(['cd'], shell=True) 
-else: #macOS or linux
-    whereami = subprocess.check_output(['pwd'], shell=True)
-
-#icon stuff for windows
+#icon stuff
 iconPath = ""
 if getattr(sys, 'frozen', False):
     iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico")
@@ -101,13 +95,32 @@ class InfoWindow(tk.Toplevel):
             "<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/yt-dlp/yt-dlp")
         )
 
+        #adds sample videos
+        self.sampleButton = tk.Button(
+            self.frame, text = "Add sample videos",
+            command = root.addSampleVideos
+        )
+        self.sampleButton.grid(row=7, pady=8)
+
+        #adds sample videos
+        self.removeSampleButton = tk.Button(
+            self.frame, text = "Remove Sample Videos from files (Windows)",
+            command = self.removeSampleVideos
+        )
+        self.removeSampleButton.grid(row=8, pady=8)
+
     def openReadme(self):
         try:
             os.startfile("README.md")
         except:
             raise Exception("Readme not found")
 
-
+    def removeSampleVideos(self):
+        os.system('del "(subprocess) solved! FileNotFoundError - [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"')
+        os.system('del "Dramatic Sable [BDqOmwM].mp4"')
+        os.system('del "get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"')
+        os.system('del "Me at the zoo [jNQXAC9IVRw].mp4"')
+        os.system('del "Vine Boom Sound Effect [Y_pbEOem2HU].mp4"')
 
 class ConfirmPrompt(tk.Toplevel):
     def __init__(self, root, promptText, data = 0):
@@ -162,14 +175,13 @@ class MainWindow(tk.Tk):
         super().__init__() 
 
         self.outDir = whereami
+        self.URLs = []
+        self.currVideo = 0
 
         #initialize main window
         self.title("ytdl-GUI")
         self.iconbitmap(iconPath)
-        self.eval('tk::PlaceWindow . center') #puts window in center
-
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.eval('tk::PlaceWindow . center') #puts window in center(ish)
 
         #initialize main frame (located within main window)
         self.frame = tk.Frame(self)
@@ -248,6 +260,7 @@ class MainWindow(tk.Tk):
         )
         self.audOnlyCons.grid(column=4, row=0, sticky="e", padx=18)
 
+        self.format.set("best") #set default radio value (first button)
 
         # =========== INPUT BUTTONS ===========
         #button to send text box input
@@ -255,71 +268,129 @@ class MainWindow(tk.Tk):
             self.frame, text="Download", 
             command=self.inputURLs
         )
-        self.inputButton.grid(row=6, padx=5, pady=5)
+        self.inputButton.grid(row=7, padx=5, pady=5)
 
         #button to clear
         self.clearButton = tk.Button(
             self.frame, text="Clear", 
             command=lambda:self.inputText.delete("1.0", tk.END)
         )
-        self.clearButton.grid(row=6, sticky="E", padx=5, pady=5)
+        self.clearButton.grid(row=7, sticky="E", padx=5, pady=5)
 
-        # =========== MISC ===========
-        #progress bar for downloads
-        self.progressBar = ttk.Progressbar(
-            self.frame, orient=HORIZONTAL, length=550, mode='determinate'
+        # =========== PROGRESS ===========
+        self.progressFrame = tk.Frame(self.frame)
+
+        #progress bar for overall downloads
+        self.progressBarLabel = tk.Label(
+            self.progressFrame, text = "All Videos:"
         )
+        self.progressBarLabel.grid(row=0, column=0, pady=4) 
+
+        self.progressBar = ttk.Progressbar(
+            self.progressFrame, orient=HORIZONTAL, length=500, mode='determinate'
+        )
+        self.progressBar.grid(row=0, column=1, pady=4) 
+
+        #progress bar for current video download
+        self.currProgressBarLabel = tk.Label(
+            self.progressFrame, text = "This Video:"
+        )
+        self.currProgressBarLabel.grid(row=1, column=0, pady=4) 
+        self.currProgressBar = ttk.Progressbar(
+            self.progressFrame, orient=HORIZONTAL, length=500, mode='determinate'
+        )
+        self.currProgressBar.grid(row=1, column=1, pady=4) 
 
         # status Label!!
         self.statusLabel = tk.Label(
             self.frame, text = "Awaiting URL input...\n"
         )
-        self.statusLabel.grid(row=7, padx=2, pady=2)
+        self.statusLabel.grid(row=8, padx=2, pady=2)
 
-        #adds sample videos to download box
-        self.sampleButton = tk.Button(
-            self.frame, text = "Add sample videos",
-            command = self.addSampleVideos
-        )
-        self.sampleButton.grid(row=8, sticky="W", pady=8)
-
+        # =========== MISC ===========
         #info label
         self.infoButton = tk.Button(
             self.frame, text = "Info",
             command = lambda:InfoWindow(self)
         )
-        self.infoButton.grid(row=8, sticky="E", pady=8)
+        self.infoButton.grid(row=9, sticky="E", pady=8)
 
-    #takes inputs from <inputtxt> and stores them in <URLs>
+    # =========== DOWNLOADING ===========
+    #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self):
         input1 = self.inputText.get(1.0, tk.END)
-        URLs = input1.split() 
-        if len(URLs) > 0: updateText(self, self.statusLabel, "URLs Received!\n")
-        if len(URLs) == 1:
-            ConfirmPrompt(self, "Do you want to download this video?", URLs)
-        elif len(URLs) > 1:
-            ConfirmPrompt(self, "Do you want to download these videos?", URLs)
+        self.URLs = input1.split() 
+        if len(self.URLs) > 0: #valid URLs
+            updateText(self, self.statusLabel, "URLs Received!\n")
+        else:
+            updateText(self, self.statusLabel, "Invalid input\n")
+            self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
+        self.downloadURLs(self.URLs)
         
-    #downloads URLs in list
+    #downloads URLs in list -- main function
     def downloadURLs(self, URLs):
-        self.progressBar.grid(row=5, pady=4)
+        self.progressFrame.grid(row=5) #show progress bars
+        
+        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload(self.currVideo, URLs)) #to cancel download
+
         dl_options = {"paths": {'home': self.outDir}, 
             "nocheckcertificate": True, 
-            "format": self.format.get()
+            "format": self.format.get(),
+            'progress_hooks': [self.dl_hook]
         }
-        ydl = YoutubeDL(dl_options) #create YoutubeDL obj with above options
-        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload(i, URLs)) #to cancel download
-        for i in range(len(URLs)): #begin to download videos
-            updateText(self, self.statusLabel, f'Downloading video {str(i + 1)}...\n ({URLs[i]})')
-            try:
-                ydl.download(URLs[i]) #done one-by-one on purpose
-            except:
-                updateText(self, self.statusLabel, f'Error: {URLs[i]} cannot be downloaded')
-                time.sleep(2)
-            self.updateProgress(i + 1, len(URLs))
-        #wrap up stuff + reset
-        self.finishDownload("finished")
 
+        self.updateProgressBar()
+        error_code = YoutubeDL(dl_options).download(URLs) #done one-by-one on purpose
+        if error_code != 0: print(error_code) #print error if it exists
+
+        self.finishDownload("finished") #wrap up stuff + reset
+
+    #runs during each download
+    def dl_hook(self, d):
+        # print("\n\nout\n\n")
+        if d['status'] == 'downloading':
+            print(d['speed'])
+            # print("\n\n")
+        if d['status'] == 'finished':
+            self.currVideo += 1
+            self.updateProgressBar()
+
+    #updates progress bar to indicate progress
+    def updateProgressBar(self):
+        if not (self.currVideo >= len(self.URLs)):
+            updateText(self, self.statusLabel, f'Video {str(self.currVideo + 1)} is being downloaded...\n'
+                f'({self.URLs[self.currVideo]})')
+        self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
+        self.update()
+
+    def cancelDownload(self):
+        updateText(self, self.statusLabel, f"Cancelled, deleting videos...")
+        self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
+        self.finishDownload("cancelled")
+
+        ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
+
+    #summary after downloading videos
+    def finishDownload(self, endText):
+        updateText(self, self.statusLabel, f'Download {endText}\n') 
+        self.inputButton.configure(text="Download", command=self.inputURLs)
+        self.currVideo = 0
+
+        self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
+        self.after(5000, lambda: self.progressFrame.grid_remove())
+        
+
+    # =========== INFO ===========
+    def addSampleVideos(self):
+        self.inputText.insert(tk.END,
+            "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
+            "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
+            "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
+            "jNQXAC9IVRw\n" + #me at the zoo
+            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
+        ) #default text
+
+    # =========== DIRECTORY ===========
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
         dir = filedialog.askdirectory()
@@ -331,31 +402,6 @@ class MainWindow(tk.Tk):
     def saveDirectory(self):
         self.outDir = self.directoryText.get(1.0, tk.END)
 
-    def updateProgress(self, progress, total):
-        self.progressBar['value'] = (progress/total) * 100
-
-    def finishDownload(self, endText):
-        updateText(self, self.statusLabel, f'Download {endText}\n') 
-        self.inputButton.configure(text="Download", command=self.inputURLs)
-        self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
-        self.after(5000, lambda: self.progressBar.grid_remove())
-
-    def cancelDownload(self, i, URLs):
-        updateText(self, self.statusLabel, f"Cancelled, deleting videos...")
-        URLs.clear() #this will cause an error with downloadURLs(), stopping it
-        #same end-of-dl stuff
-        self.finishDownload("cancelled")
-        #for deleting already-downloaded videos
-        ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
-
-    def addSampleVideos(self):
-        self.inputText.insert(tk.END,
-            "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
-            "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
-            "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
-            "jNQXAC9IVRw\n" + #me at the zoo
-            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
-        ) #default text
 
 
 

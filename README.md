@@ -32,12 +32,20 @@ program, since this program uses yt-dlp's module.
 - yt-dlGUI_pyinstaller.bat is used to call pyInstaller to compile the script, ytdlGUI.py, along with its assets, into the final executable.
 
 ## To-do:
+
 - add option to delete downloaded videos if cancelled
-- clear input after download (advanced options)
-- add option to disable download prompt (advanced options)
+
+- clear input after download, with ability to turn off as toggle
+
 - dropdown menu for picking formatting options
+    - use 'listformats' option on YoutubeDL object
+    - toggleable ability to have individual format selection (off by default)
+
 - change download button to a cancel button while downloading
+    - and have it actually work
+
 - download log
+
 - add true macOS compatability
     - fix icon issue on mac
 - organize code to be less of a mess
@@ -46,6 +54,8 @@ program, since this program uses yt-dlp's module.
 - make window centering appear truly center
 - read the youtube-dlp doc and see if there is anything useful to also add, options
 - advanced mode to let user view + pick format for each video individually
+- ~~download prompt ONLY if long video or if >4 videos~~
+- ~~move sample videos to info~~
 - ~~fix grammar on download prompt~~
 - ~~allow user to choose format options~~
 - ~~reflect yt-dlp's ability to download videos from non-youtube sites~~
