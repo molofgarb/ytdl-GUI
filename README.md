@@ -51,8 +51,7 @@ program, since this program uses yt-dlp's module.
 
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
-- read the youtube-dlp doc and see if there is anything useful to also add, options
-- advanced mode to let user view + pick format for each video individually
+
 - ~~add option to delete downloaded videos if cancelled~~
 - ~~clear input after download, with ability to turn off as toggle~~
 - ~~download prompt ONLY if long video or if >4 videos~~
