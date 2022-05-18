@@ -33,9 +33,7 @@ program, since this program uses yt-dlp's module.
 
 ## To-do:
 
-- add option to delete downloaded videos if cancelled
-
-- clear input after download, with ability to turn off as toggle
+- scan urls for validity before downloading
 
 - dropdown menu for picking formatting options
     - use 'listformats' option on YoutubeDL object
@@ -45,14 +43,18 @@ program, since this program uses yt-dlp's module.
 
 - show all of progress_hooks information as advanced setting
 
+- make an optional noise when all downloads finished
+
 - add true macOS compatability
     - fix icon issue on mac
 - organize code to be less of a mess
-- make an optional noise when all downloads finished
+
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 - read the youtube-dlp doc and see if there is anything useful to also add, options
 - advanced mode to let user view + pick format for each video individually
+- ~~add option to delete downloaded videos if cancelled~~
+- ~~clear input after download, with ability to turn off as toggle~~
 - ~~download prompt ONLY if long video or if >4 videos~~
 - ~~move sample videos to info~~
 - ~~fix grammar on download prompt~~

@@ -14,13 +14,11 @@ from yt_dlp import YoutubeDL
 
 # ======== Environment ========
 
-ytdlCall = "yt-dlp"
-
-opsys = system()
 windows = False
 whereami = os.getcwd()
 
 #Get info about environment
+opsys = system()
 if (opsys == "Windows"):
     windows = True
 elif (opsys != "Darwin" and opsys != "Linux"):
@@ -58,25 +56,31 @@ class InfoWindow(tk.Toplevel):
 
         self.readmeButton = tk.Button(
             self.frame, text="Open Readme",
-            command=self.openReadme
+            command=lambda: webbrowser.open_new_tab("README.md")
         )
         self.readmeButton.grid(row=1, sticky="W", padx=5, pady=5)
+
+        self.sitesButton = tk.Button(
+            self.frame, text="Supported Websites",
+            command=lambda: webbrowser.open_new_tab("supportedsites.md")
+        )
+        self.sitesButton.grid(row=2, sticky='w', padx=5, pady=5)
 
         self.thanksLabel = tk.Label(
             self.frame, text="\nThank you for using ytdl-GUI!"
         )
-        self.thanksLabel.grid(row=2)
+        self.thanksLabel.grid(row=3, sticky='w')
 
         self.repoLabel = tk.Label(
             self.frame, text="\nytdl-GUI GitHub:",
         )
-        self.repoLabel.grid(row=3, sticky="W")
+        self.repoLabel.grid(row=4, sticky="W")
 
         self.repoLink = tk.Label(
             self.frame, text="https://github.com/molofgarb/ytdl-GUI",
             fg="blue", cursor="hand2"
         )
-        self.repoLink.grid(row=4, sticky="W")
+        self.repoLink.grid(row=5, sticky="W")
         self.repoLink.bind(
             "<Button-1>", lambda: webbrowser.open_new_tab("https://github.com/molofgarb/ytdl-GUI")
         )
@@ -84,88 +88,104 @@ class InfoWindow(tk.Toplevel):
         self.ytdlpRepoLabel = tk.Label(
             self.frame, text="\nyt-dlp GitHub:",
         )
-        self.ytdlpRepoLabel.grid(row=5, sticky="W")
+        self.ytdlpRepoLabel.grid(row=6, sticky="W")
 
         self.ytdlpRepoLink = tk.Label(
             self.frame, text="https://github.com/yt-dlp/yt-dlp",
             fg="blue", cursor="hand2"
         )
-        self.ytdlpRepoLink.grid(row=6, sticky="W")
+        self.ytdlpRepoLink.grid(row=7, sticky="W")
         self.ytdlpRepoLink.bind(
             "<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/yt-dlp/yt-dlp")
         )
 
+        # =========== DEBUG ===========
+        self.debugLabel = tk.Label(
+            self.frame, text="Debug Functions:",
+        )
+        self.debugLabel.grid(row=0, column=1)
         #adds sample videos
         self.sampleButton = tk.Button(
             self.frame, text = "Add sample videos",
             command = root.addSampleVideos
         )
-        self.sampleButton.grid(row=7, pady=8)
+        self.sampleButton.grid(row=1, column=1, pady=5)
 
         #adds sample videos
         self.removeSampleButton = tk.Button(
-            self.frame, text = "Remove Sample Videos from files (Windows)",
+            self.frame, text = "Delete Sample Videos",
             command = self.removeSampleVideos
         )
-        self.removeSampleButton.grid(row=8, pady=8)
-
-    def openReadme(self):
-        try:
-            os.startfile("README.md")
-        except:
-            raise Exception("Readme not found")
+        self.removeSampleButton.grid(row=2, column=1, pady=5, padx=10)
 
     def removeSampleVideos(self):
-        os.system('del "(subprocess) solved! FileNotFoundError - [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"')
-        os.system('del "Dramatic Sable [BDqOmwM].mp4"')
-        os.system('del "get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"')
-        os.system('del "Me at the zoo [jNQXAC9IVRw].mp4"')
-        os.system('del "Vine Boom Sound Effect [Y_pbEOem2HU].mp4"')
+        cmd = 'del' if (windows) else 'rm'
+        os.system(cmd + ' "(subprocess) solved! FileNotFoundError - [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"')
+        os.system(cmd + ' "Dramatic Sable [BDqOmwM].mp4"')
+        os.system(cmd + ' "get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"')
+        os.system(cmd + ' "Me at the zoo [jNQXAC9IVRw].mp4"')
+        os.system(cmd + ' "Vine Boom Sound Effect [Y_pbEOem2HU].mp4"')
+
+
 
 class ConfirmPrompt(tk.Toplevel):
     def __init__(self, root, promptText, data = 0):
         super().__init__(root)
+        self.promptText = promptText
+        self.data = data
 
-        self.title("Download Confirmation")
+        if self.promptText == "Do you want to download these videos?":
+            self.title("Download Confirmation")
+        elif self.promptText == "Do you want to delete the already downloaded files?":
+            self.title("Delete Confirmation")
+
         self.iconbitmap(iconPath)
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.frame = tk.Frame(self)
         self.frame.grid(row=0, padx=2, pady=10)
 
-        self.promptText = promptText
-        self.data = data
-
         # ------- WIDGETS -------
         self.questionLabel = tk.Label(
             self.frame, text = promptText
         )
-        self.questionLabel.grid(sticky="N", columnspan=2)
+        self.questionLabel.grid(sticky="N", padx=15)
         
         self.yesButton = tk.Button(
             self.frame, text="Yes",
             width=6,
-            command=lambda: self.answer("Y")
+            command=lambda: self.answer(True)
         )
-        self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
-
-        self.noButton = tk.Button(
-            self.frame, text = "No",
+        self.noButton = tk.Button( #No/Ok
+            self.frame, text = "Ok",
             width=6, 
-            command=lambda: self.answer("N")
+            command=lambda: self.answer(False)
         )
-        self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
 
-    def answer(self, answer):
+        if len(promptText) < 5: #yes/no
+            if promptText[:5] != "Error":
+                updateText(self, self.noButton, "No")
+                self.questionLabel.configure(columnspan=2)
+                self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
+                self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
+        else: #ok
+            self.noButton.grid(column=0, row=1, sticky="N", padx=30, pady=20)
+
+    def answer(self, action):
         self.destroy()
         self.update()
-        #if download prompt
-        if self.promptText == "Do you want to download these videos?":
-            self.master.saveDirectory()
-            self.master.downloadURLs(self.data)
-        #if delete prompt
-        elif self.promptText == "Do you want to delete the already downloaded files?":
-            pass #figure out how to track what files are downloaded/find 
+        if action:
+            #download prompt
+            if self.promptText == "Do you want to download these videos?":
+                self.master.saveDirectory()
+                self.master.downloadURLs()
+            #delete prompt
+            elif self.promptText == "Do you want to delete the already downloaded files?":
+                print(self.data)
+                for filename in self.data:
+                    print("d\n")
+                    cmd = 'del' if (windows) else 'rm'
+                    os.system(cmd + ' "' + filename + '"')
         
 
 
@@ -175,8 +195,11 @@ class MainWindow(tk.Tk):
         super().__init__() 
 
         self.outDir = whereami
+        self.cancel = False
         self.URLs = []
+        self.filenames = []
         self.currVideo = 0
+        self.deleteOnFinish = True
 
         #initialize main window
         self.title("ytdl-GUI")
@@ -315,6 +338,14 @@ class MainWindow(tk.Tk):
         )
         self.infoButton.grid(row=9, sticky="E", pady=8)
 
+        #delete input on finish toggle
+        self.deleteOnFinishCheck = tk.Checkbutton(
+            self.frame, text = "Delete input after download",
+            variable=self.deleteOnFinish, onvalue=True, offvalue=False
+        )
+        self.deleteOnFinishCheck.select()
+        self.deleteOnFinishCheck.grid(row=9, sticky='w')
+
     # =========== DOWNLOADING ===========
     #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self):
@@ -322,16 +353,16 @@ class MainWindow(tk.Tk):
         self.URLs = input1.split() 
         if len(self.URLs) > 0: #valid URLs
             updateText(self, self.statusLabel, "URLs Received!\n")
+            self.downloadURLs()
         else:
             updateText(self, self.statusLabel, "Invalid input\n")
             self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
-        self.downloadURLs(self.URLs)
         
     #downloads URLs in list -- main function
-    def downloadURLs(self, URLs):
+    def downloadURLs(self):
         self.progressFrame.grid(row=5) #show progress bars
-        
-        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload(self.currVideo, URLs)) #to cancel download
+        self.currVideo = 0
+        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload()) #to cancel download
 
         dl_options = {"paths": {'home': self.outDir}, 
             "nocheckcertificate": True, 
@@ -339,22 +370,33 @@ class MainWindow(tk.Tk):
             'progress_hooks': [self.dl_hook]
         }
 
+        #begin downloads
         self.updateProgressBar()
-        error_code = YoutubeDL(dl_options).download(URLs) #done one-by-one on purpose
-        if error_code != 0: print(error_code) #print error if it exists
-
-        self.finishDownload("finished") #wrap up stuff + reset
+        try:
+            YoutubeDL(dl_options).download(self.URLs) #done one-by-one on purpose
+            self.finishDownload("successful") #wrap up stuff + reset
+        except:
+            ConfirmPrompt(self, "Error: Invalid URL\n\nPlease check your URLs again and make\n sure they are valid and compatible")
+            self.finishDownload("unsuccessful") #wrap up stuff + reset
 
     #runs during each download
     def dl_hook(self, d):
-        # print("\n\nout\n\n")
         if d['status'] == 'downloading':
-            print(d['speed'])
-            # print("\n\n")
-        if d['status'] == 'finished':
+            try: #progress as bytes dl'ed
+                self.currProgressBar['value'] = ((d['downloaded_bytes'])/d['total_bytes']) * 100
+            except:
+                try: #progress as time elapsed
+                    self.currProgressBar['value'] = ((d['elapsed'])/(d['elapsed'] + d['eta'])) * 100
+                except: #dont show anything
+                    self.currProgressBar['value'] = 0
+            self.update()
+        elif d['status'] == 'finished':
+            if 'elapsed' in d: #if a download occurred
+                self.filenames.append(d['filename']) #add to completed dl list
             self.currVideo += 1
+            self.currProgressBar['value'] = 0 #reset progress bars
             self.updateProgressBar()
-
+            
     #updates progress bar to indicate progress
     def updateProgressBar(self):
         if not (self.currVideo >= len(self.URLs)):
@@ -363,22 +405,24 @@ class MainWindow(tk.Tk):
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
 
+    #cancels download by clearing URLs, deletes downloaded files
     def cancelDownload(self):
-        updateText(self, self.statusLabel, f"Cancelled, deleting videos...")
+        updateText(self, self.statusLabel, f"Download cancelled")
         self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
         self.finishDownload("cancelled")
 
-        ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
+        ConfirmPrompt(self, "Do you want to delete the already downloaded files?", self.filenames)
 
     #summary after downloading videos
     def finishDownload(self, endText):
         updateText(self, self.statusLabel, f'Download {endText}\n') 
         self.inputButton.configure(text="Download", command=self.inputURLs)
-        self.currVideo = 0
-
+        if (endText != "cancelled" and self.deleteOnFinish == True):
+            self.inputText.delete("1.0", tk.END) #delete input
+        
+        self.URLs.clear()
         self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
         self.after(5000, lambda: self.progressFrame.grid_remove())
-        
 
     # =========== INFO ===========
     def addSampleVideos(self):
