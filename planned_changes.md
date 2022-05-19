@@ -12,6 +12,8 @@
 - add true macOS compatability
     - fix icon issue on mac
 
+- make cancel button physically stop YoutubeDL via cmdline instead of clearing URLs
+
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
