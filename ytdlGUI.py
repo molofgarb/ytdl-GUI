@@ -349,8 +349,7 @@ class MainWindow(tk.Tk):
     # =========== DOWNLOADING ===========
     #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self):
-        input1 = self.inputText.get(1.0, tk.END)
-        self.URLs = input1.split() 
+        self.URLs = self.inputText.get(1.0, tk.END).split() 
         if len(self.URLs) > 0: #valid URLs
             updateText(self, self.statusLabel, "URLs Received!\n")
             self.downloadURLs()
@@ -360,7 +359,6 @@ class MainWindow(tk.Tk):
         
     #downloads URLs in list -- main function
     def downloadURLs(self):
-        self.progressFrame.grid(row=5) #show progress bars
         self.currVideo = 0
         self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload()) #to cancel download
 
@@ -370,8 +368,9 @@ class MainWindow(tk.Tk):
             'progress_hooks': [self.dl_hook]
         }
 
-        #begin downloads
+        self.progressFrame.grid(row=5) #show progress bars
         self.updateProgressBar()
+        #begin downloads
         try:
             YoutubeDL(dl_options).download(self.URLs) #done one-by-one on purpose
             self.finishDownload("successful") #wrap up stuff + reset
