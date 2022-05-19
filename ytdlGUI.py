@@ -195,12 +195,15 @@ class MainWindow(tk.Tk):
         super().__init__() 
 
         self.outDir = whereami
-        self.cancel = False
         self.URLs = []
         self.filenames = []
         self.currVideo = 0
-        self.deleteOnFinish = True
 
+        self.format = tk.StringVar(self, "b") #default format is best of both
+        self.checkURLs = tk.BooleanVar(self, True)
+        self.deleteOnFinish = tk.BooleanVar(self, True)
+        self.playSound = tk.BooleanVar(self, True)
+        
         #initialize main window
         self.title("ytdl-GUI")
         self.iconbitmap(iconPath)
@@ -208,7 +211,7 @@ class MainWindow(tk.Tk):
 
         #initialize main frame (located within main window)
         self.frame = tk.Frame(self)
-        self.frame.grid(padx=20, pady=5)
+        self.frame.grid(padx=20, pady=(8, 18))
 
         # ------- WIDGETS -------
         # =========== DIRECTORY ===========
@@ -256,8 +259,6 @@ class MainWindow(tk.Tk):
         # =========== FORMAT SELECTION ===========
         self.formatGrid = tk.Frame(self.frame)
         self.formatGrid.grid(row=4, sticky="ew")
-
-        self.format = tk.StringVar(self, "b") #default format is best of both
 
         #label for formats
         self.formatLabel = tk.Label(
@@ -330,21 +331,52 @@ class MainWindow(tk.Tk):
         )
         self.statusLabel.grid(row=8, padx=2, pady=2)
 
-        # =========== MISC ===========
-        #info label
-        self.infoButton = tk.Button(
-            self.frame, text = "Info",
-            command = lambda:InfoWindow(self)
+        # =========== OPTIONS ===========
+        #options label
+        self.optionsLabel = tk.Label(
+            self.frame, text = "Options:"
         )
-        self.infoButton.grid(row=9, sticky="E", pady=8)
+        self.optionsLabel.grid(row=9, sticky='w')
+
+        #check if URLs are valid before downloading
+        self.checkURLsCheck = tk.Checkbutton(
+            self.frame, text = "Check URLs before download",
+            variable=self.checkURLs, onvalue=True, offvalue=False
+        )
+        self.checkURLsCheck.grid(row=10, sticky='w')
+
+        #play sound when download finished toggle
+        self.playSoundCheck = tk.Checkbutton(
+            self.frame, text = "Play sound after download",
+            variable=self.playSound, onvalue=True, offvalue = False
+        )
+        self.playSoundCheck.grid(row=11, sticky='w')
 
         #delete input on finish toggle
         self.deleteOnFinishCheck = tk.Checkbutton(
             self.frame, text = "Delete input after download",
             variable=self.deleteOnFinish, onvalue=True, offvalue=False
         )
-        self.deleteOnFinishCheck.select()
-        self.deleteOnFinishCheck.grid(row=9, sticky='w')
+        self.deleteOnFinishCheck.grid(row=12, sticky='w')
+
+        #info label
+        self.infoButton = tk.Button(
+            self.frame, text = "Info",
+            command = lambda:InfoWindow(self)
+        )
+        self.infoButton.grid(row=12, sticky="E")
+
+    # =========== DIRECTORY ===========
+    #uses tkinter's askdirectory dialog to set directory in text box
+    def setDirectory(self):
+        dir = filedialog.askdirectory()
+        if (dir != ""):
+            self.directoryText.delete("1.0", tk.END)
+            self.directoryText.insert(tk.END, dir)
+
+    #updates directory field with directory in text box
+    def saveDirectory(self):
+        self.outDir = self.directoryText.get(1.0, tk.END)
 
     # =========== DOWNLOADING ===========
     #takes inputs, stores them in URLs, and then calls download function
@@ -365,13 +397,22 @@ class MainWindow(tk.Tk):
         dl_options = {"paths": {'home': self.outDir}, 
             "nocheckcertificate": True, 
             "format": self.format.get(),
-            'progress_hooks': [self.dl_hook]
+            'progress_hooks': [self.dl_hook],
+            'skip_download': True
         }
 
         self.progressFrame.grid(row=5) #show progress bars
-        self.updateProgressBar()
+        self.progressBar['value'] = 0
+        self.currProgressBar['value'] = 0
+        
         #begin downloads
         try:
+            if self.checkURLs.get():
+                updateText(self, self.statusLabel, 'Checking if URLs are valid...')
+                YoutubeDL(dl_options).download(self.URLs) #with skip download
+            
+            dl_options['skip_download'] = False
+            self.updateProgressBar()
             YoutubeDL(dl_options).download(self.URLs) #done one-by-one on purpose
             self.finishDownload("successful") #wrap up stuff + reset
         except:
@@ -416,9 +457,10 @@ class MainWindow(tk.Tk):
     def finishDownload(self, endText):
         updateText(self, self.statusLabel, f'Download {endText}\n') 
         self.inputButton.configure(text="Download", command=self.inputURLs)
-        if (endText != "cancelled" and self.deleteOnFinish == True):
+        if self.playSound.get(): self.bell() #makes sound upon completion
+
+        if (endText != "cancelled" and self.deleteOnFinish.get() == True):
             self.inputText.delete("1.0", tk.END) #delete input
-        
         self.URLs.clear()
         self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
         self.after(5000, lambda: self.progressFrame.grid_remove())
@@ -432,19 +474,6 @@ class MainWindow(tk.Tk):
             "jNQXAC9IVRw\n" + #me at the zoo
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
         ) #default text
-
-    # =========== DIRECTORY ===========
-    #uses tkinter's askdirectory dialog to set directory in text box
-    def setDirectory(self):
-        dir = filedialog.askdirectory()
-        if (dir != ""):
-            self.directoryText.delete("1.0", tk.END)
-            self.directoryText.insert(tk.END, dir)
-
-    #updates directory field with directory in text box
-    def saveDirectory(self):
-        self.outDir = self.directoryText.get(1.0, tk.END)
-
 
 
 

@@ -10,15 +10,13 @@
 
 - show all of progress_hooks information as advanced setting
 
-- make an optional noise when all downloads finished
-
 - add true macOS compatability
     - fix icon issue on mac
-- organize code to be less of a mess
 
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~make an optional noise when all downloads finished~~
 - ~~add option to delete downloaded videos if cancelled~~
 - ~~clear input after download, with ability to turn off as toggle~~
 - ~~download prompt ONLY if long video or if >4 videos~~
