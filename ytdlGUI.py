@@ -1,11 +1,11 @@
+#!/usr/bin/env python3
+
 import tkinter as tk
 from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
 
 import os, sys
 from platform import system
-import subprocess
-import time
 
 import webbrowser
 
