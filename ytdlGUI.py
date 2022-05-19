@@ -52,19 +52,19 @@ class InfoWindow(tk.Toplevel):
         self.name = tk.Label(
             self.frame, text="ytdl-GUI by molofgarb"
         )
-        self.name.grid(row=0, sticky="w", padx=5, pady=2)
+        self.name.grid(row=0, sticky="w", padx=(10, 0), pady=2)
 
         self.readmeButton = tk.Button(
             self.frame, text="Open Readme",
             command=lambda: webbrowser.open_new_tab("README.md")
         )
-        self.readmeButton.grid(row=1, sticky="W", padx=5, pady=5)
+        self.readmeButton.grid(row=1, sticky="w", padx=(10, 0), pady=5)
 
         self.sitesButton = tk.Button(
             self.frame, text="Supported Websites",
             command=lambda: webbrowser.open_new_tab("supportedsites.md")
         )
-        self.sitesButton.grid(row=2, sticky='w', padx=5, pady=5)
+        self.sitesButton.grid(row=2, sticky='w', padx=(10, 0), pady=5)
 
         self.thanksLabel = tk.Label(
             self.frame, text="\nThank you for using ytdl-GUI!"
@@ -103,20 +103,20 @@ class InfoWindow(tk.Toplevel):
         self.debugLabel = tk.Label(
             self.frame, text="Debug Functions:",
         )
-        self.debugLabel.grid(row=0, column=1)
+        self.debugLabel.grid(row=0, column=1, sticky='w', padx=(20, 10))
         #adds sample videos
         self.sampleButton = tk.Button(
             self.frame, text = "Add sample videos",
             command = root.addSampleVideos
         )
-        self.sampleButton.grid(row=1, column=1, pady=5)
+        self.sampleButton.grid(row=1, column=1, sticky='w', padx=(20, 10), pady=5)
 
         #adds sample videos
         self.removeSampleButton = tk.Button(
             self.frame, text = "Delete Sample Videos",
             command = self.removeSampleVideos
         )
-        self.removeSampleButton.grid(row=2, column=1, pady=5, padx=10)
+        self.removeSampleButton.grid(row=2, column=1, sticky='w', padx=(20, 10), pady=5)
 
     def removeSampleVideos(self):
         cmd = 'del' if (windows) else 'rm'
@@ -348,7 +348,7 @@ class MainWindow(tk.Tk):
         #play sound when download finished toggle
         self.playSoundCheck = tk.Checkbutton(
             self.frame, text = "Play sound after download",
-            variable=self.playSound, onvalue=True, offvalue = False
+            variable=self.playSound, onvalue=True, offvalue=False
         )
         self.playSoundCheck.grid(row=11, sticky='w')
 

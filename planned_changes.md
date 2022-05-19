@@ -1,6 +1,5 @@
 ## To-do:
-
-- scan urls for validity before downloading
+- make animated ellipses
 
 - dropdown menu for picking formatting options
     - use 'listformats' option on YoutubeDL object
@@ -16,6 +15,7 @@
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~scan urls for validity before downloading~~
 - ~~make an optional noise when all downloads finished~~
 - ~~add option to delete downloaded videos if cancelled~~
 - ~~clear input after download, with ability to turn off as toggle~~
