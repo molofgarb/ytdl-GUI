@@ -1,3 +1,4 @@
+::Usage: run this file
 :: Normal
 pyinstaller --noconsole --clean -y -n "ytdl-GUI" -F --icon=resources/logo.ico --distpath .\ ^
 --add-data "README.md;." ^
