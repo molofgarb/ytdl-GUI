@@ -459,7 +459,7 @@ class MainWindow(tk.Tk):
         self.inputButton.configure(text="Download", command=self.inputURLs)
         if self.playSound.get(): self.bell() #makes sound upon completion
 
-        if (endText != "cancelled" and self.deleteOnFinish.get() == True):
+        if (endText == "successful" and self.deleteOnFinish.get() == True):
             self.inputText.delete("1.0", tk.END) #delete input
         self.URLs.clear()
         self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
