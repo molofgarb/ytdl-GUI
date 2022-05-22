@@ -2,6 +2,7 @@
 :: Normal
 pyinstaller --noconsole --clean -y -n "ytdl-GUI" -F --icon=resources/logo.ico --distpath .\ ^
 --add-data "README.md;." ^
+--add-data "supportedsites.md;." ^
 --add-data "resources\logo.ico;resources" ^
 ytdlGUI.py 
 

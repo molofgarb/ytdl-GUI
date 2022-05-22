@@ -14,9 +14,16 @@
 
 - make cancel button physically stop YoutubeDL via cmdline instead of clearing URLs
 
+- fix bug where new download started within 5 seconds of previous download
+
+- update readme for current version
+
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~say which URL is invalid~~
+- ~~make directory account for invalid output paths~~
+- ~~make progress bar indicate the progress of URL checking~~
 - ~~scan urls for validity before downloading~~
 - ~~make an optional noise when all downloads finished~~
 - ~~add option to delete downloaded videos if cancelled~~
