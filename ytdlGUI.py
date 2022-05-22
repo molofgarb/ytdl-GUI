@@ -14,6 +14,8 @@ from yt_dlp import YoutubeDL
 
 # ======== Environment ========
 
+debug = True #debug mode used for development, make false when build
+
 windows = False
 whereami = os.getcwd()
 
@@ -37,6 +39,33 @@ else:
 def updateText(root, widget, text):
     widget.configure(text=text)
     root.update()
+
+class Download_Logger:
+    def __init__(self, root, simulate):
+        self.root = root #root window
+        self.simulate = simulate
+
+    def debug(self, msg):
+        if msg.startswith('[debug] '):
+            print(msg)
+        else:
+            self.info(msg)
+
+    def info(self, msg):
+        if debug: print()
+        if msg.startswith('[info]'):
+            if self.simulate: #take care of prog. bar in place of dl_hook
+                self.root.currVideo += 1
+                self.root.updateProgressBar(self.simulate)
+            
+    def warning(self, msg):
+        if debug: print(msg)
+
+    def error(self, msg):
+        if debug: print(msg)
+
+    def setDownload(self):
+        self.simulate = False
 
 class InfoWindow(tk.Toplevel):
     def __init__(self, root):
@@ -162,14 +191,13 @@ class ConfirmPrompt(tk.Toplevel):
             command=lambda: self.answer(False)
         )
 
-        if len(promptText) < 5: #yes/no
-            if promptText[:5] != "Error":
-                updateText(self, self.noButton, "No")
-                self.questionLabel.configure(columnspan=2)
-                self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
-                self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
-        else: #ok
+        if promptText.startswith("Error"): #error prompt (ok)
             self.noButton.grid(column=0, row=1, sticky="N", padx=30, pady=20)
+        else: #if confirm prompt (yes/no)
+            self.questionLabel.configure(columnspan=2)
+            updateText(self, self.noButton, "No")
+            self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
+            self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
 
     def answer(self, action):
         self.destroy()
@@ -177,7 +205,7 @@ class ConfirmPrompt(tk.Toplevel):
         if action:
             #download prompt
             if self.promptText == "Do you want to download these videos?":
-                self.master.saveDirectory()
+                self.master.updateDirectory()
                 self.master.downloadURLs()
             #delete prompt
             elif self.promptText == "Do you want to delete the already downloaded files?":
@@ -194,9 +222,9 @@ class MainWindow(tk.Tk):
         #inherit all the stuff from tk.Tk
         super().__init__() 
 
-        self.outDir = whereami
         self.URLs = []
         self.filenames = []
+        self.formats = [] #WIP
         self.currVideo = 0
 
         self.format = tk.StringVar(self, "b") #default format is best of both
@@ -369,79 +397,103 @@ class MainWindow(tk.Tk):
     # =========== DIRECTORY ===========
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
-        dir = filedialog.askdirectory()
+        dir = filedialog.askdirectory() #will very likely be valid
         if (dir != ""):
-            self.directoryText.delete("1.0", tk.END)
+            self.directoryText.delete(1.0, tk.END)
             self.directoryText.insert(tk.END, dir)
-
-    #updates directory field with directory in text box
-    def saveDirectory(self):
-        self.outDir = self.directoryText.get(1.0, tk.END)
 
     # =========== DOWNLOADING ===========
     #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self):
         self.URLs = self.inputText.get(1.0, tk.END).split() 
-        if len(self.URLs) > 0: #valid URLs
-            updateText(self, self.statusLabel, "URLs Received!\n")
-            self.downloadURLs()
+        if (os.system('cd "' +  self.directoryText.get(1.0, tk.END)
+            + '"') == 0): #valid dir
+            if len(self.URLs) > 0: #valid URLs
+                updateText(self, self.statusLabel, "URLs Received!\n")
+                self.downloadURLs()
+            else:
+                ConfirmPrompt(self, '''Error: No URLs provided\n\n
+                    Please provide at least one URL''')
         else:
-            updateText(self, self.statusLabel, "Invalid input\n")
-            self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
+            ConfirmPrompt(self, '''Error: Invalid Download Path\n\n
+                Please change download path to valid directory''')
+
+    def doCheckURLs(self, logger, dl_options):
+        self.currVideo = 0
+        dl_options['simulate'] = True
+        try:
+            YoutubeDL(dl_options).download(self.URLs) 
+        except:
+            ConfirmPrompt(self, f'''Error: Invalid URL\n\n'''
+                + f'''Please check your URL #{self.currVideo + 1} '''
+                + f'''again to make\n sure it is valid and compatible''')
+            self.finishDownload("unsuccessful") #wrap up stuff + reset
+        
         
     #downloads URLs in list -- main function
     def downloadURLs(self):
-        self.currVideo = 0
-        self.inputButton.configure(text="Cancel", command=lambda:self.cancelDownload()) #to cancel download
-
-        dl_options = {"paths": {'home': self.outDir}, 
-            "nocheckcertificate": True, 
-            "format": self.format.get(),
-            'progress_hooks': [self.dl_hook],
-            'skip_download': True
-        }
+        self.inputButton.configure(text="Cancel", 
+            command=lambda:self.cancelDownload()) #to cancel download
 
         self.progressFrame.grid(row=5) #show progress bars
         self.progressBar['value'] = 0
         self.currProgressBar['value'] = 0
+
+        logger = Download_Logger(self, True)
+        dl_options = {"paths": {'home': self.directoryText.get(1.0, tk.END)}, 
+            "nocheckcertificate": True, 
+            "format": self.format.get(),
+            'simulate': True,
+            'logger': logger,
+            'progress_hooks': [self.dl_hook],
+        }
         
-        #begin downloads
-        try:
-            if self.checkURLs.get():
-                updateText(self, self.statusLabel, 'Checking if URLs are valid...')
-                YoutubeDL(dl_options).download(self.URLs) #with skip download
-            
-            dl_options['skip_download'] = False
-            self.updateProgressBar()
-            YoutubeDL(dl_options).download(self.URLs) #done one-by-one on purpose
+        if self.checkURLs.get(): #if URLs should be checked
+            self.updateProgressBar(True)
+            self.doCheckURLs(logger, dl_options)
+
+        dl_options['simulate'] = False
+        logger.setDownload()
+        self.currVideo = 0
+        self.updateProgressBar(False)
+        try: #begin downloads
+            YoutubeDL(dl_options).download(self.URLs)
             self.finishDownload("successful") #wrap up stuff + reset
         except:
-            ConfirmPrompt(self, "Error: Invalid URL\n\nPlease check your URLs again and make\n sure they are valid and compatible")
-            self.finishDownload("unsuccessful") #wrap up stuff + reset
+            if not len(self.URLs) == 0: #if not caused by cancel
+                ConfirmPrompt(self, '''Error: Download issue\n\n
+                    There was an issue with the download''')
+                self.finishDownload("unsuccessful") #wrap up stuff + reset
 
-    #runs during each download
+    #runs during each download, keeps track of status
     def dl_hook(self, d):
         if d['status'] == 'downloading':
             try: #progress as bytes dl'ed
-                self.currProgressBar['value'] = ((d['downloaded_bytes'])/d['total_bytes']) * 100
+                self.currProgressBar['value'] = ( d['downloaded_bytes'] /
+                    d['total_bytes'] ) * 100
             except:
                 try: #progress as time elapsed
-                    self.currProgressBar['value'] = ((d['elapsed'])/(d['elapsed'] + d['eta'])) * 100
+                    self.currProgressBar['value'] = ( d['elapsed'] /
+                        (d['elapsed'] + d['eta']) ) * 100
                 except: #dont show anything
                     self.currProgressBar['value'] = 0
             self.update()
+            if debug: print() #prints video download status to stdout
         elif d['status'] == 'finished':
             if 'elapsed' in d: #if a download occurred
                 self.filenames.append(d['filename']) #add to completed dl list
             self.currVideo += 1
-            self.currProgressBar['value'] = 0 #reset progress bars
-            self.updateProgressBar()
+            self.currProgressBar['value'] = 0 #reset curr progress bar
+            self.updateProgressBar(False)
             
     #updates progress bar to indicate progress
-    def updateProgressBar(self):
-        if not (self.currVideo >= len(self.URLs)):
-            updateText(self, self.statusLabel, f'Video {str(self.currVideo + 1)} is being downloaded...\n'
-                f'({self.URLs[self.currVideo]})')
+    def updateProgressBar(self, is_sim):
+        if is_sim:
+            updateText(self, self.statusLabel, f'''Checking if URL #'''
+                + f'''{self.currVideo + 1} is valid...''')
+        elif (not self.currVideo >= len(self.URLs)): #for download
+            updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
+               + f''' is being downloaded... \n ({self.URLs[self.currVideo]})''')
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
 
@@ -451,7 +503,8 @@ class MainWindow(tk.Tk):
         self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
         self.finishDownload("cancelled")
 
-        ConfirmPrompt(self, "Do you want to delete the already downloaded files?", self.filenames)
+        ConfirmPrompt(self, "Do you want to delete the already downloaded files?",
+            self.filenames)
 
     #summary after downloading videos
     def finishDownload(self, endText):
@@ -461,8 +514,9 @@ class MainWindow(tk.Tk):
 
         if (endText == "successful" and self.deleteOnFinish.get() == True):
             self.inputText.delete("1.0", tk.END) #delete input
-        self.URLs.clear()
-        self.after(5000, lambda: updateText(self, self.statusLabel, "Awaiting URL input...\n"))
+        self.URLs.clear() #clears URLs to make YoutubeDL() stop if running
+        self.after(5000, lambda: updateText(self, self.statusLabel,
+            "Awaiting URL input...\n"))
         self.after(5000, lambda: self.progressFrame.grid_remove())
 
     # =========== INFO ===========
