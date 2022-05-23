@@ -18,6 +18,7 @@
 
 - update readme for current version
 - keep track of version number and date in info box
+- link yt_dlp resources to yt_dlp github repo
 
 - save preferred configuration
 
