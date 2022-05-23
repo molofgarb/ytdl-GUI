@@ -17,6 +17,7 @@
 - fix bug where new download started within 5 seconds of previous download
 
 - update readme for current version
+- keep track of version number and date in info box
 
 - save preferred configuration
 
