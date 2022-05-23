@@ -264,8 +264,8 @@ class MainWindow(tk.Tk):
                 self.finishDownload("successful") #wrap up stuff + reset
             except:
                 if len(self.URLs) != 0: #if not caused by cancel
-                    ConfirmPrompt(self, '''Error: Download issue\n\n
-                        There was an issue with the download''')
+                    ConfirmPrompt(self, '''Error: Download issue\n\n'''
+                        + '''There was an issue with the download''')
                     self.finishDownload("unsuccessful") #wrap up stuff + reset
 
     #runs during each download, keeps track of status
