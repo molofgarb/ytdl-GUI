@@ -3,7 +3,6 @@ from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
 
 import os
-from yt_dlp import YoutubeDL
 
 from tk_common import updateText
 
@@ -12,10 +11,12 @@ class ConfirmPrompt(tk.Toplevel):
         super().__init__(root)
         self.promptText = promptText
 
-        if self.promptText == "Do you want to download these videos?":
-            self.title("Download Confirmation")
-        elif self.promptText == "Do you want to delete the already downloaded files?":
+        if self.promptText == "Do you want to delete the already downloaded files?":
             self.title("Delete Confirmation")
+        elif promptText.startswith("Error"):
+            self.title("Error")
+        else:
+            self.title("Title")
 
         self.iconbitmap(root.data['iconPath'])
         root.eval(f'tk::PlaceWindow {str(self)} center')
@@ -42,7 +43,7 @@ class ConfirmPrompt(tk.Toplevel):
 
         if promptText.startswith("Error"): #error prompt (ok)
             self.noButton.grid(column=0, row=1, sticky="N", padx=30, pady=20)
-            self.bell() #sound
+            if root.playSound.get(): self.bell() #sound
         else: #if confirm prompt (yes/no)
             self.questionLabel.configure(columnspan=2)
             updateText(self, self.noButton, "No")
@@ -53,12 +54,8 @@ class ConfirmPrompt(tk.Toplevel):
         self.destroy()
         self.update()
         if action:
-            #download prompt
-            if self.promptText == "Do you want to download these videos?":
-                self.master.updateDirectory()
-                self.master.downloadURLs()
             #delete prompt
-            elif self.promptText == "Do you want to delete the already downloaded files?":
+            if self.promptText == "Do you want to delete the already downloaded files?":
                 print(self.data)
                 for filename in self.data:
                     print("d\n")
