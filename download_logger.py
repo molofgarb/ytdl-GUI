@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
 
-from yt_dlp import YoutubeDL
-
 class DownloadLogger:
     def __init__(self, root, simulate):
         self.root = root

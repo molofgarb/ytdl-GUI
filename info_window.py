@@ -89,8 +89,12 @@ class InfoWindow(tk.Toplevel):
 
     def removeSampleVideos(self):
         cmd = 'del' if (self.windows) else 'rm'
-        os.system(cmd + ' "(subprocess) solved! FileNotFoundError - [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"')
-        os.system(cmd + ' "Dramatic Sable [BDqOmwM].mp4"')
-        os.system(cmd + ' "get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"')
-        os.system(cmd + ' "Me at the zoo [jNQXAC9IVRw].mp4"')
-        os.system(cmd + ' "Vine Boom Sound Effect [Y_pbEOem2HU].mp4"')
+        sampleVideos = [
+            '"(subprocess) solved! FileNotFoundError - [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"',
+            '"Dramatic Sable [BDqOmwM].mp4"',
+            '"get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"',
+            '"Me at the zoo [jNQXAC9IVRw].mp4"',
+            '"Vine Boom Sound Effect [Y_pbEOem2HU].mp4"'
+        ]
+        for x in sampleVideos:
+            if os.path.exists(x): os.system(cmd + ' ' + x)

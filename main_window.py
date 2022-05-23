@@ -14,7 +14,7 @@ class MainWindow(tk.Tk):
     def __init__(self, data):
         #inherit all the stuff from tk.Tk
         super().__init__() 
-        
+
         self.data = data 
         self.pending = []
 
@@ -162,19 +162,19 @@ class MainWindow(tk.Tk):
         )
         self.optionsLabel.grid(row=9, sticky='w')
 
+        #play sound when download finished toggle
+        self.playSoundCheck = tk.Checkbutton(
+            self.frame, text = "Play sound after download/error",
+            variable=self.playSound, onvalue=True, offvalue=False
+        )
+        self.playSoundCheck.grid(row=10, sticky='w')
+
         #check if URLs are valid before downloading
         self.checkURLsCheck = tk.Checkbutton(
             self.frame, text = "Check URLs before download",
             variable=self.checkURLs, onvalue=True, offvalue=False
         )
-        self.checkURLsCheck.grid(row=10, sticky='w')
-
-        #play sound when download finished toggle
-        self.playSoundCheck = tk.Checkbutton(
-            self.frame, text = "Play sound after download",
-            variable=self.playSound, onvalue=True, offvalue=False
-        )
-        self.playSoundCheck.grid(row=11, sticky='w')
+        self.checkURLsCheck.grid(row=11, sticky='w')
 
         #delete input on finish toggle
         self.deleteOnFinishCheck = tk.Checkbutton(
@@ -214,11 +214,11 @@ class MainWindow(tk.Tk):
                 updateText(self, self.statusLabel, "URLs Received!\n")
                 self.downloadURLs()
             else:
-                ConfirmPrompt(self, '''Error: No URLs provided\n\n
-                    Please provide at least one URL''')
+                ConfirmPrompt(self, '''Error: No URLs provided\n\n'''
+                   + '''Please provide at least one URL''')
         else:
-            ConfirmPrompt(self, '''Error: Invalid Download Path\n\n
-                Please change download path to valid directory''')
+            ConfirmPrompt(self, '''Error: Invalid Download Path\n\n'''
+                + '''Please change download path to valid directory''')
 
     def doCheckURLs(self, dl_options):
         if self.checkURLs.get():
