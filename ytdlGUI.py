@@ -6,7 +6,7 @@ from platform import system
 from main_window import MainWindow
 
 if __name__ == "__main__":
-    debug = True #debug mode used for development, make false when build
+    debug = False #debug mode used for development, make false when build
     windows = False
     path = os.getcwd()
 
