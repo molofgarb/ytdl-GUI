@@ -18,6 +18,8 @@
 
 - update readme for current version
 
+- save preferred configuration
+
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
