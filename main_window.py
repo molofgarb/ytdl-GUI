@@ -207,9 +207,9 @@ class MainWindow(tk.Tk):
 
     #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self):
-        self.URLs = self.inputText.get(1.0, tk.END).split() 
-        if (os.system('cd "' +  self.directoryText.get(1.0, tk.END)
-            + '"') == 0): #valid dir
+        self.URLs = self.inputText.get(1.0, tk.END).split()
+        path = self.directoryText.get(1.0, tk.END).replace("\n", "")
+        if (os.system('cd "' +  path + '"') == 0): #valid dir
             if len(self.URLs) > 0: #valid URLs
                 updateText(self, self.statusLabel, "URLs Received!\n")
                 self.downloadURLs()
