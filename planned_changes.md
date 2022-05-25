@@ -18,13 +18,14 @@
 
 - update readme for current version
 - keep track of version number and date in info box
-- link yt_dlp resources to yt_dlp github repo
+
 
 - save preferred configuration
 
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~link yt_dlp resources to yt_dlp github repo~~
 - ~~say which URL is invalid~~
 - ~~make directory account for invalid output paths~~
 - ~~make progress bar indicate the progress of URL checking~~
