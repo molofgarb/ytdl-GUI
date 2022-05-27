@@ -1,6 +1,12 @@
 ## To-do:
 - make animated ellipses
 
+- make sure all of the file references in dir-reorg version are correct
+
+- make sure that the supported sites and readme is accessible in executable
+    - ensure that supportedsites references the yt-dlp file and not my own
+    - try to get markdown stuff to open in the browser rather than the default program
+
 - dropdown menu for picking formatting options
     - use 'listformats' option on YoutubeDL object
     - toggleable ability to have individual format selection (off by default)
