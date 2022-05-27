@@ -26,6 +26,7 @@
 - update readme for current version
 - keep track of version number and date in info box
 
+
 - save preferred configuration
 
 - put the G in GUI (make the interface look prettier)
