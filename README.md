@@ -3,7 +3,7 @@
 # ytdl-GUI 
 A graphical user interface for the command line program, youtube-dlp, written in Python 3, by molofgarb.
 
-![ytdl-GUI](.github/banner.png)
+![ytdl-GUI](resources/banner.png)
 
 ## Installation
 [Download](https://github.com/molofgarb/ytdl-GUI/releases/download/v0.1-alpha/ytdl-GUI.exe)
