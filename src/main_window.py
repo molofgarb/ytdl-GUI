@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
-
 import os
-from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
+import sys
+
+from yt_dlp.YoutubeDL import YoutubeDL
 
 from download_logger import DownloadLogger
 from info_window import InfoWindow
