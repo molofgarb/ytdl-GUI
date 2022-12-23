@@ -95,6 +95,7 @@ class InfoWindow(tk.Toplevel):
             '"get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"',
             '"Me at the zoo [jNQXAC9IVRw].mp4"',
             '"Vine Boom Sound Effect [Y_pbEOem2HU].mp4"'
+            '"https://youtu.be/f1A7SdVTlok"'
         ]
         for x in sampleVideos:
-            if os.path.exists(x): os.system(cmd + ' ' + x)
+            os.system(cmd + ' ' + x)
