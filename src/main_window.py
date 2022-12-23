@@ -51,39 +51,39 @@ class MainWindow(tk.Tk):
             self.frame, height=1, width=68,
         )
         self.directoryText.insert(tk.END, data['path'])
-        self.directoryText.grid(column=0, row=1, padx=5, pady=5)
+        self.directoryText.grid(row=10, column=0,padx=5, pady=5)
 
         #button to open directory-choosing prompt
         self.directoryButton = tk.Button(
             self.frame, height=0, width=0,
             text = "...", command=self.setDirectory
         )
-        self.directoryButton.grid(column=1, row=1, padx=1, pady=1)
+        self.directoryButton.grid(row=10, column=1,padx=1, pady=1)
 
         # =========== INPUT ===========
         #input label
         self.inputLabel = tk.Label(
             self.frame, text = "Videos to download:"
         )
-        self.inputLabel.grid(row=2, sticky="W")
+        self.inputLabel.grid(row=20, sticky="W")
         
         #input text box scroll bar
         self.inputScroll = tk.Scrollbar(
             self.frame, width=16
         )
-        self.inputScroll.grid(column=1, row=3, sticky="NS")
+        self.inputScroll.grid(row=30, column=1, sticky="NS")
 
         #input text box
         self.inputText = tk.Text(
             self.frame, height=7, width=68,
             yscrollcommand=self.inputScroll.set
         )
-        self.inputText.grid(row=3, padx=5, pady=5)
+        self.inputText.grid(row=30, padx=5, pady=5)
         self.inputScroll.configure(command=self.inputText.yview)
 
         # =========== FORMAT SELECTION ===========
         self.formatGrid = tk.Frame(self.frame)
-        self.formatGrid.grid(row=4, sticky="ew")
+        self.formatGrid.grid(row=40, sticky="ew")
 
         #label for formats
         self.formatLabel = tk.Label(
@@ -117,17 +117,18 @@ class MainWindow(tk.Tk):
             self.frame, text="Download", 
             command=self.inputURLs
         )
-        self.inputButton.grid(row=7, padx=5, pady=5)
+        self.inputButton.grid(row=70, padx=5, pady=5)
 
         #button to clear
         self.clearButton = tk.Button(
             self.frame, text="Clear", 
             command=lambda:self.inputText.delete("1.0", tk.END)
         )
-        self.clearButton.grid(row=7, sticky="E", padx=5, pady=5)
+        self.clearButton.grid(row=70, sticky="E", padx=5, pady=5)
 
         # =========== PROGRESS ===========
         self.progressFrame = tk.Frame(self.frame)
+        self.statusFrame = tk.Frame(self.frame) #will be gridded later when download begins
 
         #progress bar for overall downloads
         self.progressBarLabel = tk.Label(
@@ -152,49 +153,57 @@ class MainWindow(tk.Tk):
 
         # status Label!!
         self.statusLabel = tk.Label(
-            self.frame, text = "Awaiting URL input...\n"
+            self.statusFrame, text = "Awaiting URL input...\n"
         )
-        self.statusLabel.grid(row=8, padx=2, pady=2)
+        self.statusLabel.grid(row=0, padx=2, pady=2)
+
+        self.urlLabel = tk.Label(
+            self.statusFrame, text = "<url here>"
+        )
+        #self.urlLabel.grid(row=1, padx=2, pady=2) #urlLabel default ungrid
+
+        self.statusFrame.grid(row=80, padx=2, pady=2)
 
         # =========== OPTIONS ===========
         #options label
         self.optionsLabel = tk.Label(
             self.frame, text = "Options:"
         )
-        self.optionsLabel.grid(row=9, sticky='w')
+        self.optionsLabel.grid(row=90, sticky='w')
 
         #play sound when download finished toggle
         self.playSoundCheck = tk.Checkbutton(
             self.frame, text = "Play sound after download/error",
             variable=self.playSound, onvalue=True, offvalue=False
         )
-        self.playSoundCheck.grid(row=10, sticky='w')
+        self.playSoundCheck.grid(row=100, sticky='w')
 
         #check if URLs are valid before downloading
         self.checkURLsCheck = tk.Checkbutton(
             self.frame, text = "Check URLs before download",
             variable=self.checkURLs, onvalue=True, offvalue=False
         )
-        self.checkURLsCheck.grid(row=11, sticky='w')
+        self.checkURLsCheck.grid(row=110, sticky='w')
 
         #delete input on finish toggle
         self.deleteOnFinishCheck = tk.Checkbutton(
             self.frame, text = "Delete input after download",
             variable=self.deleteOnFinish, onvalue=True, offvalue=False
         )
-        self.deleteOnFinishCheck.grid(row=12, sticky='w')
+        self.deleteOnFinishCheck.grid(row=120, sticky='w')
 
         #info label
         self.infoButton = tk.Button(
             self.frame, text = "Info",
             command = lambda:InfoWindow(self)
         )
-        self.infoButton.grid(row=12, sticky="E")
+        self.infoButton.grid(row=120, sticky="E")
 
     # =========== DIRECTORY ===========
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
-        dir = filedialog.askdirectory() #will very likely be valid
+        # dir = filedialog.askdirectory() #will very likely be valid
+        print(self.pending)
         if (dir != ""):
             self.directoryText.delete(1.0, tk.END)
             self.directoryText.insert(tk.END, dir)
@@ -230,11 +239,12 @@ class MainWindow(tk.Tk):
                 self.updateProgressBar(True)
                 YoutubeDL(dl_options).download(self.URLs)
                 return True
-            except:
+            except Exception as ex:
                 ConfirmPrompt(self, f'''Error: Invalid URL\n\n'''
                     + f'''Please check your URL #{self.currVideo + 1} '''
                     + f'''again to make\n sure it is valid and compatible''')
-                self.finishDownload("unsuccessful") #wrap up stuff + reset
+                if (self.data['debug']):
+                    print(self.URLs, ex)
         return False
 
 
@@ -244,7 +254,7 @@ class MainWindow(tk.Tk):
             command=self.cancelDownload) #to cancel download
         self.cancelPending() #get rid of any pending after() calls
 
-        self.progressFrame.grid(row=5) #show progress bars
+        self.progressFrame.grid(row=50) #show progress bars
         self.progressBar['value'] = 0
         self.currProgressBar['value'] = 0
 
@@ -257,22 +267,30 @@ class MainWindow(tk.Tk):
             'progress_hooks': [self.dl_hook],
         }
 
-        if (self.checkURLs.get() == self.doCheckURLs(dl_options)): #check URLs?
-            dl_options['simulate'] = dl_options['logger'].simulate = False
-            self.currVideo = 0
-            try: #begin downloads
-                self.updateProgressBar(False)
-                YoutubeDL(dl_options).download(self.URLs)
-                self.finishDownload("successful") #wrap up stuff + reset
-            except:
-                if len(self.URLs) != 0: #if not caused by cancel
-                    ConfirmPrompt(self, '''Error: Download issue\n\n'''
-                        + '''There was an issue with the download''')
-                    self.finishDownload("unsuccessful") #wrap up stuff + reset
+        if (self.checkURLs.get() and not self.doCheckURLs(dl_options)): #check URLs?
+            self.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
+        dl_options['simulate'] = dl_options['logger'].simulate = False
+        self.currVideo = 0
+        try: #begin downloads
+            self.updateProgressBar(False)
+            YoutubeDL(dl_options).download(self.URLs)
+            self.finishDownload("successful") #wrap up stuff + reset
+        except Exception as ex:
+            if len(self.URLs) != 0: #if not caused by cancel
+                ConfirmPrompt(self, '''Error: Download issue\n\n'''
+                    + '''There was an issue with the download''')
+                if (self.data['debug']):
+                    print(self.URLs, ex)
+                self.finishDownload("unsuccessful") #wrap up stuff + reset
 
-    #runs during each download, keeps track of status
+    #runs during each download (NOT SIMULATE/CHECK), keeps track of status of that individual download
     def dl_hook(self, d):
-        if d['status'] == 'downloading':
+
+        #if nothing pending, then animate ellipses
+        if (len(self.pending) == 0): 
+            self.updateProgressBar(False)
+
+        if d['status'] == 'downloading': #update currprogressbar if download to indicate dl prog
             try: #progress as bytes dl'ed
                 self.currProgressBar['value'] = ( d['downloaded_bytes'] /
                     d['total_bytes'] ) * 100
@@ -284,22 +302,45 @@ class MainWindow(tk.Tk):
                     self.currProgressBar['value'] = 0
             self.update()
             if self.data['debug']: print('') #prints video download status to stdout
-        elif d['status'] == 'finished':
+
+        elif d['status'] == 'finished': #when a download/check has finished 
             if 'elapsed' in d: #if a download occurred
                 self.filenames.append(d['filename']) #add to completed dl list
             self.currVideo += 1
-            self.updateProgressBar(False)
+            self.updateProgressBar(False, True)
             self.currProgressBar['value'] = 0 #reset curr progress bar
             
     #updates progress bar to indicate progress
-    def updateProgressBar(self, is_sim):
-        if is_sim and self.currVideo < len(self.URLs): #for URL check
+    def updateProgressBar(self, is_sim, keep_el=False):
+        self.urlLabel.grid(row=1, padx=2, pady=2)
+        
+        if (is_sim and (self.currVideo < len(self.URLs))): #for URL check
             updateText(self, self.statusLabel, f'''Checking if URL #'''
-                + f'''{self.currVideo + 1} is valid... \n'''
-                + f'''({self.URLs[self.currVideo]})''')
-        elif (not self.currVideo >= len(self.URLs)): #for download
-            updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
-               + f''' is being downloaded... \n ({self.URLs[self.currVideo]})''')
+                + f'''{self.currVideo + 1} is valid...''')
+
+
+        elif (self.currVideo < len(self.URLs)): #for download
+
+            #below is ellipses animation stuff
+            onedot = self.statusLabel.cget("text")[-3:] == "ed."
+            twodot = self.statusLabel.cget("text")[-3:] == "d.."
+            threedot = self.statusLabel.cget("text")[-3:] == "..."
+            if ((onedot and not keep_el) or (twodot and keep_el)): #one dot
+                updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
+               + f''' is being downloaded..''')
+            elif ((twodot and not keep_el) or (threedot and keep_el)): #two dot
+                updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
+               + f''' is being downloaded...''')
+            else: #three dots or no dots or something weird
+                updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
+               + f''' is being downloaded.''')
+            self.pending.append( #sits in pending to indicate ellipse do-not-change, change if gone
+                self.after(1000, lambda: self.cancelPending())
+            )
+
+        if (self.currVideo < len(self.URLs)): #update URL label to reflect current check
+            updateText(self, self.urlLabel, f'''({self.URLs[self.currVideo]})''') #display url of video being dl'ed
+
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
 
@@ -314,7 +355,7 @@ class MainWindow(tk.Tk):
 
     #summary after downloading videos
     def finishDownload(self, endText):
-        updateText(self, self.statusLabel, f'Download {endText}\n') 
+        updateText(self, self.statusLabel, f'Download {endText}') 
         self.inputButton.configure(text="Download", command=self.inputURLs)
         if self.playSound.get(): self.bell() #makes sound upon completion
 
@@ -323,12 +364,19 @@ class MainWindow(tk.Tk):
         self.URLs.clear() #clears URLs to make YoutubeDL() stop if running
 
         #reset delay (for visual appeal)
+        self.cancelPending() #in case there are already cancels inside 
         self.pending.append(
             self.after(5000, lambda: updateText(self, self.statusLabel,
             "Awaiting URL input...\n"))
         )
         self.pending.append(
+            self.after(5000, lambda: self.urlLabel.grid_remove())
+        )
+        self.pending.append(
             self.after(5000, lambda: self.progressFrame.grid_remove())
+        )
+        self.pending.append( #clear after ids
+            self.after(6000, lambda: self.cancelPending())
         )
 
     # =========== INFO ===========
@@ -338,5 +386,6 @@ class MainWindow(tk.Tk):
             "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
             "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
             "jNQXAC9IVRw\n" + #me at the zoo
-            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/"
+            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n" +
+            "https://youtu.be/f1A7SdVTlok"
         ) #default text

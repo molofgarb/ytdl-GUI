@@ -1,11 +1,13 @@
 ## To-do:
-- make animated ellipses
-
-- make sure all of the file references in dir-reorg version are correct
-
+- make options menu collapsible (collapsed by default)
+- fix cancel button
+- display eta (from logger)
+- delete half-downloaded files
 - make sure that the supported sites and readme is accessible in executable
     - ensure that supportedsites references the yt-dlp file and not my own
     - try to get markdown stuff to open in the browser rather than the default program
+- add blue and gray color scheme
+
 
 - dropdown menu for picking formatting options
     - use 'listformats' option on YoutubeDL object
@@ -30,6 +32,8 @@
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~make animated ellipses~~
+- ~~make sure all of the file references in dir-reorg version are correct~~
 - ~~link yt_dlp resources to yt_dlp github repo~~
 - ~~say which URL is invalid~~
 - ~~make directory account for invalid output paths~~

@@ -14,11 +14,11 @@ class DownloadLogger:
         else:
             self.info(msg)
 
-    def info(self, msg):
-        if self.isDebug: print(msg)
-        if msg.startswith('[info]'):
+    def info(self, msg): #for every
+        if self.isDebug: print(msg) #debug
+        if msg.startswith('[info]'): #if new video
             if self.simulate: #take care of prog. bar in place of dl_hook
-                print(self.root.currVideo)
+                if self.isDebug: print(self.root.currVideo)
                 self.root.currVideo += 1
                 self.root.updateProgressBar(self.simulate)
                 
@@ -28,6 +28,9 @@ class DownloadLogger:
 
     def error(self, msg):
         if self.isDebug: print(msg)
+
+    def download(self, msg):
+        if self.isDebug: print('test')
 
     def setDownload(self):
         self.simulate = False
