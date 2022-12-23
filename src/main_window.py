@@ -4,7 +4,7 @@ from tkinter import filedialog
 import os
 import sys
 
-from yt_dlp.YoutubeDL import YoutubeDL
+from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
 
 from download_logger import DownloadLogger
 from info_window import InfoWindow
@@ -221,6 +221,7 @@ class MainWindow(tk.Tk):
             ConfirmPrompt(self, '''Error: Invalid Download Path\n\n'''
                 + '''Please change download path to valid directory''')
 
+    #make sure all URLs are valid before all downloads begin
     def doCheckURLs(self, dl_options):
         if self.checkURLs.get():
             self.currVideo = 0
@@ -235,8 +236,8 @@ class MainWindow(tk.Tk):
                     + f'''again to make\n sure it is valid and compatible''')
                 self.finishDownload("unsuccessful") #wrap up stuff + reset
         return False
-        
-        
+
+
     #downloads URLs in list -- main function
     def downloadURLs(self):
         self.inputButton.configure(text="Cancel", 

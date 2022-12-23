@@ -21,7 +21,7 @@ if __name__ == "__main__":
     if getattr(sys, 'frozen', False):
         iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico")
     else:
-        iconPath = "resources/logo.ico"
+        iconPath = "../resources/logo.ico"
 
     data = { #info about environment
         'debug': debug,
