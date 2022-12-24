@@ -16,18 +16,18 @@ class MainWindow(tk.Tk):
         #inherit all the stuff from tk.Tk
         super().__init__() 
 
-        self.data = data 
-        self.pending = []
+        self.data = data #dict from ytdlGUI.py
+        self.pending = [] #holds events that will happen
 
-        self.URLs = []
-        self.filenames = []
+        self.URLs = [] #URLs of files to be downloaded
+        self.filenames = [] #names of files as they are downloaded
         self.formats = [] #WIP
-        self.currVideo = 0
+        self.currVideo = 0 #index of video in URLs that is being checked/downloaded
 
         self.format = tk.StringVar(self, "b") #default format is best of both
-        self.checkURLs = tk.BooleanVar(self, True)
-        self.deleteOnFinish = tk.BooleanVar(self, True)
-        self.playSound = tk.BooleanVar(self, True)
+        self.checkURLs = tk.BooleanVar(self, True) #if URLs should be checked before download
+        self.deleteOnFinish = tk.BooleanVar(self, True) #if user should be prompted to delete cancelled downloads
+        self.playSound = tk.BooleanVar(self, True) #if a sound should be played
         
         #initialize main window
         self.title("ytdl-GUI")
@@ -80,6 +80,12 @@ class MainWindow(tk.Tk):
         )
         self.inputText.grid(row=30, padx=5, pady=5)
         self.inputScroll.configure(command=self.inputText.yview)
+
+        self.testButton = tk.Button(
+            self.frame, height=1, width=6,
+            text = "test", command=lambda: ConfirmPrompt(self, self.data, "test!")
+        )
+        self.testButton.grid(row=31, sticky="N")
 
         # =========== FORMAT SELECTION ===========
         self.formatGrid = tk.Frame(self.frame)
@@ -202,8 +208,8 @@ class MainWindow(tk.Tk):
     # =========== DIRECTORY ===========
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
-        # dir = filedialog.askdirectory() #will very likely be valid
-        print(self.pending)
+        dir = filedialog.askdirectory() #will very likely be valid
+        if self.data['debug']: print(self.pending)
         if (dir != ""):
             self.directoryText.delete(1.0, tk.END)
             self.directoryText.insert(tk.END, dir)
@@ -224,10 +230,10 @@ class MainWindow(tk.Tk):
                 updateText(self, self.statusLabel, "URLs Received!\n")
                 self.downloadURLs()
             else:
-                ConfirmPrompt(self, '''Error: No URLs provided\n\n'''
+                ConfirmPrompt(self, self.data, '''Error: No URLs provided\n\n'''
                    + '''Please provide at least one URL''')
         else:
-            ConfirmPrompt(self, '''Error: Invalid Download Path\n\n'''
+            ConfirmPrompt(self, self.data, '''Error: Invalid Download Path\n\n'''
                 + '''Please change download path to valid directory''')
 
     #make sure all URLs are valid before all downloads begin
@@ -240,7 +246,7 @@ class MainWindow(tk.Tk):
                 YoutubeDL(dl_options).download(self.URLs)
                 return True
             except Exception as ex:
-                ConfirmPrompt(self, f'''Error: Invalid URL\n\n'''
+                ConfirmPrompt(self, self.data, f'''Error: Invalid URL\n\n'''
                     + f'''Please check your URL #{self.currVideo + 1} '''
                     + f'''again to make\n sure it is valid and compatible''')
                 if (self.data['debug']):
@@ -272,13 +278,15 @@ class MainWindow(tk.Tk):
         dl_options['simulate'] = dl_options['logger'].simulate = False
         self.currVideo = 0
         try: #begin downloads
+            self.urlLabel.grid(row=1, padx=2, pady=2)
+
             self.updateProgressBar(False)
             YoutubeDL(dl_options).download(self.URLs)
             self.finishDownload("successful") #wrap up stuff + reset
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
-                ConfirmPrompt(self, '''Error: Download issue\n\n'''
-                    + '''There was an issue with the download''')
+                ConfirmPrompt(self, self.data, '''Error: Download issue\n\n'''
+                    + '''There was an issue with the download. Please try again.''')
                 if (self.data['debug']):
                     print(self.URLs, ex)
                 self.finishDownload("unsuccessful") #wrap up stuff + reset
@@ -302,22 +310,27 @@ class MainWindow(tk.Tk):
                     self.currProgressBar['value'] = 0
             self.update()
             if self.data['debug']: print('') #prints video download status to stdout
+            if ((len(self.filenames) == 0) or
+                (self.filenames[len(self.filenames) - 1] != ('"' + str(d['filename']) + '.part' + '"'))
+            ): #add partfile to end
+                self.filenames.append(('"' + str(d['filename']) + '.part' + '"'))
 
         elif d['status'] == 'finished': #when a download/check has finished 
             if 'elapsed' in d: #if a download occurred
-                self.filenames.append(d['filename']) #add to completed dl list
+                partfile = self.filenames.pop()
+                if (partfile == ('"' + str(d['filename']) + '.part' + '"')): #if confirmed to be part file
+                    self.filenames.append('"' + str(d['filename']) + '"') #add to completed dl list in final directory format
+                else:
+                    self.filenames.append(partfile) #if it was something else
             self.currVideo += 1
             self.updateProgressBar(False, True)
             self.currProgressBar['value'] = 0 #reset curr progress bar
             
     #updates progress bar to indicate progress
     def updateProgressBar(self, is_sim, keep_el=False):
-        self.urlLabel.grid(row=1, padx=2, pady=2)
-        
         if (is_sim and (self.currVideo < len(self.URLs))): #for URL check
             updateText(self, self.statusLabel, f'''Checking if URL #'''
                 + f'''{self.currVideo + 1} is valid...''')
-
 
         elif (self.currVideo < len(self.URLs)): #for download
 
@@ -349,8 +362,7 @@ class MainWindow(tk.Tk):
         updateText(self, self.statusLabel, f"Download cancelled")
         self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
         self.finishDownload("cancelled")
-
-        ConfirmPrompt(self, "Do you want to delete the already downloaded files?",
+        ConfirmPrompt(self, self.data, "Do you want to delete the already downloaded files?",
             self.filenames)
 
     #summary after downloading videos

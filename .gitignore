@@ -19,6 +19,10 @@ tmp/
 venv/
 completions/
 *.spec
+*.notanexecutable
+
+README.html
+supportedsites.html
 
 #downloaded files 
 *.egg-info

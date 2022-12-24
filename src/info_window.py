@@ -25,13 +25,13 @@ class InfoWindow(tk.Toplevel):
 
         self.readmeButton = tk.Button(
             self.frame, text="Open Readme",
-            command=lambda: webbrowser.open_new_tab("README.md")
+            command=lambda: webbrowser.open("README.html")
         )
         self.readmeButton.grid(row=1, sticky="w", padx=(10, 0), pady=5)
 
         self.sitesButton = tk.Button(
             self.frame, text="Supported Websites",
-            command=lambda: webbrowser.open_new_tab("supportedsites.md")
+            command=lambda: webbrowser.open("supportedsites.html")
         )
         self.sitesButton.grid(row=2, sticky='w', padx=(10, 0), pady=5)
 

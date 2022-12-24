@@ -9,6 +9,9 @@ if __name__ == "__main__":
     debug = True #debug mode used for development, make false when build
     windows = False
     path = os.getcwd()
+    print(path)
+    # path = os.path.realpath(
+    #     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     #Get info about environment
     if (system() == "Windows"):
@@ -18,10 +21,9 @@ if __name__ == "__main__":
 
     #icon stuff
     iconPath = ""
-    if getattr(sys, 'frozen', False):
-        iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico")
-    else:
-        iconPath = "./resources/logo.ico"
+    # if getattr(sys, 'frozen', False):
+    iconPath = os.path.join(path, ".\\resources\\logo.ico")
+    # iconPath = os.path.join(sys._MEIPASS, "..\resources\logo.ico")
 
     data = { #info about environment
         'debug': debug,
