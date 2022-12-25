@@ -20,6 +20,7 @@ venv/
 completions/
 *.spec
 *.notanexecutable
+ytdl-GUI_pyInstaller.bat
 
 README.html
 supportedsites.html
