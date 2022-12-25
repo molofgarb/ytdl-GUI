@@ -45,6 +45,7 @@ all: $(target)
 $(target): README.html supportedsites.html #requires pyinstaller from pip
 	-rm $@
 	$(pyinstaller)
+	make clean
 
 README.html: README.md #requires markdown-to-html npm module
 	markdown README.md > README.html
