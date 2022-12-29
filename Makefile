@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean clean-html html
 
 uname := $(shell uname)
 target := ytdl-GUI.exe #Windows
@@ -47,15 +47,16 @@ all: $(target)
 
 $(target): README.html supportedsites.html #requires pyinstaller from pip
 	-rm $@
+	make html
 	$(pyinstaller)
 
-README.html: README.md #requires markdown-to-html npm module
+html: README.md src/yt_dlp/supportedsites.md #requires markdown-to-html npm module
 	markdown README.md > README.html
-
-supportedsites.html: src/yt_dlp/supportedsites.md #requires markdown-to-html npm module
 	markdown src/yt_dlp/supportedsites.md > supportedsites.html
 
 clean:
+	-rm ytdlGUI.spec
+
+clean-html:
 	-rm README.html
 	-rm supportedsites.html
-	-rm ytdlGUI.spec
