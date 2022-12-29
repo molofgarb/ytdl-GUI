@@ -1,0 +1,400 @@
+[1mdiff --git a/Makefile b/Makefile[m
+[1mindex 9df9d21..6d71bb0 100644[m
+[1m--- a/Makefile[m
+[1m+++ b/Makefile[m
+[36m@@ -1,3 +1,5 @@[m
+[32m+[m[32m.PHONY: all clean[m
+[32m+[m
+ uname := $(shell uname)[m
+ target := ytdl-GUI.exe #Windows[m
+ exists? := where #used for checking build tools[m
+[36m@@ -41,11 +43,11 @@[m [mendif[m
+ [m
+ [m
+ all: $(target)[m
+[32m+[m	[32mmake clean[m
+ [m
+ $(target): README.html supportedsites.html #requires pyinstaller from pip[m
+ 	-rm $@[m
+ 	$(pyinstaller)[m
+[31m-	make clean[m
+ [m
+ README.html: README.md #requires markdown-to-html npm module[m
+ 	markdown README.md > README.html[m
+[1mdiff --git a/planned_changes.md b/planned_changes.md[m
+[1mindex 29771b0..5e98837 100644[m
+[1m--- a/planned_changes.md[m
+[1m+++ b/planned_changes.md[m
+[36m@@ -1,10 +1,8 @@[m
+ ## To-do:[m
+[31m-- make options menu collapsible (collapsed by default)[m
+ - add blue and gray color scheme[m
+ - true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment[m
+ - handle HTML errors[m
+ [m
+[31m-[m
+ - dropdown menu for picking formatting options[m
+     - use 'listformats' option on YoutubeDL object[m
+     - toggleable ability to have individual format selection (off by default)[m
+[36m@@ -26,6 +24,9 @@[m
+ - put the G in GUI (make the interface look prettier)[m
+ - make window centering appear truly center[m
+ [m
+[32m+[m
+[32m+[m[32m- ~~make options menu collapsible (collapsed by default)~~[m
+[32m+[m[32m- ~~debug switch on script run~~[m
+ - ~~make sure that the supported sites and readme is accessible in executable~~[m
+     - ~~ensure that supportedsites references the yt-dlp file and not my own~~[m
+     - ~~try to get markdown stuff to open in the browser rather than the default program~~[m
+[1mdiff --git a/src/main_window.py b/src/main_window.py[m
+[1mindex 86df991..ac13aab 100644[m
+[1m--- a/src/main_window.py[m
+[1m+++ b/src/main_window.py[m
+[36m@@ -16,6 +16,28 @@[m [mclass MainWindow(tk.Tk):[m
+         #inherit all the stuff from tk.Tk[m
+         super().__init__() [m
+ [m
+[32m+[m[32m        #window style[m
+[32m+[m[32m        style = {[m
+[32m+[m[32m            "bgcolor": "#525252",[m
+[32m+[m[32m            "textcolor": "white",[m
+[32m+[m[32m            "mainfont": ("Arial, 14")[m
+[32m+[m[32m        }[m
+[32m+[m[32m        radioStyle = ttk.Style()[m
+[32m+[m[32m        radioStyle.configure([m
+[32m+[m[32m            "format.TRadiobutton",[m
+[32m+[m[32m            background=style["bgcolor"], font=style['mainfont'][m
+[32m+[m[32m        )[m
+[32m+[m[32m        progressStyle = ttk.Style()[m
+[32m+[m[32m        progressStyle.configure([m
+[32m+[m[32m            "format.Horizontal.TProgressbar",[m
+[32m+[m[32m            background=style["bgcolor"][m
+[32m+[m[32m        )[m
+[32m+[m
+[32m+[m[32m        super().configure([m
+[32m+[m[32m            background=style["bgcolor"][m
+[32m+[m[32m        )[m
+[32m+[m
+[32m+[m[32m        #window data[m
+         self.data = data #dict from ytdlGUI.py[m
+         self.pending = [] #holds events that will happen[m
+ [m
+[36m@@ -25,6 +47,9 @@[m [mclass MainWindow(tk.Tk):[m
+         self.currVideo = 0 #index of video in URLs that is being checked/downloaded[m
+ [m
+         self.format = tk.StringVar(self, "b") #default format is best of both[m
+[32m+[m[32m        self.isExpandOptions = tk.BooleanVar(self, False) #if the options menu should be expanded[m
+[32m+[m
+[32m+[m[32m        #options[m
+         self.checkURLs = tk.BooleanVar(self, True) #if URLs should be checked before download[m
+         self.deleteOnFinish = tk.BooleanVar(self, True) #if user should be prompted to delete cancelled downloads[m
+         self.playSound = tk.BooleanVar(self, True) #if a sound should be played[m
+[36m@@ -35,20 +60,24 @@[m [mclass MainWindow(tk.Tk):[m
+         self.eval('tk::PlaceWindow . center') #puts window in center(ish)[m
+ [m
+         #initialize main frame (located within main window)[m
+[31m-        self.frame = tk.Frame(self)[m
+[32m+[m[32m        self.frame = tk.Frame([m
+[32m+[m[32m            self, background=style["bgcolor"][m
+[32m+[m[32m        )[m
+         self.frame.grid(padx=20, pady=(8, 18))[m
+ [m
+         # ------- WIDGETS -------[m
+         # =========== DIRECTORY ===========[m
+         #label for directory[m
+         self.directoryLabel = tk.Label([m
+[31m-            self.frame, text="Output Path:"[m
+[32m+[m[32m            self.frame, text="Output Path:",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         self.directoryLabel.grid(sticky="W")[m
+ [m
+         #directory to download to[m
+         self.directoryText = tk.Text([m
+             self.frame, height=1, width=68,[m
+[32m+[m[32m            background="white", foreground=style["textcolor"][m
+         )[m
+         self.directoryText.insert(tk.END, data['path'])[m
+         self.directoryText.grid(row=10, column=0,padx=5, pady=5)[m
+[36m@@ -56,62 +85,72 @@[m [mclass MainWindow(tk.Tk):[m
+         #button to open directory-choosing prompt[m
+         self.directoryButton = tk.Button([m
+             self.frame, height=0, width=0,[m
+[31m-            text = "...", command=self.setDirectory[m
+[32m+[m[32m            text = "...", command=self.setDirectory,[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+         self.directoryButton.grid(row=10, column=1,padx=1, pady=1)[m
+ [m
+         # =========== INPUT ===========[m
+         #input label[m
+         self.inputLabel = tk.Label([m
+[31m-            self.frame, text = "Videos to download:"[m
+[32m+[m[32m            self.frame, text = "Videos to download:",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         self.inputLabel.grid(row=20, sticky="W")[m
+         [m
+[31m-        #input text box scroll bar[m
+[32m+[m[32m        #input text box scroll bar[m[41m [m
+         self.inputScroll = tk.Scrollbar([m
+[31m-            self.frame, width=16[m
+[32m+[m[32m            self.frame, width=16,[m[41m [m
+[32m+[m[32m            background=style["bgcolor"][m
+         )[m
+         self.inputScroll.grid(row=30, column=1, sticky="NS")[m
+ [m
+         #input text box[m
+         self.inputText = tk.Text([m
+             self.frame, height=7, width=68,[m
+[31m-            yscrollcommand=self.inputScroll.set[m
+[32m+[m[32m            yscrollcommand=self.inputScroll.set,[m[41m [m
+[32m+[m[32m            background="white", foreground=style["textcolor"][m
+         )[m
+         self.inputText.grid(row=30, padx=5, pady=5)[m
+         self.inputScroll.configure(command=self.inputText.yview)[m
+ [m
+[31m-        self.testButton = tk.Button([m
+[31m-            self.frame, height=1, width=6,[m
+[31m-            text = "test", command=lambda: ConfirmPrompt(self, self.data, "test!")[m
+[31m-        )[m
+[31m-        self.testButton.grid(row=31, sticky="N")[m
+[32m+[m[32m        # !!! For Testing !!! should not be exist in production[m
+[32m+[m[32m        if self.data['debug']:[m
+[32m+[m[32m            self.testButton = tk.Button([m
+[32m+[m[32m                self.frame, height=1, width=6,[m
+[32m+[m[32m                text = "test", command=lambda: ConfirmPrompt(self, self.data, "test!"),[m[41m [m
+[32m+[m[32m                background=style["bgcolor"], foreground=style["textcolor"][m
+[32m+[m[32m            )[m
+[32m+[m[32m            self.testButton.grid(row=31, sticky="N")[m
+ [m
+         # =========== FORMAT SELECTION ===========[m
+[31m-        self.formatGrid = tk.Frame(self.frame)[m
+[32m+[m[32m        self.formatGrid = tk.Frame([m
+[32m+[m[32m            self.frame, background=style["bgcolor"][m
+[32m+[m[32m        )[m
+         self.formatGrid.grid(row=40, sticky="ew")[m
+ [m
+         #label for formats[m
+         self.formatLabel = tk.Label([m
+[31m-            self.formatGrid, text="Format: "[m
+[32m+[m[32m            self.formatGrid, text="Format: ",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         self.formatLabel.grid(column=0, sticky="W")[m
+ [m
+         #format radio button selection[m
+         self.vidAndAud = ttk.Radiobutton([m
+[31m-            self.formatGrid, text="Video and Audio", variable=self.format, value="best"[m
+[32m+[m[32m            self.formatGrid, text="Video and Audio", style="format.TRadiobutton", variable=self.format, value="best"[m
+         )[m
+         self.vidAndAud.grid(column=1, row=0, sticky="e", padx=18)[m
+         self.vidOnly = ttk.Radiobutton([m
+[31m-            self.formatGrid, text="Video Only", variable=self.format, value="bestvideo"[m
+[32m+[m[32m            self.formatGrid, text="Video Only", style="format.TRadiobutton", variable=self.format, value="bestvideo"[m
+         )[m
+         self.vidOnly.grid(column=2, row=0, sticky="e", padx=18)[m
+         self.audOnly = ttk.Radiobutton([m
+[31m-            self.formatGrid, text="Audio Only", variable=self.format, value="bestaudio"[m
+[32m+[m[32m            self.formatGrid, text="Audio Only", style="format.TRadiobutton", variable=self.format, value="bestaudio"[m
+         )[m
+         self.audOnly.grid(column=3, row=0, sticky="e", padx=18)[m
+         self.audOnlyCons = ttk.Radiobutton([m
+[31m-            self.formatGrid, text="m4a (audio)", variable=self.format, value="m4a"[m
+[32m+[m[32m            self.formatGrid, text="m4a (audio)", style="format.TRadiobutton", variable=self.format, value="m4a"[m
+         )[m
+         self.audOnlyCons.grid(column=4, row=0, sticky="e", padx=18)[m
+ [m
+[36m@@ -121,89 +160,118 @@[m [mclass MainWindow(tk.Tk):[m
+         #button to send text box input[m
+         self.inputButton = tk.Button([m
+             self.frame, text="Download", [m
+[31m-            command=self.inputURLs[m
+[32m+[m[32m            command=self.inputURLs,[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+         self.inputButton.grid(row=70, padx=5, pady=5)[m
+ [m
+         #button to clear[m
+         self.clearButton = tk.Button([m
+             self.frame, text="Clear", [m
+[31m-            command=lambda:self.inputText.delete("1.0", tk.END)[m
+[32m+[m[32m            command=lambda:self.inputText.delete("1.0", tk.END),[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+         self.clearButton.grid(row=70, sticky="E", padx=5, pady=5)[m
+ [m
+         # =========== PROGRESS ===========[m
+[31m-        self.progressFrame = tk.Frame(self.frame)[m
+[31m-        self.statusFrame = tk.Frame(self.frame) #will be gridded later when download begins[m
+[32m+[m[32m        self.progressFrame = tk.Frame([m
+[32m+[m[32m            self.frame, background=style["bgcolor"][m
+[32m+[m[32m        )[m
+[32m+[m[32m        self.statusFrame = tk.Frame([m
+[32m+[m[32m            self.frame, background=style["bgcolor"][m
+[32m+[m[32m        ) #will be gridded later when download begins[m
+ [m
+         #progress bar for overall downloads[m
+         self.progressBarLabel = tk.Label([m
+[31m-            self.progressFrame, text = "All Videos:"[m
+[32m+[m[32m            self.progressFrame, text = "All Videos:",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         self.progressBarLabel.grid(row=0, column=0, pady=4) [m
+ [m
+         self.progressBar = ttk.Progressbar([m
+[31m-            self.progressFrame, orient=HORIZONTAL, length=500, mode='determinate'[m
+[32m+[m[32m            self.progressFrame, orient=HORIZONTAL, length=500, mode='determinate',[m
+[32m+[m[32m            style="format.Horizontal.TProgressbar"[m
+         )[m
+         self.progressBar.grid(row=0, column=1, pady=4) [m
+ [m
+         #progress bar for current video download[m
+         self.currProgressBarLabel = tk.Label([m
+[31m-            self.progressFrame, text = "This Video:"[m
+[32m+[m[32m            self.progressFrame, text = "This Video:",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         self.currProgressBarLabel.grid(row=1, column=0, pady=4) [m
+[32m+[m
+         self.currProgressBar = ttk.Progressbar([m
+[31m-            self.progressFrame, orient=HORIZONTAL, length=500, mode='determinate'[m
+[32m+[m[32m            self.progressFrame, orient=HORIZONTAL, length=500, mode='determinate',[m
+[32m+[m[32m            style="format.Horizontal.TProgressbar"[m
+         )[m
+         self.currProgressBar.grid(row=1, column=1, pady=4) [m
+ [m
+         # status Label!![m
+         self.statusLabel = tk.Label([m
+[31m-            self.statusFrame, text = "Awaiting URL input...\n"[m
+[32m+[m[32m            self.statusFrame, text = "Awaiting URL input...\n",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         self.statusLabel.grid(row=0, padx=2, pady=2)[m
+ [m
+         self.urlLabel = tk.Label([m
+[31m-            self.statusFrame, text = "<url here>"[m
+[32m+[m[32m            self.statusFrame, text = "<url here>",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+         #self.urlLabel.grid(row=1, padx=2, pady=2) #urlLabel default ungrid[m
+ [m
+         self.statusFrame.grid(row=80, padx=2, pady=2)[m
+ [m
+[31m-        # =========== OPTIONS ===========[m
+[32m+[m[32m        # =========== OPTIONS/INFO ===========[m
+[32m+[m[32m        self.expandOptionsButton = tk.Button([m
+[32m+[m[32m            self.frame, text = "Expand Options",[m
+[32m+[m[32m            command=lambda: self.expandOptions(),[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+[32m+[m[32m        )[m
+[32m+[m[32m        self.expandOptionsButton.grid(row=90, padx=2, pady=2, sticky="W")[m
+[32m+[m
+[32m+[m[32m        self.optionsFrame = tk.Frame([m
+[32m+[m[32m            self.frame, background=style["bgcolor"][m
+[32m+[m[32m        ) #holds options buttons[m
+[32m+[m
+         #options label[m
+         self.optionsLabel = tk.Label([m
+[31m-            self.frame, text = "Options:"[m
+[32m+[m[32m            self.optionsFrame, text = "Options:",[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'][m
+         )[m
+[31m-        self.optionsLabel.grid(row=90, sticky='w')[m
+[32m+[m[32m        self.optionsLabel.grid(row=0, sticky='w')[m
+ [m
+         #play sound when download finished toggle[m
+         self.playSoundCheck = tk.Checkbutton([m
+[31m-            self.frame, text = "Play sound after download/error",[m
+[31m-            variable=self.playSound, onvalue=True, offvalue=False[m
+[32m+[m[32m            self.optionsFrame, text = "Play sound after download/error",[m
+[32m+[m[32m            variable=self.playSound, onvalue=True, offvalue=False,[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+[31m-        self.playSoundCheck.grid(row=100, sticky='w')[m
+[32m+[m[32m        self.playSoundCheck.grid(row=10, sticky='w')[m
+ [m
+         #check if URLs are valid before downloading[m
+         self.checkURLsCheck = tk.Checkbutton([m
+[31m-            self.frame, text = "Check URLs before download",[m
+[31m-            variable=self.checkURLs, onvalue=True, offvalue=False[m
+[32m+[m[32m            self.optionsFrame, text = "Check URLs before download",[m
+[32m+[m[32m            variable=self.checkURLs, onvalue=True, offvalue=False,[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+[31m-        self.checkURLsCheck.grid(row=110, sticky='w')[m
+[32m+[m[32m        self.checkURLsCheck.grid(row=20, sticky='w')[m
+ [m
+         #delete input on finish toggle[m
+         self.deleteOnFinishCheck = tk.Checkbutton([m
+[31m-            self.frame, text = "Delete input after download",[m
+[31m-            variable=self.deleteOnFinish, onvalue=True, offvalue=False[m
+[32m+[m[32m            self.optionsFrame, text = "Delete input after download",[m
+[32m+[m[32m            variable=self.deleteOnFinish, onvalue=True, offvalue=False,[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+[31m-        self.deleteOnFinishCheck.grid(row=120, sticky='w')[m
+[32m+[m[32m        self.deleteOnFinishCheck.grid(row=30, sticky='w')[m
+ [m
+         #info label[m
+         self.infoButton = tk.Button([m
+             self.frame, text = "Info",[m
+[31m-            command = lambda:InfoWindow(self)[m
+[32m+[m[32m            command = lambda:InfoWindow(self),[m[41m [m
+[32m+[m[32m            background=style["bgcolor"], foreground=style["textcolor"][m
+         )[m
+[31m-        self.infoButton.grid(row=120, sticky="E")[m
+[32m+[m[32m        self.infoButton.grid(row=90, column=1, sticky="E")[m
+ [m
+     # =========== DIRECTORY ===========[m
+     #uses tkinter's askdirectory dialog to set directory in text box[m
+[36m@@ -214,6 +282,18 @@[m [mclass MainWindow(tk.Tk):[m
+             self.directoryText.delete(1.0, tk.END)[m
+             self.directoryText.insert(tk.END, dir)[m
+ [m
+[32m+[m[32m    # =========== EXPAND OPTIONS ===========[m
+[32m+[m[32m    #toggles the expansion/minimization of the options frame[m
+[32m+[m[32m    def expandOptions(self):[m
+[32m+[m[32m        if self.isExpandOptions.get(): #was expanded[m
+[32m+[m[32m            self.expandOptionsButton.configure(text="Expand Options")[m
+[32m+[m[32m            self.optionsFrame.grid_remove()[m
+[32m+[m[32m            self.isExpandOptions.set(False)[m
+[32m+[m[32m        else: #was minimized[m
+[32m+[m[32m            self.expandOptionsButton.configure(text="Minimize Options")[m
+[32m+[m[32m            self.optionsFrame.grid(row=100, padx=2, pady=2, sticky="W")[m
+[32m+[m[32m            self.isExpandOptions.set(True)[m
+[32m+[m
+     # =========== DOWNLOADING ===========[m
+     #cancels everything in pending and then clears it[m
+     def cancelPending(self):[m
+[1mdiff --git a/src/yt_dlp b/src/yt_dlp[m
+[1m--- a/src/yt_dlp[m
+[1m+++ b/src/yt_dlp[m
+[36m@@ -1 +1 @@[m
+[31m-Subproject commit 829bbd1d05ae7e4519327f1cb6e75b3da38e0a0b[m
+[32m+[m[32mSubproject commit 829bbd1d05ae7e4519327f1cb6e75b3da38e0a0b-dirty[m
+[1mdiff --git a/src/ytdlGUI.py b/src/ytdlGUI.py[m
+[1mindex 72d140a..771c5c5 100644[m
+[1m--- a/src/ytdlGUI.py[m
+[1m+++ b/src/ytdlGUI.py[m
+[36m@@ -6,7 +6,8 @@[m [mfrom platform import system[m
+ from main_window import MainWindow[m
+ [m
+ if __name__ == "__main__":[m
+[31m-    debug = True #debug mode used for development, make false when build[m
+[32m+[m[32m    debug = False[m
+[32m+[m[32m    if (len(sys.argv) > 1): debug = (sys.argv[2] == 'debug') #debug mode used for development, true if debug argument passed[m
+     windows = False[m
+     path = os.getcwd()[m
+     print(path)[m
+[36m@@ -17,7 +18,9 @@[m [mif __name__ == "__main__":[m
+     if (system() == "Windows"):[m
+         windows = True[m
+     elif (system() != "Darwin" and system() != "Linux"):[m
+[31m-        sys.exit("Operating System not supported")[m
+[32m+[m[32m        sys.exit("Operating system not supported")[m
+[32m+[m[32m    else:[m
+[32m+[m[32m        sys.exit("Unknown operating system")[m
+ [m
+     #icon stuff[m
+     iconPath = ""[m
