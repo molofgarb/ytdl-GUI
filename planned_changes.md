@@ -1,5 +1,10 @@
 ## To-do:
-- make animated ellipses
+- add blue and gray color scheme
+    - make changes in subwindows
+    - style window action bar (top)
+    - inputs should have smaller fonts (new entry in dict)
+- true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment
+- handle HTML errors
 
 - dropdown menu for picking formatting options
     - use 'listformats' option on YoutubeDL object
@@ -7,22 +12,32 @@
 
 - download log
 
-- show all of progress_hooks information as advanced setting
-
 - add true macOS compatability
     - fix icon issue on mac
 
-- make cancel button physically stop YoutubeDL via cmdline instead of clearing URLs
+- show all of progress_hooks information as advanced setting
 
 - fix bug where new download started within 5 seconds of previous download
 
 - update readme for current version
+- keep track of version number and date in info box
 
 - save preferred configuration
 
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+
+- ~~make options menu collapsible (collapsed by default)~~
+- ~~debug switch on script run~~
+- ~~make sure that the supported sites and readme is accessible in executable~~
+    - ~~ensure that supportedsites references the yt-dlp file and not my own~~
+    - ~~try to get markdown stuff to open in the browser rather than the default program~~
+- ~~fix cancel button - it should delete partially downloaded files, prompt correctly (see where left off)~~
+- ~~fix compile path issues~~
+- ~~make animated ellipses~~
+- ~~make sure all of the file references in dir-reorg version are correct~~
+- ~~link yt_dlp resources to yt_dlp github repo~~
 - ~~say which URL is invalid~~
 - ~~make directory account for invalid output paths~~
 - ~~make progress bar indicate the progress of URL checking~~
@@ -43,3 +58,5 @@
 - ~~show progress bar for download (label, or some kind of graphic)~~
     - ~~prevent not responding window from happening~~
 - ~~make the readme look pretty~~
+
+- display eta (from logger)

@@ -1,5 +1,6 @@
 #macOS
 .DS_Store
+*/.DS_Store
 
 #Binaries
 *.exe
@@ -18,6 +19,11 @@ tmp/
 venv/
 completions/
 *.spec
+*.notanexecutable
+ytdl-GUI_pyInstaller.bat
+
+README.html
+supportedsites.html
 
 #downloaded files 
 *.egg-info
