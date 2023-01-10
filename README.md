@@ -5,12 +5,16 @@ A graphical user interface for the command line program, youtube-dlp, written in
 
 ![ytdl-GUI](.github/banner.png?raw=true "ytdl-gui picture")
 
-## Installation
+---
+
+# Installation
 [Download](https://github.com/molofgarb/ytdl-GUI/releases/download/v0.1-alpha/ytdl-GUI.exe)
 
 I have only been able to text the executable on a Windows 10 system. OSX and Linux compatability will come in the future if the program does not work on those operating systems.
 
-## Usage
+---
+
+# Usage
 1. Run the ytdl-GUI.exe program. 
 
 2. Put the directory you want the videos to be downloaded to in the output path text box. It can be entered through text or by pressing the button on the right ("..."), which opens up the directory browser for your system. 
@@ -21,7 +25,9 @@ I have only been able to text the executable on a Windows 10 system. OSX and Lin
 
 5. Enjoy your videos!
 
-## Notes
+---
+
+# Notes
 - The program can be run using only the executable in the root -- ytdl-GUI.exe. The source code is found in ytdlGUI.py, and other assets can be found in the subdirectories. 
 
 - All links that yt-dlp supports are supported by this
@@ -31,13 +37,19 @@ program, since this program uses yt-dlp's module.
 
 - yt-dlGUI_pyinstaller.bat is used to call pyInstaller to compile the script, ytdlGUI.py, along with its assets, into the final executable.
 
-## Why?
+---
+
+# Why?
 I made this mostly for fun, but also to do a little experimentation with tkinter. I also make youtube videos occasionally, so I wanted something quick and lightweight to use for my occasional video downloads. There are a few other yt-dlp GUI programs that are much nicer than mine, so if you're looking for a more functionality, you should check those out. 
 
-## License
+---
+
+# License
 Licensed by the [MIT License](https://github.com/molofgarb/ytdl-GUI/blob/main/LICENSE).
 
-## Credits
+---
+
+# Credits
 yt-dlp and youtube-dl contributors for providing the tools needed for this program to work.
 
 [yt-dlp](https://github.com/yt-dlp/yt-dlp)
