@@ -1,14 +1,16 @@
 .PHONY: all clean clean-html html
 
-uname := $(shell uname)
-target := ytdl-GUI.exe #Windows
-exists? := where #used for checking build tools
+UNAME := $(shell uname)
+TARGET := ytdl-GUI.exe #Windows
+MARKDOWN := README.md src/yt_dlp/supportedsites.md
+HTML := README.html supportedsites.html
 
 pyinstaller := \
 	pyinstaller --noconsole --clean -y -n "ytdl-GUI" -F --icon="resources\logo.ico" --distpath "." --windowed --paths="src" \
 		--add-data ".\README.html;." \
 		--add-data ".\supportedsites.html;." \
 		--add-data ".\resources\logo.ico;.\resources" \
+		--paths C:\Python35\Lib\site-packages\PyQt5\Qt\bin \
 		"src\ytdlGUI.py"
 #  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debugging
 #  --clean removes PyInstaller temporary files
@@ -23,34 +25,30 @@ pyinstaller := \
 
 
 #adjust vars to reflect OS
-ifneq (,$(filter $(uname), Linux Darwin)) #Linux or macOS, WIP
-target := ytdl-GUI
-exists? := which
-
+ifneq (,$(filter $(UNAME), Linux Darwin)) #Linux or macOS, WIP
+TARGET := ytdl-GUI
 endif
 
 
 #check if build tools exist
-ifeq (, $(shell $(exists?) pyinstaller)) #pyinstaller
+ifeq (, $(shell which pyinstaller)) #pyinstaller
 $(error "No pyinstaller in $(PATH), please install using pip")
-
 endif
 
-ifeq (, $(shell $(exists?) markdown)) #markdown-to-html
+ifeq (, $(shell which markdown)) #markdown-to-html
 $(error "No markdown-to-html in $(PATH), please install using npm")
-
 endif
 
 
-all: $(target)
-	make clean
+all: $(TARGET)
+	-make clean-html
 
-$(target): README.html supportedsites.html #requires pyinstaller from pip
+$(TARGET): ${HTML} #requires pyinstaller from pip
 	-rm $@
 	make html
 	$(pyinstaller)
 
-html: README.md src/yt_dlp/supportedsites.md #requires markdown-to-html npm module
+${HTML}: %.html: ${MARKDOWN}
 	markdown README.md > README.html
 	markdown src/yt_dlp/supportedsites.md > supportedsites.html
 
