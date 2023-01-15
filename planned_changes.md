@@ -1,4 +1,5 @@
 ## To-do:
+- integrate markdown-to-html and pyinstaller somehow to unify the build process
 - add blue and gray color scheme
     - make changes in subwindows
     - style window action bar (top)
