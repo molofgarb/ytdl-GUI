@@ -11,7 +11,7 @@ if __name__ == "__main__":
     if (len(sys.argv) > 1): debug = (sys.argv[1] == 'debug') #debug mode used for development, true if debug argument passed
     windows = False
     path = os.getcwd()
-    print(path)
+    
     # path = os.path.realpath(
     #     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -35,6 +35,8 @@ if __name__ == "__main__":
         'path': path,
         'iconPath': iconPath
     }
+
+    if data['debug']: print(path)
 
     #defines main window
     root = MainWindow(data)

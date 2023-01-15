@@ -13,28 +13,29 @@ from tk_common import updateText
 
 class MainWindow(tk.Tk):
     def __init__(self, data):
-        #inherit all the stuff from tk.Tk
-        super().__init__() 
+        super().__init__()  #inherit all the stuff from tk.Tk -- base window
 
-        #window style
-        style = {
+        self.style = { #window style
             "bgcolor": "#525252",
             "textcolor": "white",
-            "mainfont": ("Arial, 12")
+            "buttoncolor": "#656565",
+            "mainfont": ("Verdana", "11")
         }
+        
+        # styled separately because ttk
         radioStyle = ttk.Style()
         radioStyle.configure(
             "format.TRadiobutton",
-            background=style["bgcolor"], foreground=style['textcolor'], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style['textcolor'], font=self.style['mainfont']
         )
         progressStyle = ttk.Style()
         progressStyle.configure(
             "format.Horizontal.TProgressbar",
-            background=style["bgcolor"]
+            background=self.style["bgcolor"]
         )
 
-        super().configure(
-            background=style["bgcolor"]
+        super().configure( #style for entire window background
+            background=self.style["bgcolor"]
         )
 
         #window data
@@ -61,7 +62,7 @@ class MainWindow(tk.Tk):
 
         #initialize main frame (located within main window)
         self.frame = tk.Frame(
-            self, background=style["bgcolor"]
+            self, background=self.style["bgcolor"]
         )
         self.frame.grid(padx=20, pady=(8, 18))
 
@@ -70,14 +71,14 @@ class MainWindow(tk.Tk):
         #label for directory
         self.directoryLabel = tk.Label(
             self.frame, text="Output Path:", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.directoryLabel.grid(sticky="W")
 
         #directory to download to
         self.directoryText = tk.Text(
-            self.frame, height=1, width=68,
-            background="white", foreground="black", font=style['mainfont']
+            self.frame, height=1, width=62,
+            background="white", foreground="black", font=self.style['mainfont']
         )
         self.directoryText.insert(tk.END, data['path'])
         self.directoryText.grid(row=10, column=0,padx=5, pady=5)
@@ -86,7 +87,7 @@ class MainWindow(tk.Tk):
         self.directoryButton = tk.Button(
             self.frame, height=0, width=0,
             text = "...", command=self.setDirectory, 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.directoryButton.grid(row=10, column=1,padx=1, pady=1)
 
@@ -94,22 +95,22 @@ class MainWindow(tk.Tk):
         #input label
         self.inputLabel = tk.Label(
             self.frame, text = "Videos to Download:", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.inputLabel.grid(row=20, sticky="W")
         
         #input text box scroll bar 
         self.inputScroll = tk.Scrollbar(
             self.frame, width=16, 
-            background=style["bgcolor"]
+            background=self.style["bgcolor"]
         )
         self.inputScroll.grid(row=30, column=1, sticky="NS")
 
         #input text box
         self.inputText = tk.Text(
-            self.frame, height=7, width=68,
+            self.frame, height=7, width=62,
             yscrollcommand=self.inputScroll.set, 
-            background="white", foreground="black", font=style['mainfont']
+            background="white", foreground="black", font=self.style['mainfont']
         )
         self.inputText.grid(row=30, padx=5, pady=5)
         self.inputScroll.configure(command=self.inputText.yview)
@@ -119,20 +120,20 @@ class MainWindow(tk.Tk):
             self.testButton = tk.Button(
                 self.frame, height=1, width=6,
                 text = "test", command=lambda: ConfirmPrompt(self, self.data, "test!"), 
-                background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+                background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
             )
             self.testButton.grid(row=31, sticky="N")
 
         # =========== FORMAT SELECTION ===========
         self.formatGrid = tk.Frame(
-            self.frame, background=style["bgcolor"]
+            self.frame, background=self.style["bgcolor"]
         )
         self.formatGrid.grid(row=40, sticky="ew")
 
         #label for formats
         self.formatLabel = tk.Label(
             self.formatGrid, text="Format: ", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.formatLabel.grid(column=0, sticky="W")
 
@@ -161,7 +162,7 @@ class MainWindow(tk.Tk):
         self.inputButton = tk.Button(
             self.frame, text="Download", 
             command=self.inputURLs, 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.inputButton.grid(row=70, padx=5, pady=5)
 
@@ -169,22 +170,22 @@ class MainWindow(tk.Tk):
         self.clearButton = tk.Button(
             self.frame, text="Clear", 
             command=lambda:self.inputText.delete("1.0", tk.END), 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.clearButton.grid(row=70, sticky="E", padx=5, pady=5)
 
         # =========== PROGRESS ===========
         self.progressFrame = tk.Frame(
-            self.frame, background=style["bgcolor"]
+            self.frame, background=self.style["bgcolor"]
         )
         self.statusFrame = tk.Frame(
-            self.frame, background=style["bgcolor"]
+            self.frame, background=self.style["bgcolor"]
         ) #will be gridded later when download begins
 
         #progress bar for overall downloads
         self.progressBarLabel = tk.Label(
             self.progressFrame, text = "All Videos:", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.progressBarLabel.grid(row=0, column=0, pady=4) 
 
@@ -197,7 +198,7 @@ class MainWindow(tk.Tk):
         #progress bar for current video download
         self.currProgressBarLabel = tk.Label(
             self.progressFrame, text = "This Video:", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.currProgressBarLabel.grid(row=1, column=0, pady=4) 
 
@@ -210,13 +211,13 @@ class MainWindow(tk.Tk):
         # status Label!!
         self.statusLabel = tk.Label(
             self.statusFrame, text = "Awaiting URL input...\n", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.statusLabel.grid(row=0, padx=2, pady=2)
 
         self.urlLabel = tk.Label(
             self.statusFrame, text = "<url here>", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         #self.urlLabel.grid(row=1, padx=2, pady=2) #urlLabel default ungrid
 
@@ -226,18 +227,18 @@ class MainWindow(tk.Tk):
         self.expandOptionsButton = tk.Button(
             self.frame, text = "Expand Options",
             command=lambda: self.expandOptions(), 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.expandOptionsButton.grid(row=90, padx=2, pady=2, sticky="W")
 
         self.optionsFrame = tk.Frame(
-            self.frame, background=style["bgcolor"]
+            self.frame, background=self.style["bgcolor"]
         ) #holds options buttons
 
         #options label
         self.optionsLabel = tk.Label(
             self.optionsFrame, text = "Options:", 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.optionsLabel.grid(row=0, sticky='w')
 
@@ -245,7 +246,7 @@ class MainWindow(tk.Tk):
         self.playSoundCheck = tk.Checkbutton(
             self.optionsFrame, text = "Play sound after download/error",
             variable=self.playSound, onvalue=True, offvalue=False, 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.playSoundCheck.grid(row=10, sticky='w')
 
@@ -253,7 +254,7 @@ class MainWindow(tk.Tk):
         self.checkURLsCheck = tk.Checkbutton(
             self.optionsFrame, text = "Check URLs before download",
             variable=self.checkURLs, onvalue=True, offvalue=False, 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.checkURLsCheck.grid(row=20, sticky='w')
 
@@ -261,15 +262,15 @@ class MainWindow(tk.Tk):
         self.deleteOnFinishCheck = tk.Checkbutton(
             self.optionsFrame, text = "Delete input after download",
             variable=self.deleteOnFinish, onvalue=True, offvalue=False, 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.deleteOnFinishCheck.grid(row=30, sticky='w')
 
         #info label
         self.infoButton = tk.Button(
             self.frame, text = "Info",
-            command = lambda:InfoWindow(self), 
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
+            command = lambda:InfoWindow(self, self.style), 
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.infoButton.grid(row=90, column=1, sticky="E")
 
@@ -310,11 +311,11 @@ class MainWindow(tk.Tk):
                 updateText(self, self.statusLabel, "URLs Received!\n")
                 self.downloadURLs()
             else:
-                ConfirmPrompt(self, self.data, '''Error: No URLs provided\n\n'''
-                   + '''Please provide at least one URL''')
+                ConfirmPrompt(self, self.data, self.style, 
+                '''Error: No URLs provided\n\nPlease provide at least one URL''')
         else:
-            ConfirmPrompt(self, self.data, '''Error: Invalid Download Path\n\n'''
-                + '''Please change download path to valid directory''')
+            ConfirmPrompt(self, self.data, self.style, 
+            '''Error: Invalid Download Path\n\nPlease change download path to valid directory''')
 
     #make sure all URLs are valid before all downloads begin
     def doCheckURLs(self, dl_options):
@@ -326,7 +327,8 @@ class MainWindow(tk.Tk):
                 YoutubeDL(dl_options).download(self.URLs)
                 return True
             except Exception as ex:
-                ConfirmPrompt(self, self.data, f'''Error: Invalid URL\n\n'''
+                ConfirmPrompt(self, self.data, self.style, 
+                      f'''Error: Invalid URL\n\n'''
                     + f'''Please check your URL #{self.currVideo + 1} '''
                     + f'''again to make\n sure it is valid and compatible''')
                 if (self.data['debug']):
@@ -365,8 +367,8 @@ class MainWindow(tk.Tk):
             self.finishDownload("successful") #wrap up stuff + reset
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
-                ConfirmPrompt(self, self.data, '''Error: Download issue\n\n'''
-                    + '''There was an issue with the download. Please try again.''')
+                ConfirmPrompt(self, self.data, self.style, 
+                    '''Error: Download issue\n\nThere was an issue with the download. Please try again.''')
                 if (self.data['debug']):
                     print(self.URLs, ex)
                 self.finishDownload("unsuccessful") #wrap up stuff + reset
@@ -442,7 +444,8 @@ class MainWindow(tk.Tk):
         updateText(self, self.statusLabel, f"Download cancelled")
         self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
         self.finishDownload("cancelled")
-        ConfirmPrompt(self, self.data, "Do you want to delete the already downloaded files?",
+        ConfirmPrompt(self, self.data, self.style, 
+            "Do you want to delete the already downloaded files?",
             self.filenames)
 
     #summary after downloading videos
