@@ -3,6 +3,7 @@
     - make changes in subwindows
     - style window action bar (top)
     - inputs should have smaller fonts (new entry in dict)
+    - update new style in README
 - true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment
 - handle HTML errors
 
