@@ -7,10 +7,16 @@ import os
 from tk_common import updateText
 
 class ConfirmPrompt(tk.Toplevel):
-    def __init__(self, root, data, promptText, filenames=None):
+    def __init__(self, root, data, style, promptText, filenames=None):
         super().__init__(root)
 
         self.data = data
+        self.style = style
+
+        super().configure( #style for entire window background
+            background=self.style["bgcolor"]
+        )
+
         self.promptText = promptText
         self.filenames = filenames #LEFT OFF
 
@@ -24,23 +30,26 @@ class ConfirmPrompt(tk.Toplevel):
         self.iconbitmap(root.data['iconPath'])
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
-        self.frame = tk.Frame(self)
+        self.frame = tk.Frame(self, background=self.style["bgcolor"])
         self.frame.grid(row=0, padx=2, pady=10)
 
         # ------- WIDGETS -------
         self.questionLabel = tk.Label(
-            self.frame, text = promptText
+            self.frame, text = promptText,
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.questionLabel.grid(sticky="N", columnspan=1 if promptText.startswith("Error") else 2, padx=15)
 
         self.yesButton = tk.Button(
             self.frame, text="Yes",
             width=6,
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: self.answer(True)
         )
         self.noButton = tk.Button( #No/Ok
             self.frame, text = "Ok",
             width=6, 
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: self.answer(False)
         )
 

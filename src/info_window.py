@@ -6,48 +6,60 @@ import os
 import webbrowser
 
 class InfoWindow(tk.Toplevel):
-    def __init__(self, root):
+    def __init__(self, root, style):
         super().__init__(root)
 
         self.windows = root.data['windows']
+
+        self.style = style
+
+        super().configure( #style for entire window background
+            background=self.style["bgcolor"]
+        )
 
         self.title("Info")
         self.iconbitmap(root.data['iconPath'])
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
-        self.frame = tk.Frame(self)
+        self.frame = tk.Frame(self, background=self.style["bgcolor"])
         self.frame.grid(row=0, padx=20, pady=10)
 
         self.name = tk.Label(
-            self.frame, text="ytdl-GUI by molofgarb"
+            self.frame, text="ytdl-GUI by molofgarb",
+            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.name.grid(row=0, sticky="w", padx=(10, 0), pady=2)
 
         self.readmeButton = tk.Button(
             self.frame, text="Open Readme",
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: webbrowser.open("README.html")
         )
         self.readmeButton.grid(row=1, sticky="w", padx=(10, 0), pady=5)
 
         self.sitesButton = tk.Button(
             self.frame, text="Supported Websites",
+            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: webbrowser.open("supportedsites.html")
         )
         self.sitesButton.grid(row=2, sticky='w', padx=(10, 0), pady=5)
 
         self.thanksLabel = tk.Label(
-            self.frame, text="\nThank you for using ytdl-GUI!"
+            self.frame, text="\nThank you for using ytdl-GUI!",
+            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.thanksLabel.grid(row=3, sticky='w')
 
         self.repoLabel = tk.Label(
             self.frame, text="\nytdl-GUI GitHub:",
+            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.repoLabel.grid(row=4, sticky="W")
 
         self.repoLink = tk.Label(
             self.frame, text="https://github.com/molofgarb/ytdl-GUI",
-            fg="blue", cursor="hand2"
+            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'],
+            cursor="hand2"
         )
         self.repoLink.grid(row=5, sticky="W")
         self.repoLink.bind(
@@ -56,12 +68,14 @@ class InfoWindow(tk.Toplevel):
 
         self.ytdlpRepoLabel = tk.Label(
             self.frame, text="\nyt-dlp GitHub:",
+            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.ytdlpRepoLabel.grid(row=6, sticky="W")
 
         self.ytdlpRepoLink = tk.Label(
             self.frame, text="https://github.com/yt-dlp/yt-dlp",
-            fg="blue", cursor="hand2"
+            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'],
+            cursor="hand2"
         )
         self.ytdlpRepoLink.grid(row=7, sticky="W")
         self.ytdlpRepoLink.bind(
