@@ -7,8 +7,9 @@ from main_window import MainWindow
 
 if __name__ == "__main__":
     debug = False
-    print(sys.argv)
     if (len(sys.argv) > 1): debug = (sys.argv[1] == 'debug') #debug mode used for development, true if debug argument passed
+    # print(sys.argv)
+
     windows = False
     path = os.getcwd()
     
@@ -26,8 +27,8 @@ if __name__ == "__main__":
     #icon stuff
     iconPath = ""
     # if getattr(sys, 'frozen', False):
-    iconPath = os.path.join(path, ".\\resources\\logo.ico")
-    # iconPath = os.path.join(sys._MEIPASS, "..\resources\logo.ico")
+    if debug: iconPath = os.path.join(path, "resources/logo.ico") #for running as script
+    else: iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico") #for pyinstaller
 
     data = { #info about environment
         'debug': debug,

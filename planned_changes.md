@@ -1,6 +1,8 @@
 ## To-do:
-- integrate markdown-to-html and pyinstaller somehow to unify the build process
-- add blue and gray color scheme
+
+- make buildfile up to spec with nyc-subway-tracker quality
+
+- add blue and gray color scheme (and make it pretty)
     - make changes in subwindows
     - style window action bar (top)
     - inputs should have smaller fonts (new entry in dict)
@@ -29,7 +31,7 @@
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
-
+- ~~integrate markdown-to-html and pyinstaller somehow to unify the build process~~
 - ~~make options menu collapsible (collapsed by default)~~
 - ~~debug switch on script run~~
 - ~~make sure that the supported sites and readme is accessible in executable~~
