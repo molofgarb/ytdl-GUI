@@ -1,13 +1,22 @@
+<<<<<<< HEAD
 <h1 align=center> 
   <img src="resources/logo.ico?raw=true" alt="ytdl-gui logo" width="30"> ytdl-GUI 
 </h1>
+=======
+![ytdl-GUI logo](resources/logo.ico?raw=true "ytdl-gui logo")
+>>>>>>> 72cbb86 (merge with main)
 
 <div align=center><img alt="GitHub" src="https://img.shields.io/github/license/molofgarb/ytdl-GUI"></div>
 <p align=center>A graphical user interface for the command line program, youtube-dlp, written in Python 3</p>
 
+<<<<<<< HEAD
 
 <div align=center><img src="resources/banner.png?raw=true" alt="ytdl-gui picture"></div>
 
+=======
+![ytdl-GUI](resources/banner.png?raw=true "ytdl-gui picture")
+
+>>>>>>> 72cbb86 (merge with main)
 ---
 
 # Installation
@@ -22,6 +31,11 @@ I have only been able to text the executable on a Windows 10 system. OSX and Lin
 3. Install npm and use npm to install markdown-to-html.
 4. Run make on the parent directory.
 
+<<<<<<< HEAD
+=======
+---
+
+>>>>>>> 72cbb86 (merge with main)
 # Usage
 1. Run the ytdl-GUI.exe program. 
 
@@ -33,6 +47,11 @@ I have only been able to text the executable on a Windows 10 system. OSX and Lin
 
 5. Enjoy your videos!
 
+<<<<<<< HEAD
+=======
+---
+
+>>>>>>> 72cbb86 (merge with main)
 # Notes
 - The program can be run using only the executable in the root -- ytdl-GUI.exe. The source code is found in ytdlGUI.py, and other assets can be found in the subdirectories. 
 
@@ -43,12 +62,27 @@ program, since this program uses yt-dlp's module.
 
 - yt-dlGUI_pyinstaller.bat is used to call pyInstaller to compile the script, ytdlGUI.py, along with its assets, into the final executable.
 
+<<<<<<< HEAD
 # Why?
 I made this mostly for fun, but also to do a little experimentation with tkinter. I also make youtube videos occasionally, so I wanted something quick and lightweight to use for my occasional video downloads. There are a few other yt-dlp GUI programs that are much nicer than mine, so if you're looking for a more functionality, you should check those out. 
 
 # License
 Licensed by the [MIT License](https://github.com/molofgarb/ytdl-GUI/blob/main/LICENSE).
 
+=======
+---
+
+# Why?
+I made this mostly for fun, but also to do a little experimentation with tkinter. I also make youtube videos occasionally, so I wanted something quick and lightweight to use for my occasional video downloads. There are a few other yt-dlp GUI programs that are much nicer than mine, so if you're looking for a more functionality, you should check those out. 
+
+---
+
+# License
+Licensed by the [MIT License](https://github.com/molofgarb/ytdl-GUI/blob/main/LICENSE).
+
+---
+
+>>>>>>> 72cbb86 (merge with main)
 # Credits
 yt-dlp and youtube-dl contributors for providing the tools needed for this program to work.
 
