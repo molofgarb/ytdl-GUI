@@ -6,10 +6,10 @@ MARKDOWN := README.md src/yt_dlp/supportedsites.md
 HTML := README.html supportedsites.html
 
 pyinstaller := \
-	pyinstaller --noconsole --clean -y -n "ytdl-GUI" -F --icon="resources\logo.ico" --distpath "." --windowed --paths="src" \
-		--add-data ".\README.html;." \
-		--add-data ".\supportedsites.html;." \
-		--add-data ".\resources\logo.ico;.\resources" \
+	pyinstaller --noconsole --clean -y -n "ytdl-GUI" -F --icon="resources/logo.ico" --distpath "." --windowed --paths="src" \
+		--add-data "README.html;." \
+		--add-data "supportedsites.html;." \
+		--add-data "resources/logo.ico;resources" \
 		--paths C:\Python35\Lib\site-packages\PyQt5\Qt\bin \
 		"src\ytdlGUI.py"
 #  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debugging
