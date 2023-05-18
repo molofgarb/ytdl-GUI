@@ -6,15 +6,11 @@ from platform import system
 from main_window import MainWindow
 
 if __name__ == "__main__":
-    debug = False
-    if (len(sys.argv) > 1): debug = (sys.argv[1] == 'debug') #debug mode used for development, true if debug argument passed
-    # print(sys.argv)
-
     windows = False
-    path = os.getcwd()
-    
-    # path = os.path.realpath(
-    #     os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    debug = False
+
+    if (len(sys.argv) > 1): 
+        debug = (sys.argv[1] == '--debug') #debug mode used for development, true if debug argument passed
 
     #Get info about environment
     if (system() == "Windows"):
@@ -25,8 +21,8 @@ if __name__ == "__main__":
         sys.exit("Unknown operating system")
 
     #icon stuff
+    path = os.getcwd()
     iconPath = ""
-    # if getattr(sys, 'frozen', False):
     if debug: iconPath = os.path.join(path, "resources/logo.ico") #for running as script
     else: iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico") #for pyinstaller
 

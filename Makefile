@@ -1,4 +1,5 @@
-.PHONY: all clean clean-html html
+.PHONY: all clean clean-html cleaner remake
+.DEFAULT_GOAL: all
 
 UNAME := $(shell uname)
 TARGET := ytdl-GUI.exe #Windows
@@ -10,8 +11,9 @@ pyinstaller := \
 		--add-data "README.html;." \
 		--add-data "supportedsites.html;." \
 		--add-data "resources/logo.ico;resources" \
-		--paths C:\Python35\Lib\site-packages\PyQt5\Qt\bin \
 		"src\ytdlGUI.py"
+# --paths C:\Python35\Lib\site-packages\PyQt5\Qt\bin
+		
 #  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debugging
 #  --clean removes PyInstaller temporary files
 #  -y automatically overwrites output directories/files without a confirmation prompt
@@ -21,36 +23,42 @@ pyinstaller := \
 #  --distpath .\ is the path that the final executable is generated in (do not make dist folder)
 #  --paths="src" -> second-level imports from the class/window files processed, not just the ytdlGUI.py imports
 #  --add-data adds the data specified in "<pathtofile>;<path>"
-#  src\ytdlGUI.py is the script that will be processed
+#  "src\ytdlGUI.py --build" is the script that will be processed
 
 
 #adjust vars to reflect OS
-ifneq (,$(filter $(UNAME), Linux Darwin)) #Linux or macOS, WIP
-TARGET := ytdl-GUI
+ifeq ($(filter ${shell uname}, Linux), Linux) #Linux
+    TARGET 	:= ytdl-GUI
+endif
+ifeq ($(filter ${shell uname}, Darwin), Darwin) #macOS
+    TARGET 	:= ytdl-GUI
 endif
 
 
 #check if build tools exist
 ifeq (, $(shell which pyinstaller)) #pyinstaller
-$(error "No pyinstaller in $(PATH), please install using pip")
+	$(shell echo No pyinstaller in PATH, please install using "pip install pyinstaller")
+	$(error "pyinstaller missing")
 endif
 
-ifeq (, $(shell which markdown)) #markdown-to-html
-$(error "No markdown-to-html in $(PATH), please install using npm")
+ifeq ("markdown not found", $(shell which markdown)) #markdown-to-html
+	$(shell echo No markdown-to-html in PATH, please install using "npm install markdown-to-html")
+	$(error "markdown missing")
 endif
 
+# =====================================
 
 all: $(TARGET)
 	-make clean-html
 
 $(TARGET): ${HTML} #requires pyinstaller from pip
 	-rm $@
-	make html
+	make ${HTML}
 	$(pyinstaller)
 
 ${HTML}: %.html: ${MARKDOWN}
-	markdown README.md > README.html
-	markdown src/yt_dlp/supportedsites.md > supportedsites.html
+	markdown $< > $@
+
 
 clean:
 	-rm ytdlGUI.spec
@@ -58,3 +66,8 @@ clean:
 clean-html:
 	-rm README.html
 	-rm supportedsites.html
+
+cleaner:
+	-@rm -f ${TARGET} 
+
+remake: cleaner all

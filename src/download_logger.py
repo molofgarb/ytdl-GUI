@@ -18,7 +18,7 @@ class DownloadLogger:
         if self.isDebug: print(msg) #debug
         if msg.startswith('[info]'): #if new video
             if self.simulate: #take care of prog. bar in place of dl_hook
-                if self.isDebug: print(self.root.currVideo)
+                if self.isDebug: print("from download_logger, the currvideo is", self.root.currVideo)
                 self.root.currVideo += 1
                 self.root.updateProgressBar(self.simulate)
                 

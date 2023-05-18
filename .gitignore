@@ -1,3 +1,13 @@
+# Ignore all extensionless binaries
+*
+!*.*
+!*/
+!Makefile
+
+# IDE/Local
+.vscode
+.archived-versions
+
 #macOS
 .DS_Store
 */.DS_Store

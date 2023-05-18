@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
-import os
-import sys
+
+import os, sys
+from multiprocessing import Process
+from threading import Thread
 
 from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
 
@@ -19,6 +21,7 @@ class MainWindow(tk.Tk):
             "bgcolor": "#525252",
             "textcolor": "white",
             "buttoncolor": "#656565",
+            "checkbuttoncheckcolor": "black",
             "mainfont": ("Verdana", "11")
         }
         
@@ -39,21 +42,23 @@ class MainWindow(tk.Tk):
         )
 
         #window data
-        self.data = data #dict from ytdlGUI.py
+        self.data = data #dict from ytdlGUI.py {debug, windows, path, iconPath}
         self.pending = [] #holds events that will happen
 
         self.URLs = [] #URLs of files to be downloaded
         self.filenames = [] #names of files as they are downloaded
-        self.formats = [] #WIP
+        self.formats = [] #TODO
+        self.process = 0 # holds YoutubeDL() process
         self.currVideo = 0 #index of video in URLs that is being checked/downloaded
 
+        #download format 
         self.format = tk.StringVar(self, "b") #default format is best of both
-        self.isExpandOptions = tk.BooleanVar(self, False) #if the options menu should be expanded
 
         #options
-        self.checkURLs = tk.BooleanVar(self, True) #if URLs should be checked before download
-        self.deleteOnFinish = tk.BooleanVar(self, True) #if user should be prompted to delete cancelled downloads
-        self.playSound = tk.BooleanVar(self, True) #if a sound should be played
+        self.isExpandOptions = tk.BooleanVar(self, False) #if the options menu should be expanded
+        self.ischeckURLs = tk.BooleanVar(self, True) #if URLs should be checked before download
+        self.isDeleteOnFinish = tk.BooleanVar(self, True) #if user should be prompted to delete cancelled downloads
+        self.isPlaySound = tk.BooleanVar(self, True) #if a sound should be played
         
         #initialize main window
         self.title("ytdl-GUI")
@@ -245,24 +250,27 @@ class MainWindow(tk.Tk):
         #play sound when download finished toggle
         self.playSoundCheck = tk.Checkbutton(
             self.optionsFrame, text = "Play sound after download/error",
-            variable=self.playSound, onvalue=True, offvalue=False, 
-            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
+            variable=self.isPlaySound, onvalue=True, offvalue=False, 
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
+            selectcolor=self.style["checkbuttoncheckcolor"]
         )
         self.playSoundCheck.grid(row=10, sticky='w')
 
         #check if URLs are valid before downloading
         self.checkURLsCheck = tk.Checkbutton(
             self.optionsFrame, text = "Check URLs before download",
-            variable=self.checkURLs, onvalue=True, offvalue=False, 
-            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
+            variable=self.ischeckURLs, onvalue=True, offvalue=False, 
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
+            selectcolor=self.style["checkbuttoncheckcolor"]
         )
         self.checkURLsCheck.grid(row=20, sticky='w')
 
         #delete input on finish toggle
         self.deleteOnFinishCheck = tk.Checkbutton(
             self.optionsFrame, text = "Delete input after download",
-            variable=self.deleteOnFinish, onvalue=True, offvalue=False, 
-            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
+            variable=self.isDeleteOnFinish, onvalue=True, offvalue=False, 
+            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
+            selectcolor=self.style["checkbuttoncheckcolor"]
         )
         self.deleteOnFinishCheck.grid(row=30, sticky='w')
 
@@ -275,6 +283,7 @@ class MainWindow(tk.Tk):
         self.infoButton.grid(row=90, column=1, sticky="E")
 
     # =========== DIRECTORY ===========
+    
     #uses tkinter's askdirectory dialog to set directory in text box
     def setDirectory(self):
         dir = filedialog.askdirectory() #will very likely be valid
@@ -284,6 +293,7 @@ class MainWindow(tk.Tk):
             self.directoryText.insert(tk.END, dir)
 
     # =========== EXPAND OPTIONS ===========
+
     #toggles the expansion/minimization of the options frame
     def expandOptions(self):
         if self.isExpandOptions.get(): #was expanded
@@ -295,12 +305,7 @@ class MainWindow(tk.Tk):
             self.optionsFrame.grid(row=100, padx=2, pady=2, sticky="W")
             self.isExpandOptions.set(True)
 
-    # =========== DOWNLOADING ===========
-    #cancels everything in pending and then clears it
-    def cancelPending(self):
-        for x in self.pending:
-            self.after_cancel(x)
-        self.pending.clear()
+    # =========== INPUT/CHECK DOWNLOADS ===========
 
     #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self):
@@ -318,8 +323,8 @@ class MainWindow(tk.Tk):
             '''Error: Invalid Download Path\n\nPlease change download path to valid directory''')
 
     #make sure all URLs are valid before all downloads begin
-    def doCheckURLs(self, dl_options):
-        if self.checkURLs.get():
+    def checkURLs(self, dl_options):
+        if self.ischeckURLs.get():
             self.currVideo = 0
             dl_options['simulate'] = True
             try:
@@ -329,12 +334,14 @@ class MainWindow(tk.Tk):
             except Exception as ex:
                 ConfirmPrompt(self, self.data, self.style, 
                       f'''Error: Invalid URL\n\n'''
-                    + f'''Please check your URL #{self.currVideo + 1} '''
-                    + f'''again to make\n sure it is valid and compatible''')
+                    + f'''1) Please check your URL #{self.currVideo + 1} '''
+                    + f'''again to make sure it is valid and compatible\n''' 
+                    + f'''2) Please try using a different format to download these videos''')
                 if (self.data['debug']):
-                    print(self.URLs, ex)
+                    print(self.URLs, "are the bad URLs")
         return False
 
+    # =========== DOWNLOAD URLS ===========
 
     #downloads URLs in list -- main function
     def downloadURLs(self):
@@ -355,16 +362,20 @@ class MainWindow(tk.Tk):
             'progress_hooks': [self.dl_hook],
         }
 
-        if (self.checkURLs.get() and not self.doCheckURLs(dl_options)): #check URLs?
+        if (self.ischeckURLs.get() and not self.checkURLs(dl_options)): #check URLs?
+            print('here')
             self.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
+            return 1
+
         dl_options['simulate'] = dl_options['logger'].simulate = False
         self.currVideo = 0
+        self.process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs,))
+
         try: #begin downloads
             self.urlLabel.grid(row=1, padx=2, pady=2)
-
             self.updateProgressBar(False)
-            YoutubeDL(dl_options).download(self.URLs)
-            self.finishDownload("successful") #wrap up stuff + reset
+            self.process.start() # everything from here on out is owned by self.process (i think)
+
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
                 ConfirmPrompt(self, self.data, self.style, 
@@ -409,8 +420,8 @@ class MainWindow(tk.Tk):
             self.currProgressBar['value'] = 0 #reset curr progress bar
             
     #updates progress bar to indicate progress
-    def updateProgressBar(self, is_sim, keep_el=False):
-        if (is_sim and (self.currVideo < len(self.URLs))): #for URL check
+    def updateProgressBar(self, is_check, keep_el=False):
+        if (is_check and (self.currVideo < len(self.URLs))): #for URL check
             updateText(self, self.statusLabel, f'''Checking if URL #'''
                 + f'''{self.currVideo + 1} is valid...''')
 
@@ -432,30 +443,41 @@ class MainWindow(tk.Tk):
             self.pending.append( #sits in pending to indicate ellipse do-not-change, change if gone
                 self.after(1000, lambda: self.cancelPending())
             )
-
+            
         if (self.currVideo < len(self.URLs)): #update URL label to reflect current check
             updateText(self, self.urlLabel, f'''({self.URLs[self.currVideo]})''') #display url of video being dl'ed
 
+        if (self.currVideo == len(self.URLs)) and (not is_check): # last video is done (out of range)
+            self.finishDownload("successful") #wrap up stuff + reset
+            return 0 # this may be bad
+
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
+
+        
+
+    # =========== FINISH DOWNLOADING ===========
 
     #cancels download by clearing URLs, deletes downloaded files
     def cancelDownload(self):
         updateText(self, self.statusLabel, f"Download cancelled")
         self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
-        self.finishDownload("cancelled")
+        
         ConfirmPrompt(self, self.data, self.style, 
             "Do you want to delete the already downloaded files?",
             self.filenames)
+        
+        self.finishDownload("cancelled") # finishDownload will take care of the rest
 
     #summary after downloading videos
     def finishDownload(self, endText):
         updateText(self, self.statusLabel, f'Download {endText}') 
         self.inputButton.configure(text="Download", command=self.inputURLs)
-        if self.playSound.get(): self.bell() #makes sound upon completion
+        if self.isPlaySound.get(): self.bell() #makes sound upon completion
 
-        if (endText == "successful" and self.deleteOnFinish.get() == True):
+        if (endText == "successful" and self.isDeleteOnFinish.get() == True):
             self.inputText.delete("1.0", tk.END) #delete input
+
         self.URLs.clear() #clears URLs to make YoutubeDL() stop if running
 
         #reset delay (for visual appeal)
@@ -464,15 +486,27 @@ class MainWindow(tk.Tk):
             self.after(5000, lambda: updateText(self, self.statusLabel,
             "Awaiting URL input...\n"))
         )
-        self.pending.append(
+        self.pending.append( # remove urlLabel after 5 sec
             self.after(5000, lambda: self.urlLabel.grid_remove())
         )
-        self.pending.append(
+        self.pending.append( # remove progresbar after 5 sec
             self.after(5000, lambda: self.progressFrame.grid_remove())
         )
-        self.pending.append( #clear after ids
+        self.pending.append( #clear "after" ids
             self.after(6000, lambda: self.cancelPending())
         )
+
+        # close the thread that owns this function object
+        if self.process != 0 and self.process.is_alive():
+            if self.data['debug']: print("exit!")
+            # self.process.join()
+            sys.exit()
+
+        #cancels everything in pending and then clears it
+    def cancelPending(self):
+        for x in self.pending:
+            self.after_cancel(x)
+        self.pending.clear()
 
     # =========== INFO ===========
     def addSampleVideos(self):

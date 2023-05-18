@@ -55,7 +55,7 @@ class ConfirmPrompt(tk.Toplevel):
 
         if promptText.startswith("Error"): #error prompt (ok)
             self.noButton.grid(column=0, row=1, sticky="N", padx=30, pady=20)
-            if root.playSound.get(): self.bell() #sound
+            if root.isPlaySound.get(): self.bell() #sound
         else: #if confirm prompt (yes/no)
             updateText(self, self.noButton, "No")
             self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
@@ -65,10 +65,11 @@ class ConfirmPrompt(tk.Toplevel):
     def answer(self, action):
         self.update()
         if self.data["debug"]: print(self.filenames, self.data['path'])
-        if action: #delete prompt
-            if self.promptText == "Do you want to delete the already downloaded files?":
-                # print(self.filenames)
+        if action: # do something prompt (used in delete prompt)
+            if self.promptText == "Do you want to delete the already downloaded files?": # delete prompt
                 cmd = 'del' if (self.data['windows']) else 'rm'
-                for filename in self.filenames:
-                        os.system(cmd + ' ' + filename)
+
+                for filename in self.filenames: 
+                        os.system('rm' + ' ' + filename)
+
         self.destroy()

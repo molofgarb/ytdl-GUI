@@ -1,5 +1,11 @@
 ## To-do:
 
+- auto make and reget yt-dlp in case youtube key changes or something
+
+- add button in expand options to delete all *.part files in current directory
+    - auto delete *.part files if the first part matches the name of the file being downloaded + .part
+    - make deleting partial downloads delete the *.part file and re-delete in 5 sec
+
 - make buildfile up to spec with nyc-subway-tracker quality
 
 - add blue and gray color scheme (and make it pretty)
@@ -26,8 +32,7 @@
 - update readme for current version
 - keep track of version number and date in info box
 
-
-- save preferred configuration
+- save preferred configuration somewhere somehow
 
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
