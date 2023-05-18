@@ -26,27 +26,27 @@ class MainWindow(tk.Tk):
             "textcolor": "white",
             "buttoncolor": "#656565",
             "checkbuttoncheckcolor": "black",
-            "mainfont": ("Verdana", "11")
+            "mainfont": ("Verdana", "11"),
+
+            "styleOptions": [
+                ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
+                ("*background", self.style['bgcolor']),
+                ("*foreground", self.style['textcolor']),
+                ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"]),
+                ("*insertBackground", "black")
+            ],
+
+            "styleOptionsMac": [
+                ("*highlightBackground", self.style['bgcolor']), # make background consistent color
+                ("*highlightColor", self.style['bgcolor']), # make background consistent color
+                ("*Button*foreground", "black") # since bg is locked white, make text black
+            ]
         }
 
-        # style options
-        self.styleOptions = [
-            ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
-            ("*background", self.style['bgcolor']),
-            ("*foreground", self.style['textcolor']),
-            ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"]),
-            ("*insertBackground", "black")
-        ]
-        self.styleOptionsMac = [
-            ("*highlightBackground", self.style['bgcolor']), # make background consistent color
-            ("*highlightColor", self.style['bgcolor']), # make background consistent color
-            ("*Button*foreground", "black") # since bg is locked white, make text black
-        ]
-
         # apply options
-        for option in self.styleOptions: super().option_add(option[0], option[1])
+        for option in self.style['styleOptions']: super().option_add(option[0], option[1])
         if data['OS'] == "Darwin":
-            for option in self.styleOptionsMac: super().option_add(option[0], option[1])
+            for option in self.style['styleOptionsMac']: super().option_add(option[0], option[1])
 
         # styled separately because ttk used instead of tk
         self.ttkStyle = ttk.Style(self)
