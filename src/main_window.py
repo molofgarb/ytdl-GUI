@@ -33,7 +33,6 @@ class MainWindow(tk.Tk):
         self.styleOptions = [
             ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
             ("*background", self.style['bgcolor']),
-            # ("*selectBackground", self.style['bgcolor']),
             ("*foreground", self.style['textcolor']),
             ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"]),
             ("*insertBackground", "black")
