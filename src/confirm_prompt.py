@@ -25,9 +25,9 @@ class ConfirmPrompt(tk.Toplevel):
         ]
 
         # apply options
-        for option in self.styleOptions: super().option_add(option[0], option[1])
+        for option in self.style['styleOptions']: super().option_add(option[0], option[1])
         if data['OS'] == "Darwin":
-            for option in self.styleOptionsMac: super().option_add(option[0], option[1])
+            for option in self.style['styleOptionsMac']: super().option_add(option[0], option[1])
 
         super().configure( #style for entire window background
             background=self.style["bgcolor"]
