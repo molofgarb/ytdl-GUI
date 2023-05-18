@@ -16,9 +16,8 @@ if __name__ == "__main__":
     if (system() == "Windows"):
         windows = True
     elif (system() != "Darwin" and system() != "Linux"):
-        sys.exit("Operating system not supported")
-    else:
         sys.exit("Unknown operating system")
+        
 
     #icon stuff
     path = os.getcwd()
@@ -28,6 +27,7 @@ if __name__ == "__main__":
 
     data = { #info about environment
         'debug': debug,
+        'OS': system(),
         'windows': windows,
         'path': path,
         'iconPath': iconPath

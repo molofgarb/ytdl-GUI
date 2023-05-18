@@ -1,5 +1,8 @@
 ## To-do:
 
+- organize styles and fix macosx styles
+- in makefile, check for existence of tkinter (and tkmacosx if necessary)
+
 - auto make and reget yt-dlp in case youtube key changes or something
 
 - add button in expand options to delete all *.part files in current directory

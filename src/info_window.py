@@ -12,6 +12,22 @@ class InfoWindow(tk.Toplevel):
         self.windows = root.data['windows']
 
         self.style = style
+        # style options
+        self.styleOptions = [
+            ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
+            ("*background", self.style['bgcolor']),
+            ("*foreground", self.style['textcolor']),
+            ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"])
+        ]
+        self.styleOptionsMac = [
+            ("*highlightBackground", self.style['bgcolor']), # make background consistent color
+            ("*Button*foreground", "black") # since bg is locked white, make text black
+        ]
+
+        # apply options
+        for option in self.styleOptions: super().option_add(option[0], option[1])
+        if root.data['OS'] == "Darwin":
+            for option in self.styleOptionsMac: super().option_add(option[0], option[1])
 
         super().configure( #style for entire window background
             background=self.style["bgcolor"]
@@ -21,44 +37,38 @@ class InfoWindow(tk.Toplevel):
         self.iconbitmap(root.data['iconPath'])
         root.eval(f'tk::PlaceWindow {str(self)} center')
 
-        self.frame = tk.Frame(self, background=self.style["bgcolor"])
+        self.frame = tk.Frame(self)
         self.frame.grid(row=0, padx=20, pady=10)
 
         self.name = tk.Label(
             self.frame, text="ytdl-GUI by molofgarb",
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.name.grid(row=0, sticky="w", padx=(10, 0), pady=2)
 
         self.readmeButton = tk.Button(
             self.frame, text="Open Readme",
-            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: webbrowser.open("README.html")
         )
         self.readmeButton.grid(row=1, sticky="w", padx=(10, 0), pady=5)
 
         self.sitesButton = tk.Button(
             self.frame, text="Supported Websites",
-            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: webbrowser.open("supportedsites.html")
         )
         self.sitesButton.grid(row=2, sticky='w', padx=(10, 0), pady=5)
 
         self.thanksLabel = tk.Label(
             self.frame, text="\nThank you for using ytdl-GUI!",
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.thanksLabel.grid(row=3, sticky='w')
 
         self.repoLabel = tk.Label(
             self.frame, text="\nytdl-GUI GitHub:",
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.repoLabel.grid(row=4, sticky="W")
 
         self.repoLink = tk.Label(
             self.frame, text="https://github.com/molofgarb/ytdl-GUI",
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'],
             cursor="hand2"
         )
         self.repoLink.grid(row=5, sticky="W")
@@ -68,13 +78,11 @@ class InfoWindow(tk.Toplevel):
 
         self.ytdlpRepoLabel = tk.Label(
             self.frame, text="\nyt-dlp GitHub:",
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont']
         )
         self.ytdlpRepoLabel.grid(row=6, sticky="W")
 
         self.ytdlpRepoLink = tk.Label(
             self.frame, text="https://github.com/yt-dlp/yt-dlp",
-            background=style["bgcolor"], foreground=style["textcolor"], font=style['mainfont'],
             cursor="hand2"
         )
         self.ytdlpRepoLink.grid(row=7, sticky="W")

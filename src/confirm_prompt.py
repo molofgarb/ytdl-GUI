@@ -9,9 +9,25 @@ from tk_common import updateText
 class ConfirmPrompt(tk.Toplevel):
     def __init__(self, root, data, style, promptText, filenames=None):
         super().__init__(root)
-
         self.data = data
+
         self.style = style
+        # style options
+        self.styleOptions = [
+            ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
+            ("*background", self.style['bgcolor']),
+            ("*foreground", self.style['textcolor']),
+            ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"])
+        ]
+        self.styleOptionsMac = [
+            ("*highlightBackground", self.style['bgcolor']), # make background consistent color
+            ("*Button*foreground", "black") # since bg is locked white, make text black
+        ]
+
+        # apply options
+        for option in self.styleOptions: super().option_add(option[0], option[1])
+        if data['OS'] == "Darwin":
+            for option in self.styleOptionsMac: super().option_add(option[0], option[1])
 
         super().configure( #style for entire window background
             background=self.style["bgcolor"]
@@ -36,20 +52,17 @@ class ConfirmPrompt(tk.Toplevel):
         # ------- WIDGETS -------
         self.questionLabel = tk.Label(
             self.frame, text = promptText,
-            background=self.style["bgcolor"], foreground=self.style["textcolor"], font=self.style['mainfont']
         )
         self.questionLabel.grid(sticky="N", columnspan=1 if promptText.startswith("Error") else 2, padx=15)
 
         self.yesButton = tk.Button(
             self.frame, text="Yes",
             width=6,
-            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: self.answer(True)
         )
         self.noButton = tk.Button( #No/Ok
             self.frame, text = "Ok",
             width=6, 
-            background=self.style["buttoncolor"], foreground=self.style["textcolor"], font=self.style['mainfont'],
             command=lambda: self.answer(False)
         )
 
