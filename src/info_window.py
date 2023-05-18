@@ -69,7 +69,7 @@ class InfoWindow(tk.Toplevel):
 
         self.repoLink = tk.Label(
             self.frame, text="https://github.com/molofgarb/ytdl-GUI",
-            cursor="hand2"
+            cursor="hand2", foreground="#007bff", font="Verdana 11 underline"
         )
         self.repoLink.grid(row=5, sticky="W")
         self.repoLink.bind(
@@ -83,7 +83,7 @@ class InfoWindow(tk.Toplevel):
 
         self.ytdlpRepoLink = tk.Label(
             self.frame, text="https://github.com/yt-dlp/yt-dlp",
-            cursor="hand2"
+            cursor="hand2", foreground="#007bff", font="Verdana 11 underline"
         )
         self.ytdlpRepoLink.grid(row=7, sticky="W")
         self.ytdlpRepoLink.bind(
