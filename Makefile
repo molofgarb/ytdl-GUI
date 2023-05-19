@@ -20,40 +20,42 @@ MARKDOWN := README.md src/yt_dlp/supportedsites.md
 HTML := README.html supportedsites.html
 
 pyinstaller := \
-	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="resources_data/logo.gif" --distpath "." --windowed --paths="src" \
+	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="resources_data/logo.gif" --distpath "bin" --windowed --paths="src" \
 		--add-data "README.html${PYINST_SEP}." \
 		--add-data "supportedsites.html${PYINST_SEP}." \
 		--add-data "resources_data/logo.gif${PYINST_SEP}resources_data" \
 		"src/ytdlGUI.py"
 		
-#  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debuggingx	x
+#  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debugging
 #  --clean removes PyInstaller temporary files
 #  -y automatically overwrites output directories/files without a confirmation prompt
-#  -n "ytdl-GUI" specifies the name for the final executable file
+#  -n "${TARGET}" specifies the name for the final executable file
 #  -F asks PyInstaller to bundle the script and all assets into one big executable file.
-#  --icon="..\resources\logo.ico" specifies the icon that should be used for the executable.
-#  --distpath .\ is the path that the final executable is generated in (do not make dist folder)
+#  --icon="..\resources_data\logo.gif" specifies the icon that should be used for the executable.
+#  --distpath bin is the path that the final executable is generated in 
 #  --paths="src" -> second-level imports from the class/window files processed, not just the ytdlGUI.py imports
 #  --add-data adds the data specified in "<pathtofile>;<path>"
-#  "src\ytdlGUI.py --build" is the script that will be processed
+#  "src\ytdlGUI.py" is the script that will be processed
 
 
-#check if build tools exist
+#check if build tools exist (if they exist, then they print something to stdout)
 ifeq (, $(shell which pyinstaller)) #pyinstaller
-	$(shell echo No pyinstaller in PATH, please install using "pip install pyinstaller")
-	$(error "pyinstaller missing")
+    $(error "Pyinstaller is missing. Please install pyinstaller using "pip3 install pyinstaller".")
 endif
 
-ifeq ("markdown not found", $(shell which markdown)) #markdown-to-html
-	$(shell echo No markdown-to-html in PATH, please install using "npm install markdown-to-html")
-	$(error "markdown missing")
+ifeq (, $(shell which markdown)) #markdown-to-html
+    $(error "Markdown-to-html is missing. Please install markdown-to-html using "npm -g install markdown-to-html".")
+endif
+
+ifeq (, $(shell python3 -c "import tkinter; print('all good')")) #tkinter
+    $(error Python Tkinter is missing. Please install Tkinter.)
 endif
 
 # =====================================
 
 all: $(TARGET)
 
-$(TARGET): ${HTML} #requires pyinstaller from pip
+$(TARGET): ${HTML}
 	-rm $@
 	make ${HTML}
 	$(pyinstaller)
@@ -61,6 +63,7 @@ $(TARGET): ${HTML} #requires pyinstaller from pip
 ${HTML}: %.html: ${MARKDOWN}
 	markdown $< > $@
 
+# =====================================
 
 clean:
 	-rm ytdl-GUI.spec
@@ -72,6 +75,7 @@ clean-html:
 	-rm supportedsites.html
 
 cleaner:
+	make clean
 	-@rm -f ${TARGET} 
 	-@rm -rf ${TARGET}.app
 
