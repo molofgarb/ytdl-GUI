@@ -1,6 +1,8 @@
 ## To-do:
 
-- organize styles and fix macosx styles
+- move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread
+- rename windows to be more logical
+
 - in makefile, check for existence of tkinter (and tkmacosx if necessary)
 
 - auto make and reget yt-dlp in case youtube key changes or something
@@ -40,6 +42,7 @@
 - put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~organize styles and fix macosx styles~~
 - ~~integrate markdown-to-html and pyinstaller somehow to unify the build process~~
 - ~~make options menu collapsible (collapsed by default)~~
 - ~~debug switch on script run~~
