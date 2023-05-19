@@ -2,15 +2,13 @@
 
 - move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread
 
-- in makefile, check for existence of tkinter (and tkmacosx if necessary)
-
 - auto make and reget yt-dlp in case youtube key changes or something
 
 - add button in expand options to delete all *.part files in current directory
     - auto delete *.part files if the first part matches the name of the file being downloaded + .part
     - make deleting partial downloads delete the *.part file and re-delete in 5 sec
-
-- make buildfile up to spec with nyc-subway-tracker quality
+- add button in expand options to auto delete if cancel/fail (default off)
+- add button in expand options to continue with a chain of downloads if one fails a check (default off
 
 - add blue and gray color scheme (and make it pretty)
     - make changes in subwindows
@@ -26,8 +24,6 @@
 
 - download log
 
-
-
 - show all of progress_hooks information as advanced setting
 
 - fix bug where new download started within 5 seconds of previous download
@@ -39,6 +35,8 @@
 
 - make window centering appear truly center
 
+- ~~make buildfile up to spec with nyc-subway-tracker quality~~
+- ~~in makefile, check for existence of tkinter (and tkmacosx if necessary)~~
 - ~~add true macOS compatability~~
     - ~~fix icon issue on mac~~
 - ~~rename windows to be more logical~~
