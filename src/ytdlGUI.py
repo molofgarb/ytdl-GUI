@@ -3,7 +3,9 @@
 import os, sys
 from platform import system
 
-from main_window import MainWindow
+import tkinter as tk
+
+from window_main import MainWindow
 
 if __name__ == "__main__":
     windows = False
@@ -22,8 +24,8 @@ if __name__ == "__main__":
     #icon stuff
     path = os.getcwd()
     iconPath = ""
-    if debug: iconPath = os.path.join(path, "resources/logo.ico") #for running as script
-    else: iconPath = os.path.join(sys._MEIPASS, "resources/logo.ico") #for pyinstaller
+    if debug: iconPath = os.path.join(path, "resources_data/logo.gif") #for running as script
+    else: iconPath = os.path.join(sys._MEIPASS, "resources_data/logo.gif") #for pyinstaller
 
     data = { #info about environment
         'debug': debug,
@@ -37,7 +39,12 @@ if __name__ == "__main__":
 
     #defines main window
     root = MainWindow(data)
-    root.iconbitmap(iconPath)
+    # root.iconbitmap(iconPath)
+
+    #applies icon
+    img = tk.Image("photo", file=data['iconPath'])
+    root.iconphoto(True, img)
+    root.tk.call('wm','iconphoto', root._w, img)
 
     #loop!!
     root.mainloop()

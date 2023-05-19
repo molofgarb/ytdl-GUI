@@ -1,7 +1,6 @@
 ## To-do:
 
 - move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread
-- rename windows to be more logical
 
 - in makefile, check for existence of tkinter (and tkmacosx if necessary)
 
@@ -39,9 +38,9 @@
 
 - save preferred configuration somewhere somehow
 
-- put the G in GUI (make the interface look prettier)
 - make window centering appear truly center
 
+- ~~rename windows to be more logical~~
 - ~~organize styles and fix macosx styles~~
 - ~~integrate markdown-to-html and pyinstaller somehow to unify the build process~~
 - ~~make options menu collapsible (collapsed by default)~~
