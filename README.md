@@ -18,7 +18,9 @@ I have only been able to text the executable on a Windows 10 system. OSX and Lin
 ## Build from Source
 
 1. Clone the repository.
-2. Install python and pip. Use pip to install PyInstaller.
+2. Install python and pip. 
+3. Use pip to install PyInstaller.
+4. Install Tkinter.
 3. Install npm and use npm to install markdown-to-html.
 4. Run make on the parent directory.
 
