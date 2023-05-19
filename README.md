@@ -1,12 +1,12 @@
 <h1 align=center> 
-  <img src="resources/logo.ico?raw=true" alt="ytdl-gui logo" width="30"> ytdl-GUI 
+  <img src="resources_data/logo.ico?raw=true" alt="ytdl-gui logo" width="30"> ytdl-GUI 
 </h1>
 
 <div align=center><img alt="GitHub" src="https://img.shields.io/github/license/molofgarb/ytdl-GUI"></div>
 <p align=center>A graphical user interface for the command line program, youtube-dlp, written in Python 3</p>
 
 
-<div align=center><img src="resources/banner.png?raw=true" alt="ytdl-gui picture"></div>
+<div align=center><img src="resources_data/banner.png?raw=true" alt="ytdl-gui picture"></div>
 
 ---
 
