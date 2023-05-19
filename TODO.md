@@ -26,8 +26,7 @@
 
 - download log
 
-- add true macOS compatability
-    - fix icon issue on mac
+
 
 - show all of progress_hooks information as advanced setting
 
@@ -40,6 +39,8 @@
 
 - make window centering appear truly center
 
+- ~~add true macOS compatability~~
+    - ~~fix icon issue on mac~~
 - ~~rename windows to be more logical~~
 - ~~organize styles and fix macosx styles~~
 - ~~integrate markdown-to-html and pyinstaller somehow to unify the build process~~

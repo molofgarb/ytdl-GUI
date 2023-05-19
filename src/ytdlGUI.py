@@ -10,22 +10,30 @@ from window_main import MainWindow
 if __name__ == "__main__":
     windows = False
     debug = False
+    opsys = system()
 
     if (len(sys.argv) > 1): 
         debug = (sys.argv[1] == '--debug') #debug mode used for development, true if debug argument passed
 
     #Get info about environment
-    if (system() == "Windows"):
+    if (opsys == "Windows"):
         windows = True
-    elif (system() != "Darwin" and system() != "Linux"):
+    elif (opsys != "Darwin" and opsys != "Linux"):
         sys.exit("Unknown operating system")
         
 
-    #icon stuff
-    path = os.getcwd()
+    #set path
+    path = os.path.dirname(sys.executable)
+    if (path[-28:] == "/ytdl-GUI.app/Contents/MacOS"): # if in .app package
+        path = path[:-28] #move out of .app package
+
+    #set iconPath
     iconPath = ""
-    if debug: iconPath = os.path.join(path, "resources_data/logo.gif") #for running as script
-    else: iconPath = os.path.join(sys._MEIPASS, "resources_data/logo.gif") #for pyinstaller
+    if debug: 
+        path = os.getcwd() # reset path to wherever the this script is being run from
+        iconPath = os.path.join(path, "resources_data/logo.gif") #for running as script
+    else: 
+        iconPath = os.path.join(sys._MEIPASS, "resources_data/logo.gif") #for pyinstaller
 
     data = { #info about environment
         'debug': debug,

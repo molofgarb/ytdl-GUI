@@ -4,6 +4,7 @@
 UNAME := $(shell uname)
 TARGET := ytdl-GUI.exe #Windows
 PYINST_SEP := ;
+IMGEXT := gif
 
 #adjust vars to reflect OS
 ifeq ($(filter ${UNAME}, Linux), Linux) #Linux
@@ -13,6 +14,7 @@ endif
 ifeq ($(filter ${UNAME}, Darwin), Darwin) #macOS
     TARGET 	:= ytdl-GUI
     PYINST_SEP := :
+	IMGEXT := icns
 endif
 
 
@@ -20,7 +22,7 @@ MARKDOWN := README.md src/yt_dlp/supportedsites.md
 HTML := README.html supportedsites.html
 
 pyinstaller := \
-	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="resources_data/logo.gif" --distpath "bin" --windowed --paths="src" \
+	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="resources_data/logo.${IMGEXT}" --distpath "bin" --windowed --paths="src" \
 		--add-data "README.html${PYINST_SEP}." \
 		--add-data "supportedsites.html${PYINST_SEP}." \
 		--add-data "resources_data/logo.gif${PYINST_SEP}resources_data" \
