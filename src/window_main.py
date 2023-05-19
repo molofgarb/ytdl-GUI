@@ -53,14 +53,15 @@ class MainWindow(tk.Tk):
         self.ttkStyle.theme_use("clam")
         self.ttkStyle.configure(
             "format.TRadiobutton",
-            background=self.style["bgcolor"], foreground=self.style['textcolor'], font=self.style['mainfont'],
-            state="normal"
+            background=self.style["bgcolor"], foreground=self.style['textcolor'], 
+            font=self.style['mainfont'],
         )
-        self.ttkStyle.map("format.TRadiobutton", 
-                          foreground=[('hover', self.style['bgcolor']), 
-                                      ('background', self.style['textcolor'])
-                                     ]
-                        )
+        self.ttkStyle.map("format.TRadiobutton", # make color of radio label dependent on state
+                          foreground=[
+                              ('hover', self.style['bgcolor']), 
+                              ('background', self.style['textcolor'])
+                          ]
+        )
         self.ttkStyle.configure(
             "format.Horizontal.TProgressbar",
             background=self.style["bgcolor"]
