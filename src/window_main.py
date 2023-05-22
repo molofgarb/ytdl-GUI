@@ -14,6 +14,8 @@ from window_info import InfoWindow
 from window_confirm import ConfirmPrompt
 from common_tk import updateText
 
+updateQueue = queue.Queue()
+
 class MainWindow(tk.Tk):
     def __init__(self, data):
         super().__init__()  #inherit all the stuff from tk.Tk -- base window
@@ -80,7 +82,6 @@ class MainWindow(tk.Tk):
         self.URLs = [] #URLs of files to be downloaded
         self.filenames = [] #names of files as they are downloaded
         self.formats = [] #TODO
-        self.processLogger = None
         self.currVideo = 0 #index of video in URLs that is being checked/downloaded
 
         #download format 
@@ -357,15 +358,14 @@ class MainWindow(tk.Tk):
 
         # multithreading
         process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs,))
-        updateQueue = queue.Queue()
-        self.processLogger = DownloadLogger(self, True, updateQueue)
+        global updateQueue
 
         dl_options = {
             "paths": {'home': self.directoryText.get(1.0, tk.END)}, 
             "nocheckcertificate": True, 
             "format": self.format.get(),
             'simulate': True,
-            'logger': self.processLogger,
+            'logger': DownloadLogger(self, True, updateQueue),
             'progress_hooks': [self.dl_hook],
         }
 

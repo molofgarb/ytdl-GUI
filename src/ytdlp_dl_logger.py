@@ -20,14 +20,15 @@ class DownloadLogger(Logger):
         else:
             self.info(msg)
 
-    # runs for every download
+    # runs for every message
     def info(self, msg): #for every download,
         if self.isDebug: print(msg) #debug
         if msg.startswith('[info]'): #if new video
-            if self.simulate: #take care of prog. bar in place of dl_hook
-                if self.isDebug: print("from download_logger, the currvideo is", self.root.currVideo)
-                self.root.currVideo += 1
-                self.root.updateProgressBar(self.simulate)
+            if self.isDebug: print("from download_logger, the currvideo is", self.root.currVideo)
+            self.root.updateProgressBar(self.simulate)
+            self.root.currVideo += 1
+        elif msg.startswith('[download]'):
+            self.root.curr
                 
             
     def warning(self, msg):
@@ -59,7 +60,7 @@ def dl_hook(self, d):
             except: #dont show anything
                 currProgressBarValue = 0
 
-        self.update()
+        # self.update()
 
         if self.data['debug']: 
             print('') #prints video download status to stdout
