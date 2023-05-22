@@ -5,6 +5,7 @@ from tkinter import filedialog
 import os, sys
 # from multiprocessing import Process
 from threading import Thread
+import queue
 
 from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
 
@@ -79,7 +80,7 @@ class MainWindow(tk.Tk):
         self.URLs = [] #URLs of files to be downloaded
         self.filenames = [] #names of files as they are downloaded
         self.formats = [] #TODO
-        self.process = 0 # holds YoutubeDL() process
+        self.processLogger = None
         self.currVideo = 0 #index of video in URLs that is being checked/downloaded
 
         #download format 
@@ -345,36 +346,43 @@ class MainWindow(tk.Tk):
 
     #downloads URLs in list -- main function
     def downloadURLs(self):
-        self.inputButton.configure(text="Cancel", 
-            command=self.cancelDownload) #to cancel download
         self.cancelPending() #get rid of any pending after() calls
 
-        self.progressFrame.grid(row=50) #show progress bars
+        # set up GUI for downloading
         self.progressBar['value'] = 0
         self.currProgressBar['value'] = 0
+        self.progressFrame.grid(row=50)
+        self.inputButton.configure(text="Cancel", 
+            command=self.cancelDownload) #to cancel download
+
+        # multithreading
+        process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs,))
+        updateQueue = queue.Queue()
+        self.processLogger = DownloadLogger(self, True, updateQueue)
 
         dl_options = {
             "paths": {'home': self.directoryText.get(1.0, tk.END)}, 
             "nocheckcertificate": True, 
             "format": self.format.get(),
             'simulate': True,
-            'logger': DownloadLogger(self, True),
+            'logger': self.processLogger,
             'progress_hooks': [self.dl_hook],
         }
 
         if (self.ischeckURLs.get() and not self.checkURLs(dl_options)): #check URLs?
-            print('here')
             self.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
             return 1
 
+        # reinitialize after possible simulation
         dl_options['simulate'] = dl_options['logger'].simulate = False
-        self.currVideo = 0
-        self.process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs,))
+        self.currVideo = 0 
 
         try: #begin downloads
             self.urlLabel.grid(row=1, padx=2, pady=2)
             self.updateProgressBar(False)
-            self.process.start() # everything from here on out is owned by self.process (i think)
+            process.start() # start downloading
+            while True:
+                task = updateQueue.get()
 
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
@@ -383,41 +391,9 @@ class MainWindow(tk.Tk):
                 if (self.data['debug']):
                     print(self.URLs, ex)
                 self.finishDownload("unsuccessful") #wrap up stuff + reset
-
-    #runs during each download (NOT SIMULATE/CHECK), keeps track of status of that individual download
-    def dl_hook(self, d):
-
-        #if nothing pending, then animate ellipses
-        if (len(self.pending) == 0): 
-            self.updateProgressBar(False)
-
-        if d['status'] == 'downloading': #update currprogressbar if download to indicate dl prog
-            try: #progress as bytes dl'ed
-                self.currProgressBar['value'] = ( d['downloaded_bytes'] /
-                    d['total_bytes'] ) * 100
-            except:
-                try: #progress as time elapsed
-                    self.currProgressBar['value'] = ( d['elapsed'] /
-                        (d['elapsed'] + d['eta']) ) * 100
-                except: #dont show anything
-                    self.currProgressBar['value'] = 0
-            self.update()
-            if self.data['debug']: print('') #prints video download status to stdout
-            if ((len(self.filenames) == 0) or
-                (self.filenames[len(self.filenames) - 1] != ('"' + str(d['filename']) + '.part' + '"'))
-            ): #add partfile to end
-                self.filenames.append(('"' + str(d['filename']) + '.part' + '"'))
-
-        elif d['status'] == 'finished': #when a download/check has finished 
-            if 'elapsed' in d: #if a download occurred
-                partfile = self.filenames.pop()
-                if (partfile == ('"' + str(d['filename']) + '.part' + '"')): #if confirmed to be part file
-                    self.filenames.append('"' + str(d['filename']) + '"') #add to completed dl list in final directory format
-                else:
-                    self.filenames.append(partfile) #if it was something else
-            self.currVideo += 1
-            self.updateProgressBar(False, True)
-            self.currProgressBar['value'] = 0 #reset curr progress bar
+            return 2
+        
+        return 0
             
     #updates progress bar to indicate progress
     def updateProgressBar(self, is_check, keep_el=False):
@@ -461,7 +437,7 @@ class MainWindow(tk.Tk):
     #cancels download by clearing URLs, deletes downloaded files
     def cancelDownload(self):
         updateText(self, self.statusLabel, f"Download cancelled")
-        self.URLs.clear() #this will cause an error with downloadURLs(), stopping it
+        
         
         ConfirmPrompt(self, self.data, self.style, 
             "Do you want to delete the already downloaded files?",
