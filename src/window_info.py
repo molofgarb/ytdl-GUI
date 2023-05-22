@@ -110,14 +110,13 @@ class InfoWindow(tk.Toplevel):
         self.removeSampleButton.grid(row=2, column=1, sticky='w', padx=(20, 10), pady=5)
 
     def removeSampleVideos(self):
-        cmd = 'del' if (self.windows) else 'rm'
         sampleVideos = [
-            '"(subprocess) solved! FileNotFoundError - [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"',
+            '"(subprocess) solved! FileNotFoundError: [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4"',
             '"Dramatic Sable [BDqOmwM].mp4"',
             '"get wifi anywhere you go vine ad scam [9p0pdiTOlzw].mp4"',
             '"Me at the zoo [jNQXAC9IVRw].mp4"',
             '"Vine Boom Sound Effect [Y_pbEOem2HU].mp4"'
-            '"https://youtu.be/f1A7SdVTlok"'
+            '"10 hour timer [f1A7SdVTlok].mp4"'
         ]
         for x in sampleVideos:
-            os.system(cmd + ' ' + x)
+            os.remove(x)

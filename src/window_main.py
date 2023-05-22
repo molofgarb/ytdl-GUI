@@ -3,13 +3,14 @@ from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
     
 import os, sys
-# from multiprocessing import Process
+
 from threading import Thread
 import queue
 
 from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
 
 from ytdlp_dl_logger import DownloadLogger
+from ytdlp_dl_logger import dl_hook
 from window_info import InfoWindow
 from window_confirm import ConfirmPrompt
 from common_tk import updateText
@@ -356,8 +357,6 @@ class MainWindow(tk.Tk):
         self.inputButton.configure(text="Cancel", 
             command=self.cancelDownload) #to cancel download
 
-        # multithreading
-        process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs,))
         global updateQueue
 
         dl_options = {
@@ -365,24 +364,50 @@ class MainWindow(tk.Tk):
             "nocheckcertificate": True, 
             "format": self.format.get(),
             'simulate': True,
-            'logger': DownloadLogger(self, True, updateQueue),
-            'progress_hooks': [self.dl_hook],
+            'logger': DownloadLogger(self, updateQueue),
+            'progress_hooks': [dl_hook],
         }
 
+        # TODO make check multithreaded as well
         if (self.ischeckURLs.get() and not self.checkURLs(dl_options)): #check URLs?
             self.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
             return 1
 
         # reinitialize after possible simulation
         dl_options['simulate'] = dl_options['logger'].simulate = False
+        process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs, ))
         self.currVideo = 0 
 
         try: #begin downloads
             self.urlLabel.grid(row=1, padx=2, pady=2)
             self.updateProgressBar(False)
-            process.start() # start downloading
+
+            # clear queue and start thread
+            while not updateQueue.empty(): updateQueue.get()
+            process.start()
+
+            # listen for GUI updates
             while True:
-                task = updateQueue.get()
+                self.update()
+
+                if (self.currVideo == len(self.URLs)): # no more videos
+                    break
+
+                # a video was finished
+                if not updateQueue.empty():
+                    task = updateQueue.get(False)
+                    if task == -1: # done with one download
+                        self.updateProgressBar(False, True)
+                        self.currVideo += 1
+                        print(f'the currvideo right now after increment is {self.currVideo} and the task was {task}')
+                    else:
+                        self.currProgressBar['value'] = task
+
+                self.update()
+
+            # finish
+            self.finishDownload("successful")
+            process.join()
 
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
@@ -437,7 +462,7 @@ class MainWindow(tk.Tk):
     #cancels download by clearing URLs, deletes downloaded files
     def cancelDownload(self):
         updateText(self, self.statusLabel, f"Download cancelled")
-        
+        #TODO
         
         ConfirmPrompt(self, self.data, self.style, 
             "Do you want to delete the already downloaded files?",
@@ -460,23 +485,13 @@ class MainWindow(tk.Tk):
         self.cancelPending() #in case there are already cancels inside 
         self.pending.append(
             self.after(5000, lambda: updateText(self, self.statusLabel,
-            "Awaiting URL input...\n"))
-        )
+            "Awaiting URL input...\n")))
         self.pending.append( # remove urlLabel after 5 sec
-            self.after(5000, lambda: self.urlLabel.grid_remove())
-        )
+            self.after(5000, lambda: self.urlLabel.grid_remove()))
         self.pending.append( # remove progresbar after 5 sec
-            self.after(5000, lambda: self.progressFrame.grid_remove())
-        )
+            self.after(5000, lambda: self.progressFrame.grid_remove()))
         self.pending.append( #clear "after" ids
-            self.after(6000, lambda: self.cancelPending())
-        )
-
-        # close the thread that owns this function object
-        if self.process != 0 and self.process.is_alive():
-            if self.data['debug']: print("exit!")
-            # self.process.join()
-            sys.exit()
+            self.after(6000, lambda: self.cancelPending()))
 
         #cancels everything in pending and then clears it
     def cancelPending(self):
@@ -491,6 +506,6 @@ class MainWindow(tk.Tk):
             "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
             "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
             "jNQXAC9IVRw\n" + #me at the zoo
-            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n" +
-            "https://youtu.be/f1A7SdVTlok"
+            "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n"
+            # "https://youtu.be/f1A7SdVTlok"
         ) #default text
