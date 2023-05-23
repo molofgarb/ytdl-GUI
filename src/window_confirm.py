@@ -7,11 +7,11 @@ import os
 from common_tk import updateText
 
 class ConfirmPrompt(tk.Toplevel):
-    def __init__(self, root, data, style, promptText, filenames=None):
+    def __init__(self, root, promptText: str, filenames: list = None):
         super().__init__(root)
-        self.data = data
+        self.data = root.data
 
-        self.style = style
+        self.style = root.style
         # style options
         self.styleOptions = [
             ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
@@ -26,7 +26,7 @@ class ConfirmPrompt(tk.Toplevel):
 
         # apply options
         for option in self.style['styleOptions']: super().option_add(option[0], option[1])
-        if data['OS'] == "Darwin":
+        if self.data['OS'] == "Darwin":
             for option in self.style['styleOptionsMac']: super().option_add(option[0], option[1])
 
         super().configure( #style for entire window background
@@ -75,14 +75,21 @@ class ConfirmPrompt(tk.Toplevel):
             self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
 
 
-    def answer(self, action):
+    def answer(self, action: bool) -> None:
         self.update()
+
         if self.data["debug"]: print(self.filenames, self.data['path'])
         if action: # do something prompt (used in delete prompt)
             if self.promptText == "Do you want to delete the already downloaded files?": # delete prompt
-                cmd = 'del' if (self.data['windows']) else 'rm'
-
                 for filename in self.filenames: 
-                        os.system('rm' + ' ' + filename)
+                    try:
+                        os.remove(filename)
+                    except Exception as ex1:
+                        try:
+                            os.remove(filename + ".part")
+                        except Exception as ex2:
+                            continue
+            elif ...:
+                ...
 
         self.destroy()

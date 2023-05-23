@@ -3,22 +3,24 @@ from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
     
 import os, sys
+import time
 
 from threading import Thread
 import queue
 
 from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
 
-from ytdlp_dl_logger import DownloadLogger
-from ytdlp_dl_logger import dl_hook
+from ytdlp_logger import DownloadLogger
 from window_info import InfoWindow
 from window_confirm import ConfirmPrompt
 from common_tk import updateText
 
+
 updateQueue = queue.Queue()
 
+
 class MainWindow(tk.Tk):
-    def __init__(self, data):
+    def __init__(self, data: dict) -> None:
         super().__init__()  #inherit all the stuff from tk.Tk -- base window
         self.data = data #dict from ytdlGUI.py {debug, windows, path, iconPath}
 
@@ -86,7 +88,7 @@ class MainWindow(tk.Tk):
         self.currVideo = 0 #index of video in URLs that is being checked/downloaded
 
         #download format 
-        self.format = tk.StringVar(self, "b") #default format is best of both
+        self.format = tk.StringVar(self, "b") #default format is best of both (video, audio)
 
         #options
         self.isExpandOptions = tk.BooleanVar(self, False) #if the options menu should be expanded
@@ -161,7 +163,7 @@ class MainWindow(tk.Tk):
         if self.data['debug']:
             self.testButton = tk.Button(
                 self.frame, height=1, width=6,
-                text = "test", command=lambda: ConfirmPrompt(self, self.data, "test!"), 
+                text = "test", command=lambda: ConfirmPrompt(self, "test!"), 
             )
             self.testButton.grid(row=31, sticky="N")
 
@@ -288,7 +290,7 @@ class MainWindow(tk.Tk):
     # =========== DIRECTORY ===========
     
     #uses tkinter's askdirectory dialog to set directory in text box
-    def setDirectory(self):
+    def setDirectory(self) -> None:
         dir = filedialog.askdirectory() #will very likely be valid
         if self.data['debug']: print(self.pending)
         if (dir != ""):
@@ -298,7 +300,7 @@ class MainWindow(tk.Tk):
     # =========== EXPAND OPTIONS ===========
 
     #toggles the expansion/minimization of the options frame
-    def expandOptions(self):
+    def expandOptions(self) -> None:
         if self.isExpandOptions.get(): #was expanded
             self.expandOptionsButton.configure(text="Expand Options")
             self.optionsFrame.grid_remove()
@@ -311,46 +313,55 @@ class MainWindow(tk.Tk):
     # =========== INPUT/CHECK DOWNLOADS ===========
 
     #takes inputs, stores them in URLs, and then calls download function
-    def inputURLs(self):
+    def inputURLs(self) -> bool:
         self.URLs = self.inputText.get(1.0, tk.END).split()
         path = self.directoryText.get(1.0, tk.END).replace("\n", "")
-        if (os.system('cd "' +  path + '"') == 0): #valid dir
+        try:
+            os.chdir(path)
             if len(self.URLs) > 0: #valid URLs
                 updateText(self, self.statusLabel, "URLs Received!\n")
                 self.downloadURLs()
+                return True
             else:
-                ConfirmPrompt(self, self.data, self.style, 
+                ConfirmPrompt(self, 
                 '''Error: No URLs provided\n\nPlease provide at least one URL''')
-        else:
-            ConfirmPrompt(self, self.data, self.style, 
+                return False
+        except Exception as ex:
+            ConfirmPrompt(self,
             '''Error: Invalid Download Path\n\nPlease change download path to valid directory''')
+            return False
 
     #make sure all URLs are valid before all downloads begin
-    def checkURLs(self, dl_options):
+    def checkURLs(self, dl_options: dict) -> bool:
         if self.ischeckURLs.get():
             self.currVideo = 0
-            dl_options['simulate'] = True
-            try:
+
+            try:            
                 self.updateProgressBar(True)
-                YoutubeDL(dl_options).download(self.URLs)
+                self.ytdlpThread(dl_options, True)
                 return True
+            
             except Exception as ex:
-                ConfirmPrompt(self, self.data, self.style, 
+                ConfirmPrompt(self,
                       f'''Error: Invalid URL\n\n'''
                     + f'''1) Please check your URL #{self.currVideo + 1} '''
                     + f'''again to make sure it is valid and compatible\n''' 
                     + f'''2) Please try using a different format to download these videos''')
                 if (self.data['debug']):
                     print(self.URLs, "are the bad URLs")
-        return False
+                return False
+            
+        return True # True if no check
 
     # =========== DOWNLOAD URLS ===========
 
     #downloads URLs in list -- main function
-    def downloadURLs(self):
-        self.cancelPending() #get rid of any pending after() calls
+    def downloadURLs(self) -> int:
+        self.cancelPending() #clean up any pending after() calls
+        self.filenames.clear()
 
         # set up GUI for downloading
+        self.urlLabel.grid(row=1, padx=2, pady=2)
         self.progressBar['value'] = 0
         self.currProgressBar['value'] = 0
         self.progressFrame.grid(row=50)
@@ -364,54 +375,28 @@ class MainWindow(tk.Tk):
             "nocheckcertificate": True, 
             "format": self.format.get(),
             'simulate': True,
-            'logger': DownloadLogger(self, updateQueue),
-            'progress_hooks': [dl_hook],
+            'logger': DownloadLogger(self, updateQueue)
         }
 
-        # TODO make check multithreaded as well
-        if (self.ischeckURLs.get() and not self.checkURLs(dl_options)): #check URLs?
+        if not self.checkURLs(dl_options): #check URLs (if specified)
             self.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
             return 1
 
         # reinitialize after possible simulation
-        dl_options['simulate'] = dl_options['logger'].simulate = False
-        process = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs, ))
+        dl_options['simulate'] = False
         self.currVideo = 0 
 
         try: #begin downloads
-            self.urlLabel.grid(row=1, padx=2, pady=2)
             self.updateProgressBar(False)
 
-            # clear queue and start thread
-            while not updateQueue.empty(): updateQueue.get()
-            process.start()
-
-            # listen for GUI updates
-            while True:
-                self.update()
-
-                if (self.currVideo == len(self.URLs)): # no more videos
-                    break
-
-                # a video was finished
-                if not updateQueue.empty():
-                    task = updateQueue.get(False)
-                    if task == -1: # done with one download
-                        self.updateProgressBar(False, True)
-                        self.currVideo += 1
-                        print(f'the currvideo right now after increment is {self.currVideo} and the task was {task}')
-                    else:
-                        self.currProgressBar['value'] = task
-
-                self.update()
-
-            # finish
-            self.finishDownload("successful")
-            process.join()
+            if (self.ytdlpThread(dl_options, False)):
+                self.finishDownload("successful")
+            else:
+                self.finishDownload("unsuccessful")
 
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
-                ConfirmPrompt(self, self.data, self.style, 
+                ConfirmPrompt(self,
                     '''Error: Download issue\n\nThere was an issue with the download. Please try again.''')
                 if (self.data['debug']):
                     print(self.URLs, ex)
@@ -419,59 +404,97 @@ class MainWindow(tk.Tk):
             return 2
         
         return 0
+    
+    #TODO move this out of mainwindow and make download call it as a thread otherwise it will freeze up gui
+    def ytdlpThread(self, dl_options: dict, check: bool) -> bool:
+        thread = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs, ))
+
+        # clear queue and start thread
+        while not updateQueue.empty():
+            updateQueue.get()
+        thread.start()
+
+        # add first video as .part to filenames
+        # self.filenames.append(self.URLs[self.currVideo] + ".part")
+
+        # listen for GUI updates
+        while True:
+            self.update()
+
+            # no more videos
+            if (self.currVideo == len(self.URLs)): 
+                break
+
+            # new item in queue
+            if not updateQueue.empty():
+                # print("the files are:", self.filenames, "\n\n")
+                item = updateQueue.get(False)
+                print("item: ", item, "\n\n")
+
+                if item >= 0: # update curr progress
+                    self.currProgressBar['value'] = item
+                elif item == -1: # done with one download
+                    self.currVideo += 1 # next video
+                elif item == -2: # user cancel
+                    thread.join()
+                    return False
+                elif item == -3: # filename, add to self.filenames as partfile
+                    self.filenames.append(updateQueue.get() + ".part")
+
+                self.updateProgressBar(check)
+
+        # finish
+        thread.join()
+        return True
             
     #updates progress bar to indicate progress
-    def updateProgressBar(self, is_check, keep_el=False):
-        if (is_check and (self.currVideo < len(self.URLs))): #for URL check
-            updateText(self, self.statusLabel, f'''Checking if URL #'''
-                + f'''{self.currVideo + 1} is valid...''')
+    def updateProgressBar(self, is_check: bool) -> bool:
+        # get status text depending on YoutubeDL call
+        statusText = ""
+        dotcount = self.statusLabel.cget("text")[-3:].count('.')
+        splittime = int(time.time()) % 3
 
-        elif (self.currVideo < len(self.URLs)): #for download
+        self.update()
+        # if it was something else
+        if dotcount == 0:
+            if is_check: # update status for check
+                statusText = f"Checking if URL #{self.currVideo + 1} is valid."
+            else:
+                statusText = f"Video {self.currVideo + 1} is being downloaded."
+        # update dots
+        else:
+            if is_check: # update status for check
+                statusText = f"Checking if URL #{self.currVideo + 1} is valid"
+            else:
+                statusText = f"Video {self.currVideo + 1} is being downloaded"
+            for i in range(((dotcount % 3) + 1) if (dotcount - 1 == splittime) else dotcount):
+                statusText += '.'
 
-            #below is ellipses animation stuff
-            onedot = self.statusLabel.cget("text")[-3:] == "ed."
-            twodot = self.statusLabel.cget("text")[-3:] == "d.."
-            threedot = self.statusLabel.cget("text")[-3:] == "..."
-            if ((onedot and not keep_el) or (twodot and keep_el)): #one dot
-                updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
-               + f''' is being downloaded..''')
-            elif ((twodot and not keep_el) or (threedot and keep_el)): #two dot
-                updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
-               + f''' is being downloaded...''')
-            else: #three dots or no dots or something weird
-                updateText(self, self.statusLabel, f'''Video {str(self.currVideo + 1)}''' 
-               + f''' is being downloaded.''')
-            self.pending.append( #sits in pending to indicate ellipse do-not-change, change if gone
-                self.after(1000, lambda: self.cancelPending())
-            )
-            
-        if (self.currVideo < len(self.URLs)): #update URL label to reflect current check
-            updateText(self, self.urlLabel, f'''({self.URLs[self.currVideo]})''') #display url of video being dl'ed
+        if self.currVideo < len(self.URLs):
+            updateText(self, self.statusLabel, statusText)
+            updateText(self, self.urlLabel, f"({self.URLs[self.currVideo]})") #display url of video being dl'ed
 
-        if (self.currVideo == len(self.URLs)) and (not is_check): # last video is done (out of range)
-            self.finishDownload("successful") #wrap up stuff + reset
-            return 0 # this may be bad
-
+        # update progress bar
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
-
-        
+        return True
 
     # =========== FINISH DOWNLOADING ===========
 
     #cancels download by clearing URLs, deletes downloaded files
-    def cancelDownload(self):
+    def cancelDownload(self) -> None:
         updateText(self, self.statusLabel, f"Download cancelled")
-        #TODO
+        updateQueue.put(-2)
         
-        ConfirmPrompt(self, self.data, self.style, 
+        print("AaAAAAAA", self.filenames)
+        ConfirmPrompt(self,
             "Do you want to delete the already downloaded files?",
             self.filenames)
         
         self.finishDownload("cancelled") # finishDownload will take care of the rest
 
     #summary after downloading videos
-    def finishDownload(self, endText):
+    def finishDownload(self, endText) -> None:
         updateText(self, self.statusLabel, f'Download {endText}') 
         self.inputButton.configure(text="Download", command=self.inputURLs)
         if self.isPlaySound.get(): self.bell() #makes sound upon completion
@@ -494,18 +517,18 @@ class MainWindow(tk.Tk):
             self.after(6000, lambda: self.cancelPending()))
 
         #cancels everything in pending and then clears it
-    def cancelPending(self):
+    def cancelPending(self) -> None:
         for x in self.pending:
             self.after_cancel(x)
         self.pending.clear()
 
     # =========== INFO ===========
-    def addSampleVideos(self):
+    def addSampleVideos(self) -> None:
         self.inputText.insert(tk.END,
             "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
             "https://www.youtube.com/watch?v=fFxySUC2vPc\n" + #python subprocess
             "https://youtu.be/Y_pbEOem2HU\n" + #vine boom
             "jNQXAC9IVRw\n" + #me at the zoo
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n"
-            # "https://youtu.be/f1A7SdVTlok"
+            + "https://youtu.be/f1A7SdVTlok"
         ) #default text
