@@ -436,7 +436,7 @@ class MainWindow(tk.Tk):
                 elif item == -1: # done with one download
                     self.currVideo += 1 # next video
                 elif item == -2: # user cancel
-                    thread.join()
+                    # thread.join()
                     return False
                 elif item == -3: # filename, add to self.filenames as partfile
                     self.filenames.append(updateQueue.get() + ".part")
