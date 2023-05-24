@@ -389,8 +389,8 @@ class MainWindow(tk.Tk):
         try: #begin downloads
             self.updateProgressBar(False)
 
-            if (self.ytdlpThread(dl_options, False)):
-                self.finishDownload("successful")
+            self.ytdlpThread(dl_options, False)
+            # self.finishDownload("successful")
 
             # for thread in enumerate():
             #     print(thread)
@@ -412,7 +412,7 @@ class MainWindow(tk.Tk):
         cancelQueue = queue.Queue() # tell ytdlpWrapper when to stop YoutubeDL thread
 
         # begin wrapper thread
-        thread = Thread(target=ytdlpWrapper, args=(self, dl_options), daemon=True)
+        thread = Thread(target=ytdlpWrapper, args=[self, dl_options], daemon=True)
         thread.start()
 
         # empty updateQueue
@@ -420,43 +420,11 @@ class MainWindow(tk.Tk):
             self.updateQueue.get()
 
         # listen for GUI updates
-        while True:
-            self.update()
+        listener = Thread(target=ytdlpListener, args=[self, thread, dl_options, check], daemon=True)
+        listener.start()
 
-            # no more videos
-            if (self.currVideo >= len(self.URLs)): 
-                cancelQueue.put(1)
-                break
-
-            # new item in queue
-            if not self.updateQueue.empty():
-                item = self.updateQueue.get()
-                print("item: ", item, "\n\n")
-
-                if isinstance(item, float) and item >= 0: # update curr progress
-                    self.currProgressBar['value'] = item
-
-                elif item == "__done": # done with a video
-                    self.currVideo += 1 # next video
-                
-                elif item == "__filename": # new filename, add to self.filenames as partfile
-                    filename = self.updateQueue.get()
-                    self.filenames.append(filename)
-                    self.filenames.append(filename + ".part")
-
-                elif item == "__info" and dl_options['simulate']: # advance when checking
-                    self.currVideo += 1
-
-                elif item == "__cancel": # user cancel
-                    ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread.ident),
-                                            ctypes.py_object(SystemExit))
-                    print("\n\n\n\naaaaaaaaaaaaaa\n\n\n\n")
-                    return False
-
-                self.updateProgressBar(check)
-
-        # finish successful
-        return True
+        # # finish successful
+        # return True
             
     #updates progress bar to indicate progress
     def updateProgressBar(self, is_check: bool) -> bool:
@@ -501,7 +469,7 @@ class MainWindow(tk.Tk):
             "Do you want to delete the already downloaded files?",
             self.filenames)
         
-        self.finishDownload("cancelled") # finishDownload will take care of the rest
+        # self.finishDownload("cancelled") # finishDownload will take care of the rest
 
     #summary after downloading videos
     def finishDownload(self, endText) -> None:
@@ -549,3 +517,40 @@ def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
     except SystemExit as ex:
         sys.exit()
             
+def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: bool) -> bool:
+    while True:
+        root.update()
+
+        # no more videos
+        if (root.currVideo >= len(root.URLs)): 
+            root.updateProgressBar("successful")
+            break
+
+        # new item in queue
+        if not root.updateQueue.empty():
+            item = root.updateQueue.get()
+            print("item: ", item, "\n\n")
+
+            if isinstance(item, float) and item >= 0: # update curr progress
+                root.currProgressBar['value'] = item
+
+            elif item == "__done": # done with a video
+                root.currVideo += 1 # next video
+            
+            elif item == "__filename": # new filename, add to self.filenames as partfile
+                filename = root.updateQueue.get()
+                root.filenames.append(filename)
+                root.filenames.append(filename + ".part")
+
+            elif item == "__info" and dl_options['simulate']: # advance when checking
+                root.currVideo += 1
+
+            elif item == "__cancel": # user cancel
+                # force thread to hit an exception and leave the YoutubeDL().download() call
+                ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread.ident),
+                                        ctypes.py_object(SystemExit))
+                root.updateProgressBar("cancelled")
+                break
+
+            root.updateProgressBar(check)
+    
