@@ -2,6 +2,8 @@
 
 - move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread
 
+- if the path is to system32 on windows (called from search), then make the path the path to the executable
+
 - standardize function switch conditions to be numbers instead of strings
 
 - auto make and reget yt-dlp in case youtube key changes or something
