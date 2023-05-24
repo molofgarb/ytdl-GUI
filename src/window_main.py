@@ -407,24 +407,18 @@ class MainWindow(tk.Tk):
         
         return 0
     
-    def ytdlpThread(self, dl_options: dict, check: bool) -> bool:
-        # signal(s)
-        cancelQueue = queue.Queue() # tell ytdlpWrapper when to stop YoutubeDL thread
-
-        # begin wrapper thread
-        thread = Thread(target=ytdlpWrapper, args=[self, dl_options], daemon=True)
-        thread.start()
-
+    def ytdlpThread(self, dl_options: dict, check: bool) -> None:
         # empty updateQueue
         while not self.updateQueue.empty():
             self.updateQueue.get()
 
-        # listen for GUI updates
-        listener = Thread(target=ytdlpListener, args=[self, thread, dl_options, check], daemon=True)
-        listener.start()
+        # begin wrapper thread
+        downloader = Thread(target=ytdlpWrapper, args=[self, dl_options], daemon=True)
+        downloader.start()
 
-        # # finish successful
-        # return True
+        # begin listener thread -- listen for GUI updates
+        listener = Thread(target=ytdlpListener, args=[self, downloader, dl_options, check], daemon=True)
+        listener.start()
             
     #updates progress bar to indicate progress
     def updateProgressBar(self, is_check: bool) -> bool:
