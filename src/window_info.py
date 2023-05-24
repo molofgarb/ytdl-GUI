@@ -122,4 +122,7 @@ class InfoWindow(tk.Toplevel):
             try:
                 os.remove(x)
             except Exception as ex:
-                continue
+                try:
+                    os.remove(x + ".part")
+                except Exception as ex2:
+                    continue

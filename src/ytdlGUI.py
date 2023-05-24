@@ -3,6 +3,9 @@
 import os, sys
 from platform import system
 
+import threading
+import time
+
 import tkinter as tk
 
 from window_main import MainWindow
@@ -55,5 +58,4 @@ if __name__ == "__main__":
 
     #loop!!
     root.mainloop()
-
 

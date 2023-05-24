@@ -33,16 +33,23 @@ class DownloadLogger(Logger):
 
         if self.isDebug: 
             print(msg)
-        if arrMsg[0] == "[info]": # new video
-            self.updateQueue.put(-1)
+        # advance currvideo for check
+        if arrMsg[0] == "[info]":
+            self.updateQueue.put("__info") 
         if arrMsg[0] == "[download]": # download status
             for i in range(len(arrMsg)): 
+
+                # add name of file to be downloaded
                 if arrMsg[i] == "Destination:":
-                    self.updateQueue.put(-3)
+                    self.updateQueue.put("__filename")
                     self.updateQueue.put(msg[24:])
+
                 # find the string with the download % if download status
                 elif len(arrMsg[i]) != 0 and arrMsg[i][-1] == "%":
                     self.updateQueue.put(float(arrMsg[i][:-1]))
+                    # done with a video download, advance self.currVideo for download
+                    if (arrMsg[i][:-1] == "100"):
+                        self.updateQueue.put("__done")
 
     def warning(self, msg: str) -> None:
         if self.isDebug: print(msg)

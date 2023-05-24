@@ -42,11 +42,11 @@ pyinstaller := \
 
 #check if build tools exist (if they exist, then they print something to stdout)
 ifeq (, $(shell which pyinstaller)) #pyinstaller
-    $(error "Pyinstaller is missing. Please install pyinstaller using "pip3 install pyinstaller".")
+    $(error Pyinstaller is missing. Please install pyinstaller using "pip3 install pyinstaller".)
 endif
 
 ifeq (, $(shell which markdown)) #markdown-to-html
-    $(error "Markdown-to-html is missing. Please install markdown-to-html using "npm -g install markdown-to-html".")
+    $(error Markdown-to-html is missing. Please install markdown-to-html using "npm -g install markdown-to-html".)
 endif
 
 ifeq (, $(shell python3 -c "import tkinter; print('all good')")) #tkinter

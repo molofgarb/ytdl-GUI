@@ -3,9 +3,10 @@ from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
     
 import os, sys
+import ctypes
 import time
 
-from threading import Thread
+from threading import Thread, enumerate
 import queue
 
 from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
@@ -14,9 +15,6 @@ from ytdlp_logger import DownloadLogger
 from window_info import InfoWindow
 from window_confirm import ConfirmPrompt
 from common_tk import updateText
-
-
-updateQueue = queue.Queue()
 
 
 class MainWindow(tk.Tk):
@@ -54,6 +52,10 @@ class MainWindow(tk.Tk):
         if data['OS'] == "Darwin":
             for option in self.style['styleOptionsMac']: super().option_add(option[0], option[1])
 
+        super().configure( #style for entire window background
+            background=self.style["bgcolor"]
+        )
+
         # styled separately because ttk used instead of tk
         self.ttkStyle = ttk.Style(self)
         self.ttkStyle.theme_use("clam")
@@ -70,12 +72,10 @@ class MainWindow(tk.Tk):
         )
         self.ttkStyle.configure(
             "format.Horizontal.TProgressbar",
-            background=self.style["bgcolor"]
+            background=self.style["bgcolor"], foreground="green"
         )
 
-        super().configure( #style for entire window background
-            background=self.style["bgcolor"]
-        )
+        
 
         # =========== VARS ===========
 
@@ -86,6 +86,8 @@ class MainWindow(tk.Tk):
         self.filenames = [] #names of files as they are downloaded
         self.formats = [] #TODO
         self.currVideo = 0 #index of video in URLs that is being checked/downloaded
+
+        self.updateQueue = queue.Queue()
 
         #download format 
         self.format = tk.StringVar(self, "b") #default format is best of both (video, audio)
@@ -368,14 +370,12 @@ class MainWindow(tk.Tk):
         self.inputButton.configure(text="Cancel", 
             command=self.cancelDownload) #to cancel download
 
-        global updateQueue
-
         dl_options = {
             "paths": {'home': self.directoryText.get(1.0, tk.END)}, 
             "nocheckcertificate": True, 
             "format": self.format.get(),
             'simulate': True,
-            'logger': DownloadLogger(self, updateQueue)
+            'logger': DownloadLogger(self, self.updateQueue)
         }
 
         if not self.checkURLs(dl_options): #check URLs (if specified)
@@ -384,15 +384,17 @@ class MainWindow(tk.Tk):
 
         # reinitialize after possible simulation
         dl_options['simulate'] = False
-        self.currVideo = 0 
+        self.currVideo = 0
 
         try: #begin downloads
             self.updateProgressBar(False)
 
             if (self.ytdlpThread(dl_options, False)):
                 self.finishDownload("successful")
-            else:
-                self.finishDownload("unsuccessful")
+
+            # for thread in enumerate():
+            #     print(thread)
+            # print("\n\n\n")
 
         except Exception as ex:
             if len(self.URLs) != 0: #if not caused by cancel
@@ -405,46 +407,55 @@ class MainWindow(tk.Tk):
         
         return 0
     
-    #TODO move this out of mainwindow and make download call it as a thread otherwise it will freeze up gui
     def ytdlpThread(self, dl_options: dict, check: bool) -> bool:
-        thread = Thread(target=YoutubeDL(dl_options).download, args=(self.URLs, ))
+        # signal(s)
+        cancelQueue = queue.Queue() # tell ytdlpWrapper when to stop YoutubeDL thread
 
-        # clear queue and start thread
-        while not updateQueue.empty():
-            updateQueue.get()
+        # begin wrapper thread
+        thread = Thread(target=ytdlpWrapper, args=(self, dl_options), daemon=True)
         thread.start()
 
-        # add first video as .part to filenames
-        # self.filenames.append(self.URLs[self.currVideo] + ".part")
+        # empty updateQueue
+        while not self.updateQueue.empty():
+            self.updateQueue.get()
 
         # listen for GUI updates
         while True:
             self.update()
 
             # no more videos
-            if (self.currVideo == len(self.URLs)): 
+            if (self.currVideo >= len(self.URLs)): 
+                cancelQueue.put(1)
                 break
 
             # new item in queue
-            if not updateQueue.empty():
-                # print("the files are:", self.filenames, "\n\n")
-                item = updateQueue.get(False)
+            if not self.updateQueue.empty():
+                item = self.updateQueue.get()
                 print("item: ", item, "\n\n")
 
-                if item >= 0: # update curr progress
+                if isinstance(item, float) and item >= 0: # update curr progress
                     self.currProgressBar['value'] = item
-                elif item == -1: # done with one download
+
+                elif item == "__done": # done with a video
                     self.currVideo += 1 # next video
-                elif item == -2: # user cancel
-                    # thread.join()
+                
+                elif item == "__filename": # new filename, add to self.filenames as partfile
+                    filename = self.updateQueue.get()
+                    self.filenames.append(filename)
+                    self.filenames.append(filename + ".part")
+
+                elif item == "__info" and dl_options['simulate']: # advance when checking
+                    self.currVideo += 1
+
+                elif item == "__cancel": # user cancel
+                    ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread.ident),
+                                            ctypes.py_object(SystemExit))
+                    print("\n\n\n\naaaaaaaaaaaaaa\n\n\n\n")
                     return False
-                elif item == -3: # filename, add to self.filenames as partfile
-                    self.filenames.append(updateQueue.get() + ".part")
 
                 self.updateProgressBar(check)
 
-        # finish
-        thread.join()
+        # finish successful
         return True
             
     #updates progress bar to indicate progress
@@ -460,13 +471,13 @@ class MainWindow(tk.Tk):
             if is_check: # update status for check
                 statusText = f"Checking if URL #{self.currVideo + 1} is valid."
             else:
-                statusText = f"Video {self.currVideo + 1} is being downloaded."
+                statusText = f"Video #{self.currVideo + 1} is being downloaded."
         # update dots
         else:
             if is_check: # update status for check
                 statusText = f"Checking if URL #{self.currVideo + 1} is valid"
             else:
-                statusText = f"Video {self.currVideo + 1} is being downloaded"
+                statusText = f"Video #{self.currVideo + 1} is being downloaded"
             for i in range(((dotcount % 3) + 1) if (dotcount - 1 == splittime) else dotcount):
                 statusText += '.'
 
@@ -484,9 +495,8 @@ class MainWindow(tk.Tk):
     #cancels download by clearing URLs, deletes downloaded files
     def cancelDownload(self) -> None:
         updateText(self, self.statusLabel, f"Download cancelled")
-        updateQueue.put(-2)
+        self.updateQueue.put("__cancel")
         
-        print("AaAAAAAA", self.filenames)
         ConfirmPrompt(self,
             "Do you want to delete the already downloaded files?",
             self.filenames)
@@ -516,7 +526,7 @@ class MainWindow(tk.Tk):
         self.pending.append( #clear "after" ids
             self.after(6000, lambda: self.cancelPending()))
 
-        #cancels everything in pending and then clears it
+    #cancels everything in pending and then clears it
     def cancelPending(self) -> None:
         for x in self.pending:
             self.after_cancel(x)
@@ -532,3 +542,10 @@ class MainWindow(tk.Tk):
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n"
             + "https://youtu.be/f1A7SdVTlok"
         ) #default text
+
+def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
+    try:
+        YoutubeDL(dl_options).download(root.URLs)
+    except SystemExit as ex:
+        sys.exit()
+            
