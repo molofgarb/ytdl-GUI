@@ -1,4 +1,4 @@
-.PHONY: all clean clean-html cleaner remake
+.PHONY: all html clean clean-html cleaner remake
 .DEFAULT_GOAL: all
 
 BINDIR 		:= bin
@@ -66,13 +66,17 @@ all: $(TARGET)
 
 $(TARGET): ${HTML}
 	-rm $@
+
 	make ${HTML}
 	$(pyinstaller)
 
-${HTML}: %.html: ${MARKDOWN}
+${HTML}: %.html: %.md
+	-@cp ytdl-GUI/yt_dlp/supportedsites.md .
 	markdown $< > $@
 
 # =====================================
+
+html: ${HTML}
 
 clean:
 	-rm ytdl-GUI.spec

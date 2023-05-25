@@ -11,39 +11,44 @@
 ---
 
 # Installation
-[Download for x86_64](https://github.com/molofgarb/ytdl-GUI/releases/download/v0.1-alpha/ytdl-GUI.exe)
+[Download for Windows x86_64](https://github.com/molofgarb/ytdl-GUI/releases/download/v0.1-alpha/ytdl-GUI.exe)
 
-I have only been able to text the executable on a Windows 10 system. OSX and Linux compatability will come in the future if the program does not work on those operating systems.
+[Download for macOS ARM (coming soon)]()
+
+[Download for Linux x86_64 (coming soon)]()
 
 ## Build from Source
 
 1. Clone the repository.
-2. Install python and pip. 
-3. Use pip to install PyInstaller.
+2. Install Python 3 and PIP. 
+3. Use PIP to install PyInstaller: `pip3 install pyinstaller`
 4. Install Tkinter.
-3. Install npm and use npm to install markdown-to-html.
-4. Run make on the parent directory.
+3. Install npm and use npm to install markdown-to-html: `npm install -g markdown-to-html`
+4. Run `make` on the parent directory.
 
 # Usage
-1. Run the ytdl-GUI.exe program. 
+1. Run the ytdl-GUI program. 
 
 2. Put the directory you want the videos to be downloaded to in the output path text box. It can be entered through text or by pressing the button on the right ("..."), which opens up the directory browser for your system. 
 
-3. Put the videos that you want to download into the center text box, separated by spaces or by line breaks (hit the enter/return key). When you are ready to download, press the download button. 
+3. Put the URLs to the videos that you want to download into the center text box, separated by spaces or by line breaks (hit the enter/return key). When you are ready to download, press the download button. 
 
 4. The program will let you know the video downloading progress by displaying which video is being downloaded. When all videos have been downloaded, the text at the bottom will let you know.
 
 5. Enjoy your videos!
 
+You can adjust the download options using the "Expand Options" button.
+
+More information can be found using the "Info" button.
+
 # Notes
-- The program can be run using only the executable in the root -- ytdl-GUI.exe. The source code is found in ytdlGUI.py, and other assets can be found in the subdirectories. 
+- To run the program for debugging, clone the git repository and, from the project root, run `ytdl-GUI/ytdl-GUI.py --debug`.
 
-- All links that yt-dlp supports are supported by this
-program, since this program uses yt-dlp's module.
+- All links that yt-dlp supports are supported by this program, since this program uses yt-dlp's module. For more information on what sites are supported, see the 
 
-- The default directory for downloaded files is the directory that the script is run within.
+- The default directory for downloaded files is the directory that the executable is run within.
 
-- yt-dlGUI_pyinstaller.bat is used to call pyInstaller to compile the script, ytdlGUI.py, along with its assets, into the final executable.
+- You can compile the program to make your
 
 # Why?
 I made this mostly for fun, but also to do a little experimentation with tkinter. I also make youtube videos occasionally, so I wanted something quick and lightweight to use for my occasional video downloads. There are a few other yt-dlp GUI programs that are much nicer than mine, so if you're looking for a more functionality, you should check those out. 

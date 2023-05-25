@@ -4,6 +4,8 @@
 !*/
 !Makefile
 
+supportedsites.md
+
 # IDE/Local
 .vscode
 .archived-versions

@@ -2,12 +2,13 @@ import tkinter as tk
 from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
 
-import os
+import os, sys
 import webbrowser
 
 class InfoWindow(tk.Toplevel):
     def __init__(self, root, style: dict) -> None:
         super().__init__(root)
+        self.root = root
 
         self.title("Info")
         # self.iconbitmap(root.data['iconPath'])
@@ -34,13 +35,13 @@ class InfoWindow(tk.Toplevel):
 
         self.readmeButton = tk.Button(
             self.frame, text="Open Readme",
-            command=lambda: webbrowser.open("README.html")
+            command=self.openREADME
         )
         self.readmeButton.grid(row=1, sticky="w", padx=(10, 0), pady=5)
 
         self.sitesButton = tk.Button(
             self.frame, text="Supported Websites",
-            command=lambda: webbrowser.open("supportedsites.html")
+            command=self.openSupportedWebsites
         )
         self.sitesButton.grid(row=2, sticky='w', padx=(10, 0), pady=5)
 
@@ -60,7 +61,7 @@ class InfoWindow(tk.Toplevel):
         )
         self.repoLink.grid(row=5, sticky="W")
         self.repoLink.bind(
-            "<Button-1>", lambda: webbrowser.open_new_tab("https://github.com/molofgarb/ytdl-GUI")
+            "<Button-1>", lambda e: webbrowser.open_new_tab("https://github.com/molofgarb/ytdl-GUI")
         )
 
         self.ytdlpRepoLabel = tk.Label(
@@ -95,6 +96,13 @@ class InfoWindow(tk.Toplevel):
             command = self.removeSampleVideos
         )
         self.removeSampleButton.grid(row=2, column=1, sticky='w', padx=(20, 10), pady=5)
+
+    def openREADME(self) -> None:
+        if self.root.data['debug']:
+            webbrowser.open_new_tab("file://" + self.root.data['path'] + "/README.html")
+        
+    def openSupportedWebsites(self) -> None:
+        ...
 
     # deletes the sample videos in the directory of the executable
     # if debug, removes in directory where script is called
