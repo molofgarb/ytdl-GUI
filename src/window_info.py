@@ -9,20 +9,11 @@ class InfoWindow(tk.Toplevel):
     def __init__(self, root, style: dict) -> None:
         super().__init__(root)
 
-        self.windows = root.data['windows']
+        self.title("Info")
+        # self.iconbitmap(root.data['iconPath'])
+        root.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.style = style
-        # style options
-        self.styleOptions = [
-            ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
-            ("*background", self.style['bgcolor']),
-            ("*foreground", self.style['textcolor']),
-            ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"])
-        ]
-        self.styleOptionsMac = [
-            ("*highlightBackground", self.style['bgcolor']), # make background consistent color
-            ("*Button*foreground", "black") # since bg is locked white, make text black
-        ]
 
         # apply options
         for option in self.style['styleOptions']: super().option_add(option[0], option[1])
@@ -32,10 +23,6 @@ class InfoWindow(tk.Toplevel):
         super().configure( #style for entire window background
             background=self.style["bgcolor"]
         )
-
-        self.title("Info")
-        # self.iconbitmap(root.data['iconPath'])
-        root.eval(f'tk::PlaceWindow {str(self)} center')
 
         self.frame = tk.Frame(self)
         self.frame.grid(row=0, padx=20, pady=10)

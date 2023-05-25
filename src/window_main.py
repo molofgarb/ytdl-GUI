@@ -3,10 +3,10 @@ from tkinter import HORIZONTAL, ttk
 from tkinter import filedialog
     
 import os, sys
-import ctypes
 import time
 
-from threading import Thread, enumerate
+import ctypes
+from threading import Thread
 import queue
 
 from yt_dlp.yt_dlp.YoutubeDL import YoutubeDL
@@ -23,6 +23,16 @@ class MainWindow(tk.Tk):
         self.data = data #dict from ytdlGUI.py {debug, windows, path, iconPath}
 
         # =========== STYLE ===========
+
+        self.eval('tk::PlaceWindow . center') #puts window in center(ish)
+
+        #initialize main window
+        self.title("ytdl-GUI")
+
+        img = tk.Image("photo", file=data['iconPath'])
+        self.iconphoto(True, img) # you may also want to try this.
+        self.tk.call('wm','iconphoto', self._w, img)
+        self.iconbitmap(data['iconPath'])
 
         #window style
         self.style = { 
@@ -72,10 +82,8 @@ class MainWindow(tk.Tk):
         )
         self.ttkStyle.configure(
             "format.Horizontal.TProgressbar",
-            background=self.style["bgcolor"], foreground="green"
+            background="green"
         )
-
-        
 
         # =========== VARS ===========
 
@@ -97,16 +105,6 @@ class MainWindow(tk.Tk):
         self.ischeckURLs = tk.BooleanVar(self, True) #if URLs should be checked before download
         self.isDeleteOnFinish = tk.BooleanVar(self, True) #if user should be prompted to delete cancelled downloads
         self.isPlaySound = tk.BooleanVar(self, True) #if a sound should be played
-        
-        #initialize main window
-        self.title("ytdl-GUI")
-
-        img = tk.Image("photo", file=data['iconPath'])
-        self.iconphoto(True, img) # you may also want to try this.
-        self.tk.call('wm','iconphoto', self._w, img)
-        self.iconbitmap(data['iconPath'])
-
-        self.eval('tk::PlaceWindow . center') #puts window in center(ish)
 
         # =========== WIDGETS ===========
 
@@ -299,7 +297,7 @@ class MainWindow(tk.Tk):
             self.directoryText.delete(1.0, tk.END)
             self.directoryText.insert(tk.END, dir)
 
-    # =========== EXPAND OPTIONS ===========
+    # =========== OPTIONS ===========
 
     #toggles the expansion/minimization of the options frame
     def expandOptions(self) -> None:
@@ -312,7 +310,7 @@ class MainWindow(tk.Tk):
             self.optionsFrame.grid(row=100, padx=2, pady=2, sticky="W")
             self.isExpandOptions.set(True)
 
-    # =========== INPUT/CHECK DOWNLOADS ===========
+    # =========== INPUT ===========
 
     #takes inputs, stores them in URLs, and then calls download function
     def inputURLs(self) -> bool:
@@ -327,13 +325,15 @@ class MainWindow(tk.Tk):
                 return True
             else:
                 ConfirmPrompt(self, 
-                '''Error: No URLs provided\n\nPlease provide at least one URL''')
+                "Error: No URLs provided\n\nPlease provide at least one URL")
                 return False
         except Exception as ex:
             ConfirmPrompt(self,
-            '''Error: Invalid Download Path\n\nPlease change download path to valid directory''')
+            "Error: Invalid Download Path\n\nPlease change download path to valid directory")
             return False
             
+    # =========== PROGRESSBAR ===========
+
     #updates progress bar to indicate progress
     def updateProgressBar(self, is_check: bool) -> bool:
         # get status text depending on YoutubeDL call
@@ -370,14 +370,9 @@ class MainWindow(tk.Tk):
 
     #cancels download by clearing URLs, deletes downloaded files
     def cancelDownload(self) -> None:
-        updateText(self, self.statusLabel, f"Download cancelled")
         self.updateQueue.put("__cancel")
-        
-        ConfirmPrompt(self,
-            "Do you want to delete the already downloaded files?",
-            self.filenames)
-        
-        # self.finishDownload("cancelled") # finishDownload will take care of the rest
+        if len(self.filenames) != 0:
+            ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
 
     #summary after downloading videos
     def finishDownload(self, endText) -> None:
@@ -391,7 +386,7 @@ class MainWindow(tk.Tk):
 
         self.URLs.clear() #clears URLs to make YoutubeDL() stop if running
 
-        #reset delay (for visual appeal)
+        #reset to default layout after a delay
         self.cancelPending() #in case there are already cancels inside 
         self.pending.append(
             self.after(5000, lambda: updateText(self, self.statusLabel,
@@ -401,7 +396,9 @@ class MainWindow(tk.Tk):
         self.pending.append( # remove progresbar after 5 sec
             self.after(5000, lambda: self.progressFrame.grid_remove()))
         self.pending.append( #clear "after" ids
-            self.after(6000, lambda: self.cancelPending()))
+            self.after(5001, lambda: self.cancelPending()))
+
+    # =========== PENDING ===========
 
     #cancels everything in pending and then clears it
     def cancelPending(self) -> None:
@@ -423,6 +420,7 @@ class MainWindow(tk.Tk):
 #downloads URLs in list by calling 
 def downloadURLs(root: MainWindow) -> int:
     root.cancelPending() #clean up any pending after() calls
+    root.currVideo = 0
     root.filenames.clear()
 
     # set up GUI for downloading
@@ -441,7 +439,8 @@ def downloadURLs(root: MainWindow) -> int:
         'logger': DownloadLogger(root, root.updateQueue)
     }
 
-    if not checkURLs(root, dl_options): #check URLs (if specified) (blocks until finished)
+    res = checkURLs(root, dl_options)
+    if isinstance(res, int) and res != 0: #check URLs (if specified) (blocks until finished)
         root.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
         return 1
 
@@ -458,8 +457,8 @@ def downloadURLs(root: MainWindow) -> int:
 
     except Exception as ex:
         if len(root.URLs) != 0: #if not caused by cancel
-            ConfirmPrompt(root,
-                '''Error: Download issue\n\nThere was an issue with the download. Please try again.''')
+            ConfirmPrompt(root,"Error: Download issue\n\n"+
+                          "There was an issue with the download. Please try again.")
             if (root.data['debug']):
                 print(root.URLs, ex, "<downloadURLs>")
             root.finishDownload("unsuccessful") #wrap up stuff + reset
@@ -469,87 +468,97 @@ def downloadURLs(root: MainWindow) -> int:
 
 #make sure all URLs are valid before all downloads begin
 def checkURLs(root: MainWindow, dl_options: dict) -> bool:
-    if root.ischeckURLs.get():
-        root.currVideo = 0
+    # if no check, then fine
+    if not root.ischeckURLs.get():
+        return 0
+    
+    try:            
+        root.updateProgressBar(True)
 
-        try:            
-            root.updateProgressBar(True)
+        # begin downloader and listener thread
+        ytdlpThreadManager(root, dl_options, True) # block until finished
 
-            # begin downloader and listener thread
-            ytdlpThreadManager(root, dl_options, True) # block until finished
-
-            return True
-        
-        except Exception as ex:
-            ConfirmPrompt(root,
-                    f'''Error: Invalid URL\n\n'''
-                + f'''1) Please check your URL #{root.currVideo + 1} '''
-                + f'''again to make sure it is valid and compatible\n''' 
-                + f'''2) Please try using a different format to download these videos''')
-            if (root.data['debug']):
-                print(root.URLs, "are the bad URLs <checkURLs()>")
-            return False
-        
-    return True # True if no check
+        return 0
+    
+    except Exception as ex:
+        ConfirmPrompt(root, "Error: Invalid URLs or Download Error\n\n"
+            + f"1) Please check your URL #{root.currVideo + 1} "
+            + "again to make sure it is valid and compatible\n" 
+            + "2) Please try using a different format to download these videos")
+        if (root.data['debug']):
+            print(root.URLs, "are the bad URLs <checkURLs()>")
+        return 1
 
 def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
-    # empty updateQueue
-    while not root.updateQueue.empty():
-        root.updateQueue.get()
+    try:
+        # start from the beginning
+        root.currVideo = 0
+        root.filenames.clear()
 
-    # begin wrapper thread
-    downloader = Thread(target=ytdlpWrapper, args=[root, dl_options], daemon=True)
-    downloader.start()
+        # empty updateQueue
+        while not root.updateQueue.empty():
+            root.updateQueue.get()
 
-    # begin listener thread -- listen for GUI updates
-    listener = Thread(target=ytdlpListener, args=[root, downloader, dl_options, check], daemon=True)
-    listener.start()
+        # begin wrapper thread
+        downloader = Thread(target=ytdlpWrapper, args=[root, dl_options], daemon=True)
+        downloader.start()
 
-    downloader.join()
-    listener.join()
-    return
+        # begin listener thread -- listen for GUI updates
+        listener = Thread(target=ytdlpListener, args=[root, downloader, dl_options, check], daemon=True)
+        listener.start()
+
+        downloader.join()
+        listener.join()
+        return
+    except RuntimeError as ex:
+        raise ex
 
 def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
     try:
         YoutubeDL(dl_options).download(root.URLs)
-    except SystemExit as ex:
+    except SystemExit as ex: # user cancel
         sys.exit()
+    except Exception as ex:
+        raise ex
             
-def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: bool) -> bool:
-    while True:
-        root.update()
+def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: bool) -> int:
+    try:
+        while True:
+            root.update()
 
-        # no more videos
-        if (root.currVideo >= len(root.URLs)): 
-            if not check: root.finishDownload("successful")
-            return True
+            # no more videos
+            if (root.currVideo >= len(root.URLs)): 
+                if not check: root.finishDownload("successful")
+                return 0
 
-        # new item in queue
-        if not root.updateQueue.empty():
-            item = root.updateQueue.get()
-            # print("item: ", item, "\n <ytdlpListener()>")
+            # new item in queue
+            if not root.updateQueue.empty():
+                item = root.updateQueue.get()
+                # print("item: ", item, "\n <ytdlpListener()>")
 
-            if isinstance(item, float) and item >= 0: # update curr progress
-                root.currProgressBar['value'] = item
+                if isinstance(item, float) and item >= 0: # update curr progress
+                    root.currProgressBar['value'] = item
+                    root.updateProgressBar(check)
 
-            elif item == "__done": # done with a video
-                root.currVideo += 1 # next video
-            
-            elif item == "__filename": # new filename, add to self.filenames as partfile
-                filename = root.updateQueue.get()
-                root.filenames.append(filename)
-                root.filenames.append(filename + ".part")
+                elif item == "__done": # done with a video
+                    root.currVideo += 1 # next video
+                
+                elif item == "__filename": # new filename, add to self.filenames as partfile
+                    filename = root.updateQueue.get()
+                    root.filenames.append(filename)
+                    root.filenames.append(filename + ".part")
 
-            elif item == "__info" and dl_options['simulate']: # advance when checking
-                root.currVideo += 1
+                elif item == "__info" and dl_options['simulate']: # advance when checking
+                    root.currVideo += 1
+                    root.updateProgressBar(check)
 
-            elif item == "__cancel": # user cancel
-                # force thread to hit an exception and leave the YoutubeDL().download() call
-                # some C magic
-                ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread.ident),
-                                        ctypes.py_object(SystemExit))
-                root.finishDownload("cancelled")
-                return False
+                elif item == "__cancel": # user cancel
+                    # force thread to hit an exception and leave the YoutubeDL().download() call using C magic
+                    ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread.ident),
+                                            ctypes.py_object(SystemExit))
+                    root.finishDownload("cancelled")
+                    return 1
 
-            root.updateProgressBar(check)
+    except Exception as ex:
+        raise ex
     

@@ -1,17 +1,9 @@
 ## To-do:
 
-- move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread
-
 - if the path is to system32 on windows (called from search), then make the path the path to the executable
-
-- standardize function switch conditions to be numbers instead of strings
 
 - auto make and reget yt-dlp in case youtube key changes or something
 
-- add button in expand options to delete all *.part files in current directory
-    - auto delete *.part files if the first part matches the name of the file being downloaded + .part
-    - make deleting partial downloads delete the *.part file and re-delete in 5 sec
-- add button in expand options to auto delete if cancel/fail (default off)
 - add button in expand options to continue with a chain of downloads if one fails a check (default off
 
 - add blue and gray color scheme (and make it pretty)
@@ -19,7 +11,7 @@
     - style window action bar (top)
     - inputs should have smaller fonts (new entry in dict)
     - update new style in README
-- true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment
+
 - handle HTML errors
 
 - dropdown menu for picking formatting options
@@ -30,8 +22,6 @@
 
 - show all of progress_hooks information as advanced setting
 
-- fix bug where new download started within 5 seconds of previous download
-
 - update readme for current version
 - keep track of version number and date in info box
 
@@ -39,6 +29,9 @@
 
 - make window centering appear truly center
 
+- ~~fix bug where new download started within 5 seconds of previous download~~
+- ~~true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment~~
+- ~~move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread~~
 - ~~make buildfile up to spec with nyc-subway-tracker quality~~
 - ~~in makefile, check for existence of tkinter (and tkmacosx if necessary)~~
 - ~~add true macOS compatability~~

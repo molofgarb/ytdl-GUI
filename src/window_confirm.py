@@ -7,41 +7,30 @@ import os
 from common_tk import updateText
 
 class ConfirmPrompt(tk.Toplevel):
-    def __init__(self, root, promptText: str, filenames: list = None):
+    def __init__(self, root, promptText: str):
         super().__init__(root)
-        self.data = root.data
-
+    
         self.style = root.style
-        # style options
-        self.styleOptions = [
-            ("*font", self.style['mainfont'][0] + " " + self.style['mainfont'][1]),
-            ("*background", self.style['bgcolor']),
-            ("*foreground", self.style['textcolor']),
-            ("*Checkbutton*selectcolor", self.style["checkbuttoncheckcolor"])
-        ]
-        self.styleOptionsMac = [
-            ("*highlightBackground", self.style['bgcolor']), # make background consistent color
-            ("*Button*foreground", "black") # since bg is locked white, make text black
-        ]
 
         # apply options
         for option in self.style['styleOptions']: super().option_add(option[0], option[1])
-        if self.data['OS'] == "Darwin":
+        if root.data['OS'] == "Darwin":
             for option in self.style['styleOptionsMac']: super().option_add(option[0], option[1])
 
         super().configure( #style for entire window background
             background=self.style["bgcolor"]
         )
 
+        self.filenames = root.filenames
+        self.data = root.data
         self.promptText = promptText
-        self.filenames = filenames #LEFT OFF
 
         if self.promptText == "Do you want to delete the already downloaded files?":
             self.title("Delete Confirmation")
         elif promptText.startswith("Error"):
             self.title("Error")
         else:
-            self.title("Title")
+            self.title("<title>")
 
         # self.iconbitmap(root.data['iconPath'])
         root.eval(f'tk::PlaceWindow {str(self)} center')
@@ -78,7 +67,7 @@ class ConfirmPrompt(tk.Toplevel):
     def answer(self, action: bool) -> None:
         self.update()
 
-        if self.data["debug"]: print(self.filenames, self.data['path'])
+        if self.data["debug"]: print(self.filenames, "\n", self.data['path'], "<ConfirmPrompt answer()>")
         if action: # do something prompt (used in delete prompt)
             if self.promptText == "Do you want to delete the already downloaded files?": # delete prompt
                 for filename in self.filenames: 
