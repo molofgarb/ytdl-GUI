@@ -24,9 +24,9 @@ if __name__ == "__main__":
     elif (opsys != "Darwin" and opsys != "Linux"):
         sys.exit("Unknown operating system")
 
-    # set path
+    # set path as the path of the executable
     path = os.path.dirname(sys.executable)
-    if debug:
+    if debug: # if .py, then path is wherever it is run from
         path = os.getcwd()
     if (path[-28:] == "/ytdl-GUI.app/Contents/MacOS"): # if in .app package
         path = path[:-28] #move out of .app package
