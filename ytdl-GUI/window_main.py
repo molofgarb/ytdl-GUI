@@ -425,17 +425,22 @@ def downloadURLs(root: MainWindow) -> int:
 
     # set up GUI for downloading
     root.urlLabel.grid(row=1, padx=2, pady=2)
+
     root.progressBar['value'] = 0
     root.currProgressBar['value'] = 0
     root.progressFrame.grid(row=50)
+
     root.inputButton.configure(text="Cancel", 
         command=root.cancelDownload) #to cancel download
 
     dl_options = {
+        "color": "no_color",
+        "nocheckcertificate": True,
+
         "paths": {'home': root.directoryText.get(1.0, tk.END)}, 
-        "nocheckcertificate": True, 
         "format": root.format.get(),
         'simulate': True,
+
         'logger': DownloadLogger(root, root.updateQueue)
     }
 
@@ -530,7 +535,7 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
             # new item in queue
             if not root.updateQueue.empty():
                 item = root.updateQueue.get()
-                # print("item: ", item, "\n <ytdlpListener()>")
+                print("item: ", item, "<ytdlpListener()>", "\n\n")
 
                 if isinstance(item, float) and item >= 0: # update curr progress
                     root.currProgressBar['value'] = item

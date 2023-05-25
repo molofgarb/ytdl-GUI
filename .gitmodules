@@ -1,0 +1,3 @@
+[submodule "ytdl-GUI/yt_dlp"]
+	path = ytdl-GUI/yt_dlp
+	url = https://github.com/yt-dlp/yt-dlp

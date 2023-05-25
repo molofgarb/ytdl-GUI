@@ -32,7 +32,7 @@ class DownloadLogger(Logger):
         # 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
 
         if self.isDebug: 
-            print(msg)
+            print(msg, "\n", arrMsg)
         # advance currvideo for check
         if arrMsg[0] == "[info]":
             self.updateQueue.put("__info") 
