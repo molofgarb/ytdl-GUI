@@ -491,10 +491,6 @@ def checkURLs(root: MainWindow, dl_options: dict) -> bool:
 
 def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
     try:
-        # start from the beginning
-        root.currVideo = 0
-        root.filenames.clear()
-
         # empty updateQueue
         while not root.updateQueue.empty():
             root.updateQueue.get()
