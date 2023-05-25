@@ -1,8 +1,9 @@
 ## To-do:
 
-- if the path is to system32 on windows (called from search), then make the path the path to the executable
+- update README
+- list ETA, download size, and download speed in status?
 
-- auto make and reget yt-dlp in case youtube key changes or something
+- if the path is to system32 on windows (called from search), then make the path the path to the executable
 
 - add button in expand options to continue with a chain of downloads if one fails a check (default off
 
@@ -11,8 +12,6 @@
     - style window action bar (top)
     - inputs should have smaller fonts (new entry in dict)
     - update new style in README
-
-- handle HTML errors
 
 - dropdown menu for picking formatting options
     - use 'listformats' option on YoutubeDL object
@@ -26,9 +25,10 @@
 - keep track of version number and date in info box
 
 - save preferred configuration somewhere somehow
-
 - make window centering appear truly center
+- auto make and reget yt-dlp in case youtube key changes or something
 
+- ~~handle HTML errors (kinda)~~
 - ~~fix bug where new download started within 5 seconds of previous download~~
 - ~~true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment~~
 - ~~move dl_hook out of the mainwindow and have it talk to a queue so that it can be isolated from gui thread~~
