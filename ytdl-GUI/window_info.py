@@ -96,6 +96,8 @@ class InfoWindow(tk.Toplevel):
         )
         self.removeSampleButton.grid(row=2, column=1, sticky='w', padx=(20, 10), pady=5)
 
+    # deletes the sample videos in the directory of the executable
+    # if debug, removes in directory where script is called
     def removeSampleVideos(self) -> None:
         sampleVideos = [
             '(subprocess) solved! FileNotFoundError： [WinError 2] The system cannot find the file specified [fFxySUC2vPc].mp4',

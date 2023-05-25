@@ -289,7 +289,9 @@ class MainWindow(tk.Tk):
 
     # =========== DIRECTORY ===========
     
-    #uses tkinter's askdirectory dialog to set directory in text box
+    # uses tkinter's askdirectory dialog to set directory in text box
+    # optionally, user can also type directory
+    # by default, set to the path of the executable
     def setDirectory(self) -> None:
         dir = filedialog.askdirectory() #will very likely be valid
         if self.data['debug']: print(self.pending, "<setDirectory()>")
@@ -299,7 +301,7 @@ class MainWindow(tk.Tk):
 
     # =========== OPTIONS ===========
 
-    #toggles the expansion/minimization of the options frame
+    # toggles the expansion/minimization of the options frame
     def expandOptions(self) -> None:
         if self.isExpandOptions.get(): #was expanded
             self.expandOptionsButton.configure(text="Expand Options")
@@ -312,29 +314,33 @@ class MainWindow(tk.Tk):
 
     # =========== INPUT ===========
 
-    #takes inputs, stores them in URLs, and then calls download function
+    # takes inputs, stores them in self.URLs, and then calls download function
+    # also checks if URLs exist and paths are valid
+    # download function is run in a worker thread
     def inputURLs(self) -> bool:
         self.URLs = self.inputText.get(1.0, tk.END).split()
         path = self.directoryText.get(1.0, tk.END).replace("\n", "")
         try:
-            os.chdir(path)
-            if len(self.URLs) > 0: #valid URLs
-                updateText(self, self.statusLabel, "URLs Received!\n")
-                thread = Thread(target=downloadURLs, args=[self])
-                thread.start()
-                return True
-            else:
-                ConfirmPrompt(self, 
-                "Error: No URLs provided\n\nPlease provide at least one URL")
-                return False
+            os.chdir(path) # make sure that paths are valid
         except Exception as ex:
             ConfirmPrompt(self,
             "Error: Invalid Download Path\n\nPlease change download path to valid directory")
             return False
+        if len(self.URLs) <= 0: # no URLs provided (ensure at least one URL)
+            ConfirmPrompt(self, 
+            "Error: No URLs provided\n\nPlease provide at least one URL")
+            return False
+        updateText(self, self.statusLabel, "URLs Received!\n")
+
+        thread = Thread(target=downloadURLs, args=[self])
+        thread.start()
+
+        return True
             
     # =========== PROGRESSBAR ===========
 
-    #updates progress bar to indicate progress
+    # updates progress bar to indicate progress
+    # also updates status bar with animated ellipses (it looks nice)
     def updateProgressBar(self, is_check: bool) -> bool:
         # get status text depending on YoutubeDL call
         statusText = ""
@@ -357,6 +363,7 @@ class MainWindow(tk.Tk):
             for i in range(((dotcount % 3) + 1) if (dotcount - 1 == splittime) else dotcount):
                 statusText += '.'
 
+        # update self.statusLabel and self.urlLabel
         if self.currVideo < len(self.URLs):
             updateText(self, self.statusLabel, statusText)
             updateText(self, self.urlLabel, f"({self.URLs[self.currVideo]})") #display url of video being dl'ed
@@ -368,23 +375,26 @@ class MainWindow(tk.Tk):
 
     # =========== FINISH DOWNLOADING ===========
 
-    #cancels download by clearing URLs, deletes downloaded files
+    # puts a cancel signal in self.updateQueue
+    # prompts a downloaded file deletion prompt if there are downloaded files
     def cancelDownload(self) -> None:
         self.updateQueue.put("__cancel")
         if len(self.filenames) != 0:
             ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
 
-    #summary after downloading videos
+    # summary after downloading videos
+    # resets interface to default layout after delay
     def finishDownload(self, endText) -> None:
-        updateText(self, self.statusLabel, f'Download {endText}') 
-        self.inputButton.configure(text="Download", command=self.inputURLs)
-
+        # indicate completion
         if self.isPlaySound.get(): self.bell() #makes sound upon completion
-
+        updateText(self, self.statusLabel, f'Download {endText}') 
+        
+        # clean up inputs and self.URLs
         if (endText == "successful" and self.isDeleteOnFinish.get() == True):
             self.inputText.delete("1.0", tk.END) #delete input
-
         self.URLs.clear() #clears URLs to make YoutubeDL() stop if running
+
+        self.inputButton.configure(text="Download", command=self.inputURLs)
 
         #reset to default layout after a delay
         self.cancelPending() #in case there are already cancels inside 
@@ -407,6 +417,8 @@ class MainWindow(tk.Tk):
         self.pending.clear()
 
     # =========== INFO ===========
+
+    # adds sample videos into the input widget
     def addSampleVideos(self) -> None:
         self.inputText.insert(tk.END,
             "https://www.youtube.com/shorts/9p0pdiTOlzw\n" + #get wifi anywhere you go
@@ -415,9 +427,11 @@ class MainWindow(tk.Tk):
             "jNQXAC9IVRw\n" + #me at the zoo
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n"
             + "https://youtu.be/f1A7SdVTlok"
-        ) #default text
+        )
 
-#downloads URLs in list by calling 
+# downloads URLs in root's URL list calling ytdlpThreadManager
+# sets up root's interface for a video download
+# checks URLs if needed
 def downloadURLs(root: MainWindow) -> int:
     root.cancelPending() #clean up any pending after() calls
     root.currVideo = 0
@@ -471,7 +485,8 @@ def downloadURLs(root: MainWindow) -> int:
     
     return 0
 
-#make sure all URLs are valid before all downloads begin
+# makes sure all URLs are valid before all downloads begin
+# calls ytdlpThreadManager, simulate is true in dl_options
 def checkURLs(root: MainWindow, dl_options: dict) -> bool:
     # if no check, then fine
     if not root.ischeckURLs.get():
@@ -494,6 +509,11 @@ def checkURLs(root: MainWindow, dl_options: dict) -> bool:
             print(root.URLs, "are the bad URLs <checkURLs()>")
         return 1
 
+# creates downloader and listener worker threads
+# downloader thread is a wrapper for ytdlp, calls YoutubeDL().download() but 
+#       interrupts with SystemExit exception
+# listener thread is a loop that listens for signals in the updateQueue queue in root.
+# for this thread to terminate, both workers must terminate. listener can tell worker to terminate.
 def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
     try:
         # empty updateQueue
@@ -511,9 +531,11 @@ def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
         downloader.join()
         listener.join()
         return
+    
     except RuntimeError as ex:
         raise ex
 
+# calls YoutubeDL().download() but stops with a SystemExit exception (cancel signal)
 def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
     try:
         YoutubeDL(dl_options).download(root.URLs)
@@ -522,6 +544,11 @@ def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
     except Exception as ex:
         raise ex
             
+# loops and listens for signals in root.updateQueue
+# signals come from DownloadLogger which is used by YoutubeDL().download() in ytdlpWrapper
+# uses signals to tell root to update UI or member variables
+# if cancel signal received from root, then forces downloader thread to hit exception and terminate
+# responsible for finishing download procedure in root
 def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: bool) -> int:
     try:
         while True:

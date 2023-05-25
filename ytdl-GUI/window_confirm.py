@@ -63,7 +63,9 @@ class ConfirmPrompt(tk.Toplevel):
             self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
             self.noButton.grid(column=1, row=1, sticky="N", padx=30, pady=20)
 
-
+    # called when Yes, No, Ok answers selected in prompt to perform the answer to the question
+    # currently, the only action is to delete downloaded files
+    # closes itself once it receives an answer
     def answer(self, action: bool) -> None:
         self.update()
 
@@ -78,7 +80,5 @@ class ConfirmPrompt(tk.Toplevel):
                             os.remove(filename + ".part")
                         except Exception as ex2:
                             continue
-            elif ...:
-                ...
 
         self.destroy()

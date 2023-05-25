@@ -1,25 +1,27 @@
 .PHONY: all clean clean-html cleaner remake
 .DEFAULT_GOAL: all
 
-SRCDIR := ytdl-GUI
-RSCDIR := resources_data
+BINDIR 		:= bin
+BUILDDIR 	:= build
+SRCDIR 		:= ytdl-GUI
+RSCDIR 		:= resources_data
 
-SRC := ytdl-GUI.py
+SRC 		:= ytdl-GUI.py
 
-UNAME := $(shell uname)
-TARGET := ${SRC}.exe #Windows
-PYINST_SEP := ;
-IMGEXT := gif
+UNAME 		:= $(shell uname)
+TARGET 		:= ${SRC}.exe #Windows
+PYINST_SEP 	:= ;
+IMGEXT 		:= gif
 
 #adjust vars to reflect OS
 ifeq ($(filter ${UNAME}, Linux), Linux) #Linux
-    TARGET 	:= ${SRCDIR}
-    PYINST_SEP := :
+    TARGET 		:= ${SRCDIR}
+    PYINST_SEP 	:= :
 endif
 ifeq ($(filter ${UNAME}, Darwin), Darwin) #macOS
-    TARGET 	:= ${SRCDIR}
-    PYINST_SEP := :
-	IMGEXT := icns
+    TARGET 		:= ${SRCDIR}
+    PYINST_SEP 	:= :
+	IMGEXT 		:= icns
 endif
 
 

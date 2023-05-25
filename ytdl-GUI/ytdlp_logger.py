@@ -24,20 +24,19 @@ class DownloadLogger(Logger):
             self.info(msg)
 
     # runs for every message
-    def info(self, msg: str) -> None: #for every download,
-        
-        arrMsg = msg.split(" ")
-        # during a download, looks like: 
-        # ['[download]', '', '', '0.1%', 'of', '', '', '', '1.73MiB', 
-        # 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+    def info(self, msg: str) -> None: #for every download,     
+        arrMsg = msg.split(" ") # YoutubeDL msg split into tokens
 
         if self.isDebug: 
             print(msg, "\n", arrMsg)
+
         # advance currvideo for check
         if arrMsg[0] == "[info]":
             self.updateQueue.put("__info") 
-        if arrMsg[0] == "[download]": # download status
-            for i in range(len(arrMsg)): 
+        
+        # download status
+        if arrMsg[0] == "[download]": 
+            for i in range(len(arrMsg)): # look through tokens
 
                 # add name of file to be downloaded
                 if arrMsg[i] == "Destination:":
@@ -47,6 +46,7 @@ class DownloadLogger(Logger):
                 # find the string with the download % if download status
                 elif len(arrMsg[i]) != 0 and arrMsg[i][-1] == "%":
                     self.updateQueue.put(float(arrMsg[i][:-1]))
+
                     # done with a video download, advance self.currVideo for download
                     if (arrMsg[i][:-1] == "100"):
                         self.updateQueue.put("__done")
