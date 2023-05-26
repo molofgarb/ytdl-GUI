@@ -1,39 +1,47 @@
-.PHONY: all html clean clean-html cleaner remake
+.PHONY: all html directories clean clean-html cleaner remake
 .DEFAULT_GOAL: all
 
+# Environment and Misc
+UNAME 		:= $(shell uname)
+PYINST_SEP 	:= ;
+IMGEXT 		:= gif
+
+# Paths
 BINDIR 		:= bin
 BUILDDIR 	:= build
 SRCDIR 		:= ytdl-GUI
 RSCDIR 		:= resources_data
+YTDLPDIR	:= ytdl-GUI/yt_dlp
 
-SRC 		:= ytdl-GUI.py
+# Build (Project Sources)
+SOURCE 		:= ytdl-GUI.py
+TARGETPATH 	:= bin
 
-UNAME 		:= $(shell uname)
-TARGET 		:= ${SRC}.exe #Windows
-PYINST_SEP 	:= ;
-IMGEXT 		:= gif
-
-#adjust vars to reflect OS
+# Adjust Variables depending on Environment
 ifeq ($(filter ${UNAME}, Linux), Linux) #Linux
-    TARGET 		:= ${SRCDIR}
+    TARGETEXT 	:=
     PYINST_SEP 	:= :
 endif
 ifeq ($(filter ${UNAME}, Darwin), Darwin) #macOS
-    TARGET 		:= ${SRCDIR}
+    TARGETEXT 	:=
     PYINST_SEP 	:= :
 	IMGEXT 		:= icns
 endif
 
+# Target
+TARGET 		:= ytdl-GUI${TARGETEXT} # don't need to include dir, not needed for pyinstaller
 
-MARKDOWN := README.md ${SRCDIR}/yt_dlp/supportedsites.md
-HTML := README.html supportedsites.html
+# Info Docs provided with Target
+MKDN := README.md ${SRCDIR}/yt_dlp/supportedsites.md
+HTML := ${BUILDDIR}/README.html ${BUILDDIR}/supportedsites.html
 
+# Compile Command
 pyinstaller := \
-	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="${RSCDIR}/logo.${IMGEXT}" --distpath "bin" --windowed --paths="${SRCDIR}" \
-		--add-data "README.html${PYINST_SEP}." \
-		--add-data "supportedsites.html${PYINST_SEP}." \
+	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="${RSCDIR}/logo.${IMGEXT}" --distpath "${BINDIR}" --windowed --paths="${SRCDIR}" \
+		--add-data "${BUILDDIR}/README.html${PYINST_SEP}." \
+		--add-data "${BUILDDIR}/supportedsites.html${PYINST_SEP}." \
 		--add-data "${RSCDIR}/logo.gif${PYINST_SEP}${RSCDIR}" \
-		"${SRCDIR}/${SRC}"
+		"${SRCDIR}/${SOURCE}"
 		
 #  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debugging
 #  --clean removes PyInstaller temporary files
@@ -60,36 +68,39 @@ ifeq (, $(shell python3 -c "import tkinter; print('all good')")) #tkinter
     $(error Python Tkinter is missing. Please install Tkinter.)
 endif
 
-# =====================================
+# =============================================================================
 
-all: $(TARGET)
+all: directories $(TARGET)
 
-$(TARGET): ${HTML}
-	-rm $@
-
-	make ${HTML}
+$(TARGET): html
 	$(pyinstaller)
 
-${HTML}: %.html: %.md
-	-@cp ytdl-GUI/yt_dlp/supportedsites.md .
+html: 
+	-@cp README.md ${BUILDDIR}/README.md 
+	-@cp ${YTDLPDIR}/supportedsites.md ${BUILDDIR}/supportedsites.md
+	make ${HTML}
+
+${HTML}: ${BUILDDIR}/%.html: ${BUILDDIR}/%.md
 	markdown $< > $@
 
-# =====================================
-
-html: ${HTML}
-
-clean:
-	-rm ytdl-GUI.spec
-	-rm -r build
-	-make clean-html
-
-clean-html:
-	-rm README.html
-	-rm supportedsites.html
-
-cleaner:
-	make clean
-	-@rm -f ${TARGET} 
-	-@rm -rf ${TARGET}.app
+# =============================================================================
 
 remake: cleaner all
+
+directories:
+	@mkdir ${BUILDDIR} ||:
+	@mkdir ${BINDIR} ||:
+
+clean:
+	-@rm ytdl-GUI.spec
+	-@rm -rf build
+	-@make clean-html
+
+clean-html:
+	-@rm ${BUILDDIR}/README.html
+	-@rm ${BUILDDIR}/supportedsites.html
+
+cleaner:
+	@make clean
+	-@rm -rf ${BINDIR}
+
