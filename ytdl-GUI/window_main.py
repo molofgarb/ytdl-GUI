@@ -562,7 +562,7 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
             # new item in queue
             if not root.updateQueue.empty():
                 item = root.updateQueue.get()
-                print("item: ", item, "<ytdlpListener()>", "\n\n")
+                if root.data['debug']: print("item: ", item, "<ytdlpListener()>", "\n\n")
 
                 if isinstance(item, float) and item >= 0: # update curr progress
                     root.currProgressBar['value'] = item
