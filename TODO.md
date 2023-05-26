@@ -1,6 +1,7 @@
 ## To-do:
 
 - update README
+- ensure that README and supportedsites buttons correctly open file in browser
 - list ETA, download size, and download speed in status?
 
 - if the path is to system32 on windows (called from search), then make the path the path to the executable
