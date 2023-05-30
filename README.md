@@ -11,7 +11,7 @@
 ---
 
 # Installation
-[Download for Windows x86_64](https://github.com/molofgarb/ytdl-GUI/releases/download/v0.1-alpha/ytdl-GUI.exe)
+[Download for Windows x86_64 (coming soon)]()
 
 [Download for macOS ARM (coming soon)]()
 
@@ -44,11 +44,11 @@ More information can be found using the "Info" button.
 # Notes
 - To run the program for debugging, clone the git repository and, from the project root, run `ytdl-GUI/ytdl-GUI.py --debug`.
 
-- All links that yt-dlp supports are supported by this program, since this program uses yt-dlp's module. For more information on what sites are supported, see the 
+- All links that yt-dlp supports are supported by this program, since this program uses yt-dlp's module. For more information on what sites are supported, see the supportedsites document which can be accessed through the Info window.
 
 - The default directory for downloaded files is the directory that the executable is run within.
 
-- You can compile the program to make your
+- You can run `make` on a local copy of the repository to compile an executable that will run on your system
 
 # Why?
 I made this mostly for fun, but also to do a little experimentation with tkinter. I also make youtube videos occasionally, so I wanted something quick and lightweight to use for my occasional video downloads. There are a few other yt-dlp GUI programs that are much nicer than mine, so if you're looking for a more functionality, you should check those out. 
@@ -57,8 +57,13 @@ I made this mostly for fun, but also to do a little experimentation with tkinter
 Licensed by the [MIT License](https://github.com/molofgarb/ytdl-GUI/blob/main/LICENSE).
 
 # Credits
-yt-dlp and youtube-dl contributors for providing the tools needed for this program to work.
+[yt-dlp](https://github.com/yt-dlp/yt-dlp) and [youtube-dl](https://github.com/ytdl-org/youtube-dl) contributors for providing the tools needed for this program to download web videos.
 
-[yt-dlp](https://github.com/yt-dlp/yt-dlp)
+[markdown-to-html](https://www.npmjs.com/package/markdown-to-html) contributors for 
 
-[youtube-dl](https://github.com/ytdl-org/youtube-dl)
+[PyInstaller](https://pypi.org/project/pyinstaller/) contributors for providing the tools needed to package this program into a single executable and directory.
+
+
+
+
+
