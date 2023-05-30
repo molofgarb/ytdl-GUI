@@ -163,7 +163,7 @@ class MainWindow(tk.Tk):
         if self.data['debug']:
             self.testButton = tk.Button(
                 self.frame, height=1, width=6,
-                text = "test", command=lambda: ConfirmPrompt(self, "test!"), 
+                text = "test", command=lambda: ConfirmPrompt(self, sys._MEIPASS), 
             )
             self.testButton.grid(row=31, sticky="N")
 

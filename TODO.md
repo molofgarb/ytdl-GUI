@@ -1,7 +1,7 @@
 ## To-do:
 
 - update README
-- ensure that README and supportedsites buttons correctly open file in browser
+- create installer file to use --onedir pyinstaller option to reduce startup time
 - list ETA, download size, and download speed in status?
 
 - if the path is to system32 on windows (called from search), then make the path the path to the executable
@@ -29,6 +29,7 @@
 - make window centering appear truly center
 - auto make and reget yt-dlp in case youtube key changes or something
 
+- ~~ensure that README and supportedsites buttons correctly open file in browser~~
 - ~~handle HTML errors (kinda)~~
 - ~~fix bug where new download started within 5 seconds of previous download~~
 - ~~true cancel YoutubeDL object - make it stop downloading instantly, rather than stop after a moment~~

@@ -29,7 +29,7 @@ ifeq ($(filter ${UNAME}, Darwin), Darwin) #macOS
 endif
 
 # Target
-TARGET 		:= ytdl-GUI${TARGETEXT} # don't need to include dir, not needed for pyinstaller
+TARGET 		:= ytdl-GUI${TARGETEXT}
 
 # Info Docs provided with Target
 MKDN := README.md ${SRCDIR}/yt_dlp/supportedsites.md
@@ -81,7 +81,7 @@ html:
 	make ${HTML}
 
 ${HTML}: ${BUILDDIR}/%.html: ${BUILDDIR}/%.md
-	markdown $< > $@
+	github-markdown $< > $@
 
 # =============================================================================
 

@@ -99,10 +99,16 @@ class InfoWindow(tk.Toplevel):
 
     def openREADME(self) -> None:
         if self.root.data['debug']:
-            webbrowser.open_new_tab("file://" + self.root.data['path'] + "/README.html")
+            webbrowser.open_new_tab("file://" + self.root.data['path'] + "/build/README.html")
+        else:
+            webbrowser.open_new_tab("file://" + sys._MEIPASS + "/README.html")
         
     def openSupportedWebsites(self) -> None:
-        ...
+        print("file://" + self.root.data['path'] + "/supportedsites.html")
+        if self.root.data['debug']:
+            webbrowser.open_new_tab("file://" + self.root.data['path'] + "/build/supportedsites.html")
+        else:
+            webbrowser.open_new_tab("file://" + sys._MEIPASS + "/supportedsites.html")
 
     # deletes the sample videos in the directory of the executable
     # if debug, removes in directory where script is called
