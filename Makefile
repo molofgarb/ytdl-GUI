@@ -74,6 +74,7 @@ all: directories $(TARGET)
 
 $(TARGET): html
 	$(pyinstaller)
+	-@rm ytdl-GUI.spec
 
 html: 
 	-@cp README.md ${BUILDDIR}/README.md 
@@ -94,7 +95,6 @@ directories:
 clean:
 	-@rm ytdl-GUI.spec
 	-@rm -rf build
-	-@make clean-html
 
 clean-html:
 	-@rm ${BUILDDIR}/README.html

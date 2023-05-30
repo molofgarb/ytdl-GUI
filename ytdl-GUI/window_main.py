@@ -332,7 +332,7 @@ class MainWindow(tk.Tk):
             return False
         updateText(self, self.statusLabel, "URLs Received!\n")
 
-        thread = Thread(target=downloadURLs, args=[self])
+        thread = Thread(target=downloadURLs, args=[self], daemon=True)
         thread.start()
 
         return True
@@ -341,10 +341,10 @@ class MainWindow(tk.Tk):
 
     # updates progress bar to indicate progress
     # also updates status bar with animated ellipses (it looks nice)
-    def updateProgressBar(self, is_check: bool) -> bool:
+    def updateProgressBar(self, is_check: bool, timeETA: str = "") -> bool:
         # get status text depending on YoutubeDL call
         statusText = ""
-        dotcount = self.statusLabel.cget("text")[-3:].count('.')
+        dotcount = self.statusLabel.cget("text")[-15:].count('.')
         splittime = int(time.time()) % 3
 
         # if it was something else
@@ -363,12 +363,17 @@ class MainWindow(tk.Tk):
             for i in range(((dotcount % 3) + 1) if (dotcount - 1 == splittime) else dotcount):
                 statusText += '.'
 
+        if timeETA != "":
+            timeETA = timeETA if timeETA != "Unknown" else "??:??"
+            statusText += f" (ETA: {timeETA})"
+
         # update self.statusLabel and self.urlLabel
         if self.currVideo < len(self.URLs):
             updateText(self, self.statusLabel, statusText)
             updateText(self, self.urlLabel, f"({self.URLs[self.currVideo]})") #display url of video being dl'ed
 
         # update progress bar
+        print(self.currVideo)
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
         return True
@@ -470,7 +475,6 @@ def downloadURLs(root: MainWindow) -> int:
     #begin downloads
     try: 
         root.updateProgressBar(False)
-
         # begin downloader and listener thread (blocks until finished)
         ytdlpThreadManager(root, dl_options, False)
 
@@ -533,6 +537,7 @@ def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
         return
     
     except RuntimeError as ex:
+        print(ex, "<ytdlpThreadManager()>")
         raise ex
 
 # calls YoutubeDL().download() but stops with a SystemExit exception (cancel signal)
@@ -542,6 +547,7 @@ def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
     except SystemExit as ex: # user cancel
         sys.exit()
     except Exception as ex:
+        print(ex, "<ytdlpWrapper()>")
         raise ex
             
 # loops and listens for signals in root.updateQueue
@@ -566,10 +572,12 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
 
                 if isinstance(item, float) and item >= 0: # update curr progress
                     root.currProgressBar['value'] = item
-                    root.updateProgressBar(check)
 
-                elif item == "__done": # done with a video
-                    root.currVideo += 1 # next video
+                    timeETA = root.updateQueue.get() # get ETA or done
+                    if timeETA == "__done":  # next video if done
+                        root.currVideo += 1
+                    else:
+                        root.updateProgressBar(check, timeETA) # update ETA if in progress
                 
                 elif item == "__filename": # new filename, add to self.filenames as partfile
                     filename = root.updateQueue.get()
@@ -588,5 +596,6 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
                     return 1
 
     except Exception as ex:
+        print("<ytdlpListener()")
         raise ex
     

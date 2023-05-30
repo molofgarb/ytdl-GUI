@@ -51,6 +51,9 @@ class DownloadLogger(Logger):
                     if (arrMsg[i][:-1] == "100"):
                         self.updateQueue.put("__done")
 
+                    else:
+                        self.updateQueue.put(arrMsg[len(arrMsg) - 1])
+
     def warning(self, msg: str) -> None:
         if self.isDebug: print(msg)
 
