@@ -20,11 +20,14 @@
 ## Build from Source
 
 1. Clone the repository.
-2. Install Python 3 and PIP. 
-3. Use PIP to install PyInstaller: `pip3 install pyinstaller`
-4. Install Tkinter.
-3. Install npm and use npm to install markdown-to-html: `npm install -g markdown-to-html`
-4. Run `make` on the parent directory.
+2. Initialize the submodules using `git submodule update --init --recursive` on the root directory.
+3. Install Python 3, PIP, and Tkinter. 
+4. Use PIP to install PyInstaller: `pip3 install pyinstaller`
+5. Install npm and use npm to install markdown-to-html: `npm install -g markdown-to-html`
+6. Run `make` on the parent directory.
+
+- You will need make to build the binary.
+  - `make clean` removes build files, `make cleaner` removes build files and binaries, and `make remake` removes all build and binary files and rebuilds the binaries.
 
 # Usage
 1. Run the ytdl-GUI program. 
