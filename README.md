@@ -17,6 +17,8 @@
 
 [Download for Linux x86_64 (coming soon)]()
 
+[Download for Linux ARM (coming soon)]()
+
 ## Build from Source
 
 1. Clone the repository.
