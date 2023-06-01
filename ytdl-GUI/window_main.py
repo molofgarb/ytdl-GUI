@@ -341,7 +341,7 @@ class MainWindow(tk.Tk):
 
     # updates progress bar to indicate progress
     # also updates status bar with animated ellipses (it looks nice)
-    def updateProgressBar(self, is_check: bool, timeETA: str = "") -> bool:
+    def updateProgressBar(self, is_check: bool, timeETA: str = "", videoSize: str = "") -> bool:
         # get status text depending on YoutubeDL call
         statusText = ""
         dotcount = self.statusLabel.cget("text")[-15:].count('.')
@@ -365,7 +365,8 @@ class MainWindow(tk.Tk):
 
         if timeETA != "":
             timeETA = timeETA if timeETA != "Unknown" else "??:??"
-            statusText += f" (ETA: {timeETA})"
+            videoSize = videoSize if videoSize != "" else "0B"
+            statusText += f" ({videoSize} - ETA: {timeETA})"
 
         # update self.statusLabel and self.urlLabel
         if self.currVideo < len(self.URLs):
@@ -577,7 +578,8 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
                     if timeETA == "__done":  # next video if done
                         root.currVideo += 1
                     else:
-                        root.updateProgressBar(check, timeETA) # update ETA if in progress
+                        videoSize = root.updateQueue.get()
+                        root.updateProgressBar(check, timeETA, videoSize) # update ETA if in progress
                 
                 elif item == "__filename": # new filename, add to self.filenames as partfile
                     filename = root.updateQueue.get()

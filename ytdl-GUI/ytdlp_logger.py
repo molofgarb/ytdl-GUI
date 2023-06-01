@@ -52,7 +52,12 @@ class DownloadLogger(Logger):
                         self.updateQueue.put("__done")
 
                     else:
-                        self.updateQueue.put(arrMsg[len(arrMsg) - 1])
+                        for j in range(i, len(arrMsg)):
+                            # print(j, arrMsg[j], arrMsg[j][len(arrMsg[j]) - 1])
+                            if len(arrMsg[j]) != 0 and (arrMsg[j][len(arrMsg[j]) - 1] == "B"):
+                                self.updateQueue.put(arrMsg[len(arrMsg) - 1])
+                                self.updateQueue.put(arrMsg[j])
+                                break
 
     def warning(self, msg: str) -> None:
         if self.isDebug: print(msg)
