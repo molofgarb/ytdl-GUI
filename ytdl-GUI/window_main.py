@@ -344,7 +344,8 @@ class MainWindow(tk.Tk):
     def updateProgressBar(self, is_check: bool, timeETA: str = "", videoSize: str = "") -> bool:
         # get status text depending on YoutubeDL call
         statusText = ""
-        dotcount = self.statusLabel.cget("text")[-15:].count('.')
+        arrDotcount = self.statusLabel.cget("text").split('(')
+        dotcount = arrDotcount[0][-5:].count('.')
         splittime = int(time.time()) % 3
 
         # if it was something else
