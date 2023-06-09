@@ -375,7 +375,7 @@ class MainWindow(tk.Tk):
             updateText(self, self.urlLabel, f"({self.URLs[self.currVideo]})") #display url of video being dl'ed
 
         # update progress bar
-        print(self.currVideo)
+        if self.data['debug']: print(self.currVideo)
         self.progressBar['value'] = ((self.currVideo)/len(self.URLs)) * 100
         self.update()
         return True
@@ -387,7 +387,7 @@ class MainWindow(tk.Tk):
     def cancelDownload(self) -> None:
         self.updateQueue.put("__cancel")
         if len(self.filenames) != 0:
-            ConfirmPrompt(self, "Do you want to delete the already downloaded files?")
+            self.errorConfirmPrompt("Do you want to delete the already downloaded files?")
 
     # summary after downloading videos
     # resets interface to default layout after delay
@@ -400,6 +400,7 @@ class MainWindow(tk.Tk):
         if (endText == "successful" and self.isDeleteOnFinish.get() == True):
             self.inputText.delete("1.0", tk.END) #delete input
         self.URLs.clear() #clears URLs to make YoutubeDL() stop if running
+        self.currVideo = 0
 
         self.inputButton.configure(text="Download", command=self.inputURLs)
 
@@ -435,6 +436,9 @@ class MainWindow(tk.Tk):
             "https://www.reddit.com/r/Eyebleach/comments/ml2y1g/dramatic_sable/\n"
             + "https://youtu.be/f1A7SdVTlok"
         )
+
+    def errorConfirmPrompt(self, msg: str):
+        self.pending.append(self.after(1, lambda: ConfirmPrompt(self, msg)))
 
 # downloads URLs in root's URL list calling ytdlpThreadManager
 # sets up root's interface for a video download
@@ -482,7 +486,7 @@ def downloadURLs(root: MainWindow) -> int:
 
     except Exception as ex:
         if len(root.URLs) != 0: #if not caused by cancel
-            ConfirmPrompt(root,"Error: Download issue\n\n"+
+            root.errorConfirmPrompt(root, "Error: Download issue\n\n"+
                           "There was an issue with the download. Please try again.")
             if (root.data['debug']):
                 print(root.URLs, ex, "<downloadURLs>")
@@ -507,7 +511,7 @@ def checkURLs(root: MainWindow, dl_options: dict) -> bool:
         return 0
     
     except Exception as ex:
-        ConfirmPrompt(root, "Error: Invalid URLs or Download Error\n\n"
+        root.errorConfirmPrompt("Error: Invalid URLs or Download Error\n\n"
             + f"1) Please check your URL #{root.currVideo + 1} "
             + "again to make sure it is valid and compatible\n" 
             + "2) Please try using a different format to download these videos")
@@ -521,13 +525,14 @@ def checkURLs(root: MainWindow, dl_options: dict) -> bool:
 # listener thread is a loop that listens for signals in the updateQueue queue in root.
 # for this thread to terminate, both workers must terminate. listener can tell worker to terminate.
 def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
+    exitcode = []
     try:
         # empty updateQueue
         while not root.updateQueue.empty():
             root.updateQueue.get()
 
         # begin wrapper thread
-        downloader = Thread(target=ytdlpWrapper, args=[root, dl_options], daemon=True)
+        downloader = Thread(target=ytdlpWrapper, args=[root, dl_options, exitcode], daemon=True)
         downloader.start()
 
         # begin listener thread -- listen for GUI updates
@@ -536,20 +541,26 @@ def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
 
         downloader.join()
         listener.join()
-        return
     
     except RuntimeError as ex:
         print(ex, "<ytdlpThreadManager()>")
         raise ex
 
 # calls YoutubeDL().download() but stops with a SystemExit exception (cancel signal)
-def ytdlpWrapper(root: MainWindow, dl_options: dict) -> None:
+def ytdlpWrapper(root: MainWindow, dl_options: dict, exitcode: list) -> None:
     try:
         YoutubeDL(dl_options).download(root.URLs)
     except SystemExit as ex: # user cancel
-        sys.exit()
+        sys.exit() # nothing else to be done, other threads know about cancellation
     except Exception as ex:
         print(ex, "<ytdlpWrapper()>")
+
+        # wrap up download and initiable "cancel"
+        root.cancelDownload()
+        root.errorConfirmPrompt(f"Error: There was an issue with downloading video #" +
+                f"{root.currVideo + (1 if dl_options['simulate'] else 2)}") # 1 is dl, 2 is check
+        root.finishDownload("cancelled")
+
         raise ex
             
 # loops and listens for signals in root.updateQueue
@@ -562,8 +573,12 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
         while True:
             root.update()
 
+            if len(root.URLs) == 0: # downloader encountered exception, stop
+                return 2
+
             # no more videos
             if (root.currVideo >= len(root.URLs)): 
+                print(root.currVideo, root.URLs)
                 if not check: root.finishDownload("successful")
                 return 0
 
@@ -600,5 +615,5 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
 
     except Exception as ex:
         print("<ytdlpListener()")
-        raise ex
+        return 2
     

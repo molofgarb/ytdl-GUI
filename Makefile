@@ -36,12 +36,15 @@ MKDN := README.md ${SRCDIR}/yt_dlp/supportedsites.md
 HTML := ${BUILDDIR}/README.html ${BUILDDIR}/supportedsites.html
 
 # Compile Command
-pyinstaller := \
-	pyinstaller --noconsole --clean -y -n "${TARGET}" -F --icon="${RSCDIR}/logo.${IMGEXT}" --distpath "${BINDIR}" --windowed --paths="${SRCDIR}" \
+pyinstaller_onedir := \
+	pyinstaller --noconsole --clean -y -n "${TARGET}" --icon="${RSCDIR}/logo.${IMGEXT}" --distpath "${BINDIR}" --windowed --paths="${SRCDIR}" \
 		--add-data "${BUILDDIR}/README.html${PYINST_SEP}." \
 		--add-data "${BUILDDIR}/supportedsites.html${PYINST_SEP}." \
 		--add-data "${RSCDIR}/logo.gif${PYINST_SEP}${RSCDIR}" \
 		"${SRCDIR}/${SOURCE}"
+
+pyinstaller := ${pyinstaller_onedir} -F
+
 		
 #  --noconsole prevents a cmd window from opening when the .exe is opened. Remove for debugging
 #  --clean removes PyInstaller temporary files
@@ -83,6 +86,12 @@ html:
 
 ${HTML}: ${BUILDDIR}/%.html: ${BUILDDIR}/%.md
 	github-markdown $< > $@
+
+
+
+onedir: directories html
+	$(pyinstaller_onedir)
+	-@rm ytdl-GUI.spec
 
 # =============================================================================
 

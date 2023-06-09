@@ -1,10 +1,8 @@
 ## To-do:
 
-- list ETA, download size, and download speed in status?
-    - fix ellipses bug where 1 ellipse never shows up
-- if the path is to system32 on windows (called from search), then make the path the path to the executable
+- make sure exception chain is caught in proper place
 
-- create installer file to use --onedir pyinstaller option to reduce startup time
+- if the path is to system32 on windows (called from search), then make the path the path to the executable
 
 - add button in expand options to continue with a chain of downloads if one fails a check (default off
 
@@ -25,10 +23,13 @@
 - update readme for current version
 - keep track of version number and date in info box
 
-- save preferred configuration somewhere somehow
 - make window centering appear truly center
 - auto make and reget yt-dlp in case youtube key changes or something
 
+- ~~save preferred configuration somewhere somehow~~
+- ~~create installer file to use --onedir pyinstaller option to reduce startup time~~
+- ~~list ETA, download size, and download speed in status?~~
+    - ~~fix ellipses bug where 1 ellipse never shows up~~
 - ~~update README~~
 - ~~ensure that README and supportedsites buttons correctly open file in browser~~
 - ~~handle HTML errors (kinda)~~
