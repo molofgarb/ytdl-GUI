@@ -1,5 +1,6 @@
 ## To-do:
 
+- complete tests file
 - make sure exception chain is caught in proper place
 
 - if the path is to system32 on windows (called from search), then make the path the path to the executable
