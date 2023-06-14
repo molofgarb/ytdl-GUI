@@ -1,13 +1,9 @@
 ## TODO:
 
 # Release
-- complete tests file
-- make sure exception chain is caught in proper place
-
 - if the path is to system32 on windows (called from search), then make the path the path to the executable
 
-- add button in expand options to continue with a chain of downloads if one fails a check (default off
-
+- add button in expand options to continue with a chain of downloads if one fails a check (default off)
 
 - download log and option to delete all downloaded files from session
 
@@ -16,6 +12,9 @@
 - RELEASE
 - update readme for current version when release
 - keep track of version number and date in info box
+
+- ~~complete tests file~~
+- ~~make sure exception chain is caught in proper place~~
 
 # Other stuff
 
