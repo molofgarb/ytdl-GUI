@@ -1,11 +1,25 @@
-## To-do:
+## TODO:
 
+# Release
 - complete tests file
 - make sure exception chain is caught in proper place
 
 - if the path is to system32 on windows (called from search), then make the path the path to the executable
 
 - add button in expand options to continue with a chain of downloads if one fails a check (default off
+
+
+- download log and option to delete all downloaded files from session
+
+- makefile option to reget ytdlp in case youtube key changes or something
+
+- RELEASE
+- update readme for current version when release
+- keep track of version number and date in info box
+
+# Other stuff
+
+- show all of progress_hooks information as advanced setting
 
 - add blue and gray color scheme (and make it pretty)
     - make changes in subwindows
@@ -17,15 +31,9 @@
     - use 'listformats' option on YoutubeDL object
     - toggleable ability to have individual format selection (off by default)
 
-- download log
-
-- show all of progress_hooks information as advanced setting
-
-- update readme for current version
-- keep track of version number and date in info box
-
 - make window centering appear truly center
-- auto make and reget yt-dlp in case youtube key changes or something
+
+# Done
 
 - ~~save preferred configuration somewhere somehow~~
 - ~~create installer file to use --onedir pyinstaller option to reduce startup time~~
