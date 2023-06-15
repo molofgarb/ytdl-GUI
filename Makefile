@@ -1,5 +1,5 @@
-.PHONY: all html directories clean clean-html cleaner remake
-.DEFAULT_GOAL: all
+.PHONY: onefile onedir and-update-ytdlp ytdlp html directories clean clean-html cleaner remake
+.DEFAULT_GOAL: onefile
 
 # Environment and Misc
 UNAME 		:= $(shell uname)
@@ -73,7 +73,15 @@ endif
 
 # =============================================================================
 
-all: directories $(TARGET)
+onefile: directories $(TARGET)
+
+onedir: directories html
+	$(pyinstaller_onedir)
+	-@rm ytdl-GUI.spec
+
+and-update-ytdlp: ytdlp onefile
+
+
 
 $(TARGET): html
 	$(pyinstaller)
@@ -89,9 +97,8 @@ ${HTML}: ${BUILDDIR}/%.html: ${BUILDDIR}/%.md
 
 
 
-onedir: directories html
-	$(pyinstaller_onedir)
-	-@rm ytdl-GUI.spec
+ytdlp:
+	git submodule foreach git pull
 
 # =============================================================================
 
