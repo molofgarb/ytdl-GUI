@@ -6,6 +6,8 @@
 - add button in expand options to continue with a chain of downloads if one fails a check (default off)
     - To implement this, <TODO>
 
+- make all videos update by a little bit as the download progress for this video progresses
+
 - download log and option to delete all downloaded files from session
 
 - RELEASE

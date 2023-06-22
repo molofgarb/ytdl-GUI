@@ -88,10 +88,11 @@ class MainWindow(tk.Tk):
         # =========== VARS ===========
 
         #window data
-        self.pending = [] #holds events that will happen
+        self.pending = [] # keeps track of events
 
-        self.URLs = [] #URLs of files to be downloaded
-        self.filenames = [] #names of files as they are downloaded
+        self.URLs = [] # URLs of files to be downloaded in input
+        self.filenames = [] # names of files as they are downloaded from input
+        self.allFilenames = [] # names of all downloaded files in session
         self.formats = [] #TODO
         self.currVideo = 0 #index of video in URLs that is being checked/downloaded
 
@@ -279,6 +280,13 @@ class MainWindow(tk.Tk):
             variable=self.isDeleteOnFinish, onvalue=True, offvalue=False, 
         )
         self.deleteOnFinishCheck.grid(row=30, sticky='w')
+
+        #delete all downloaded videos button
+        self.deleteAllFilenamesButton = tk.Button(
+            self.optionsFrame, text = "Delete all downloaded files",
+            command=lambda:[os.remove(file) for file in self.allFilenames]
+        )
+        self.deleteAllFilenamesButton.grid(row=40, sticky='w')
 
         #info label
         self.infoButton = tk.Button(
@@ -507,12 +515,6 @@ def checkURLs(root: MainWindow, dl_options: dict) -> bool:
         return True
     
     except Exception as ex:
-        # root.errorConfirmPrompt("Error: Invalid URLs or Download Error\n\n"
-        #     + f"1) Please check your URL #{root.currVideo + 1} "
-        #     + "again to make sure it is valid and compatible\n" 
-        #     + "2) Please try using a different format to download these videos")
-        # if (root.data['debug']):
-        #     print(root.URLs, "are the bad URLs <checkURLs()>")
         raise ex
 
 # creates downloader and listener worker threads
@@ -555,7 +557,7 @@ def ytdlpWrapper(root: MainWindow, dl_options: dict, exitcode: list) -> None:
 
     except Exception as ex: # download failure, need to let other threads know
         # wrap up download and initiate "cancel"
-        root.updateQueue.put("__error") # tell manager
+        root.updateQueue.put("__error") # tell manager # <TODO> is this necessary?
         root.cancelDownload() # tell GUI(intermediate) -> listener -> GUI
         root.errorConfirmPrompt(f"Error: There was an issue with downloading video #" +
                 f"{root.currVideo + (1 if dl_options['simulate'] else 2)}") # 1 is check, 2 is dl
@@ -603,6 +605,7 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
                     filename = root.updateQueue.get()
                     root.filenames.append(filename)
                     root.filenames.append(filename + ".part")
+                    root.allFilenames.append(filename)
 
                 # advance when checking
                 elif item == "__info" and dl_options['simulate']: 
