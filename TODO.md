@@ -8,12 +8,13 @@
 
 - make all videos update by a little bit as the download progress for this video progresses
 
-- download log and option to delete all downloaded files from session
+
 
 - RELEASE
 - update readme for current version when release
 - keep track of version number and date in info box
 
+- ~~download log and option to delete all downloaded files from session~~
 - ~~makefile option to reget ytdlp in case youtube key changes or something~~
 - ~~complete tests file~~
 - ~~make sure exception chain is caught in proper place~~

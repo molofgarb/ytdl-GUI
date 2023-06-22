@@ -282,11 +282,18 @@ class MainWindow(tk.Tk):
         self.deleteOnFinishCheck.grid(row=30, sticky='w')
 
         #delete all downloaded videos button
+        self.viewAllFilenamesButton = tk.Button(
+            self.optionsFrame, text = "View all downloaded files",
+            command=lambda:ConfirmPrompt(self, "Info:\nDownloaded files:\n\n" + '\n'.join(self.allFilenames))
+        )
+        self.viewAllFilenamesButton.grid(row=40, sticky='w')
+
+        #delete all downloaded videos button
         self.deleteAllFilenamesButton = tk.Button(
             self.optionsFrame, text = "Delete all downloaded files",
             command=lambda:[os.remove(file) for file in self.allFilenames]
         )
-        self.deleteAllFilenamesButton.grid(row=40, sticky='w')
+        self.deleteAllFilenamesButton.grid(row=50, sticky='w')
 
         #info label
         self.infoButton = tk.Button(
@@ -482,7 +489,6 @@ def downloadURLs(root: MainWindow) -> int:
     res = checkURLs(root, dl_options)
     if not res: #check URLs (if specified) (blocks until finished)
         root.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
-        print("\n\n\n\n\n\n\n\n\n\n")
         return 1
 
     # reinitialize after possible simulation
@@ -580,6 +586,7 @@ def ytdlpListener(root: MainWindow, thread: Thread, dl_options: dict, check: boo
 
             # no more videos
             if (root.currVideo >= len(root.URLs)): 
+                root.updateProgressBar(check)
                 if root.data['debug']: print(root.currVideo, root.URLs)
                 if not check: root.finishDownload("successful")
                 return 0

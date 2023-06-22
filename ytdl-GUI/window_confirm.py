@@ -25,10 +25,15 @@ class ConfirmPrompt(tk.Toplevel):
         self.data = root.data
         self.promptText = promptText
 
+        isError = promptText.startswith("Error")
+        isInfo = promptText.startswith("Info")
+
         if self.promptText == "Do you want to delete the already downloaded files?":
             self.title("Delete Confirmation")
-        elif promptText.startswith("Error"):
+        elif isError:
             self.title("Error")
+        elif isInfo:
+            self.title("Info")
         else:
             self.title("<title>")
 
@@ -40,9 +45,12 @@ class ConfirmPrompt(tk.Toplevel):
 
         # ------- WIDGETS -------
         self.questionLabel = tk.Label(
-            self.frame, text = promptText,
+            self.frame, text = promptText, justify=('left' if isInfo else 0)
         )
-        self.questionLabel.grid(sticky="N", columnspan=1 if promptText.startswith("Error") else 2, padx=15)
+        self.questionLabel.grid(sticky='n',
+                columnspan=(1 if isError or isInfo else 2), 
+                padx=15, 
+        )
 
         self.yesButton = tk.Button(
             self.frame, text="Yes",
@@ -55,9 +63,9 @@ class ConfirmPrompt(tk.Toplevel):
             command=lambda: self.answer(False)
         )
 
-        if promptText.startswith("Error"): #error prompt (ok)
+        if isError or isInfo: #error prompt (ok)
             self.noButton.grid(column=0, row=1, sticky="N", padx=30, pady=20)
-            if root.isPlaySound.get(): self.bell() #sound
+            if isError and root.isPlaySound.get(): self.bell() #sound
         else: #if confirm prompt (yes/no)
             updateText(self, self.noButton, "No")
             self.yesButton.grid(row=1, sticky="N", padx=30, pady=20)
