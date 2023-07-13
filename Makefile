@@ -4,7 +4,7 @@
 # Environment and Misc
 UNAME 		:= $(shell uname)
 PYINST_SEP 	:= ;
-IMGEXT 		:= gif
+IMGEXT 		:= ico
 
 # Paths
 BINDIR 		:= bin
@@ -40,6 +40,7 @@ pyinstaller_onedir := \
 	pyinstaller --noconsole --clean -y -n "${TARGET}" --icon="${RSCDIR}/logo.${IMGEXT}" --distpath "${BINDIR}" --windowed --paths="${SRCDIR}" \
 		--add-data "${BUILDDIR}/README.html${PYINST_SEP}." \
 		--add-data "${BUILDDIR}/supportedsites.html${PYINST_SEP}." \
+		--add-data "${RSCDIR}/logo.ico${PYINST_SEP}${RSCDIR}" \
 		--add-data "${RSCDIR}/logo.gif${PYINST_SEP}${RSCDIR}" \
 		"${SRCDIR}/${SOURCE}"
 

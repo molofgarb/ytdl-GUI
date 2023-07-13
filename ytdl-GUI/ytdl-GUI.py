@@ -36,6 +36,7 @@ if __name__ == "__main__":
     if debug:
         iconPath = os.path.join(path, "resources_data/logo.gif") #for running as script
     else: 
+
         iconPath = os.path.join(sys._MEIPASS, "resources_data/logo.gif") #for pyinstaller
 
     # info about environment
