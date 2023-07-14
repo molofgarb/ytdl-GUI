@@ -8,7 +8,9 @@
 
 - make all videos update by a little bit as the download progress for this video progresses
 
+- playlist support
 
+- timeout a check if it takes more than ~15 seconds
 
 - RELEASE
 - update readme for current version when release
