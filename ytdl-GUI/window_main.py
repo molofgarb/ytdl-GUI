@@ -546,8 +546,8 @@ def ytdlpThreadManager(root: MainWindow, dl_options: dict, check: bool) -> None:
         downloader.join()
         listener.join()
 
-        if not root.updateQueue.empty():
-            raise Exception()
+        while not root.updateQueue.empty():
+            print("leftover in updateQueue,", root.updateQueue.get())
     
     except RuntimeError as ex: #probably wont get hit
         print(ex, "<ytdlpThreadManager()>")
