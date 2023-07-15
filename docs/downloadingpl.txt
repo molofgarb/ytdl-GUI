@@ -1,0 +1,41 @@
+[youtube:tab] Extracting URL: https://www.youtube.com/playlist?list=PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH
+ ['[youtube:tab]', 'Extracting', 'URL:', 'https://www.youtube.com/playlist?list=PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH']
+[youtube:tab] PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH: Downloading webpage
+ ['[youtube:tab]', 'PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH:', 'Downloading', 'webpage']
+[youtube:tab] PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH: Redownloading playlist API JSON with unavailable videos
+ ['[youtube:tab]', 'PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH:', 'Redownloading', 'playlist', 'API', 'JSON', 'with', 'unavailable', 'videos']    
+[download] Downloading playlist: Coldplay - Viva La Vida or Death and All His Friends (Full Album CD)
+ ['[download]', 'Downloading', 'playlist:', 'Coldplay', '-', 'Viva', 
+'La', 'Vida', 'or', 'Death', 'and', 'All', 'His', 'Friends', '(Full', 'Album', 'CD)']
+[youtube:tab] Playlist Coldplay - Viva La Vida or Death and All His Friends (Full Album CD): Downloading 10 items of 10
+ ['[youtube:tab]', 'Playlist', 'Coldplay', '-', 'Viva', 'La', 'Vida', 'or', 'Death', 'and', 'All', 'His', 'Friends', '(Full', 'Album', 'CD):', 'Downloading', '10', 'items', 'of', '10']
+[download] Downloading item 1 of 10
+ ['[download]', 'Downloading', 'item', '1', 'of', '10']
+[youtube] Extracting URL: https://www.youtube.com/watch?v=sPD59NTahc0
+ ['[youtube]', 'Extracting', 'URL:', 'https://www.youtube.com/watch?v=sPD59NTahc0']
+[youtube] sPD59NTahc0: Downloading webpage
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'webpage']
+[youtube] sPD59NTahc0: Downloading ios player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading android player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading m3u8 information 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'm3u8', 'information']
+[info] sPD59NTahc0: Downloading 1 format(s): 22 
+ ['[info]', 'sPD59NTahc0:', 'Downloading', '1', 'format(s):', '22']
+[download] Downloading item 2 of 10 
+item:  __info <ytdlpListener()>
+
+
+ ['[download]', 'Downloading', 'item', '2', 'of', '10']
+1
+[youtube] Extracting URL: https://www.youtube.com/watch?v=v6gxuxw69z0
+ ['[youtube]', 'Extracting', 'URL:', 'https://www.youtube.com/watch?v=v6gxuxw69z0']
+[youtube] v6gxuxw69z0: Downloading webpage
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'webpage']
+1
+1 ['https://www.youtube.com/playlist?list=PLLFaXG8eSf29HGFWH31VF47xRafYVSNGH']
+[youtube] v6gxuxw69z0: Downloading ios player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading android player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'android', 'player', 'API', 'JSON']
