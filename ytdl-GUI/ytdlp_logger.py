@@ -51,6 +51,7 @@ class DownloadLogger(Logger):
                     if (arrMsg[i][:-1] == "100"):
                         self.updateQueue.put("__done")
 
+                    # add size of video download and time to ETA
                     else:
                         for j in range(i, len(arrMsg)):
                             # print(j, arrMsg[j], arrMsg[j][len(arrMsg[j]) - 1])

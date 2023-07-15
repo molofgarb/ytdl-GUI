@@ -1,0 +1,729 @@
+0
+[youtube] Extracting URL: https://youtu.be/sPD59NTahc0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/sPD59NTahc0']
+[youtube] sPD59NTahc0: Downloading webpage 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'webpage']
+[youtube] sPD59NTahc0: Downloading ios player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading android player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading m3u8 information 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'm3u8', 'information']
+[info] sPD59NTahc0: Downloading 1 format(s): 22 
+ ['[info]', 'sPD59NTahc0:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[youtube] Extracting URL: https://youtu.be/v6gxuxw69z0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/v6gxuxw69z0']
+[youtube] v6gxuxw69z0: Downloading webpage 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'webpage']
+1
+[youtube] v6gxuxw69z0: Downloading ios player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading android player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading m3u8 information 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'm3u8', 'information']
+[info] v6gxuxw69z0: Downloading 1 format(s): 22 
+ ['[info]', 'v6gxuxw69z0:', 'Downloading', '1', 'format(s):', '22']
+[youtube] Extracting URL: https://youtu.be/B5KjwuD3hEg 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/B5KjwuD3hEg']
+[youtube] B5KjwuD3hEg: Downloading webpage 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'webpage']
+item:  __info <ytdlpListener()> 
+
+
+2
+[youtube] B5KjwuD3hEg: Downloading ios player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading android player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading m3u8 information 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'm3u8', 'information']
+[info] B5KjwuD3hEg: Downloading 1 format(s): 22 
+ ['[info]', 'B5KjwuD3hEg:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+3
+3
+3 ['https://youtu.be/sPD59NTahc0', 'https://youtu.be/v6gxuxw69z0', 'https://youtu.be/B5KjwuD3hEg']
+0
+[youtube] Extracting URL: https://youtu.be/sPD59NTahc0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/sPD59NTahc0']
+[youtube] sPD59NTahc0: Downloading webpage 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'webpage']
+[youtube] sPD59NTahc0: Downloading ios player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading android player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading m3u8 information 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'm3u8', 'information']
+[info] sPD59NTahc0: Downloading 1 format(s): 22 
+ ['[info]', 'sPD59NTahc0:', 'Downloading', '1', 'format(s):', '22']
+[download] Destination: C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Life in Technicolor [sPD59NTahc0].mp4 
+ ['[download]', 'Destination:', 'C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Life', 'in', 'Technicolor', '[sPD59NTahc0].mp4']
+[download]   0.0% of    3.65MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.0%', 'of', '', '', '', '3.65MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+[download]   0.1% of    3.65MiB at  600.16KiB/s ETA 00:06 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '3.65MiB', 'at', '', '600.16KiB/s', 'ETA', '00:06']
+[download]   0.2% of    3.65MiB at    1.37MiB/s ETA 00:02 
+ ['[download]', '', '', '0.2%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.37MiB/s', 'ETA', '00:02']
+[download]   0.4% of    3.65MiB at    2.44MiB/s ETA 00:01 
+ ['[download]', '', '', '0.4%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '2.44MiB/s', 'ETA', '00:01']
+[download]   0.8% of    3.65MiB at    1.32MiB/s ETA 00:02 
+ ['[download]', '', '', '0.8%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.32MiB/s', 'ETA', '00:02']
+[download]   1.7% of    3.65MiB at    1.81MiB/s ETA 00:02 
+ ['[download]', '', '', '1.7%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.81MiB/s', 'ETA', '00:02']
+[download]   3.4% of    3.65MiB at    1.49MiB/s ETA 00:02 
+ ['[download]', '', '', '3.4%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.49MiB/s', 'ETA', '00:02']
+[download]   6.8% of    3.65MiB at    2.46MiB/s ETA 00:01 
+ ['[download]', '', '', '6.8%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '2.46MiB/s', 'ETA', '00:01']
+[download]  13.7% of    3.65MiB at    3.93MiB/s ETA 00:00 
+ ['[download]', '', '13.7%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '3.93MiB/s', 'ETA', '00:00']
+[download]  27.4% of    3.65MiB at    6.80MiB/s ETA 00:00 
+ ['[download]', '', '27.4%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '6.80MiB/s', 'ETA', '00:00']
+[download]  54.8% of    3.65MiB at   10.41MiB/s ETA 00:00 
+ ['[download]', '', '54.8%', 'of', '', '', '', '3.65MiB', 'at', '', '', '10.41MiB/s', 'ETA', '00:00']
+[download] 100.0% of    3.65MiB at   14.95MiB/s ETA 00:00 
+ ['[download]', '100.0%', 'of', '', '', '', '3.65MiB', 'at', '', '', '14.95MiB/s', 'ETA', '00:00']
+[download] 100% of    3.65MiB in 00:00:00 at 7.58MiB/s 
+ ['[download]', '100%', 'of', '', '', '', '3.65MiB', 'in', '00:00:00', 'at', '7.58MiB/s']
+[youtube] Extracting URL: https://youtu.be/v6gxuxw69z0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/v6gxuxw69z0']
+[youtube] v6gxuxw69z0: Downloading webpage 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'webpage']
+item:  __info <ytdlpListener()> 
+
+
+item:  __filename <ytdlpListener()> 
+
+
+item:  0.0 <ytdlpListener()> 
+
+
+0
+item:  0.1 <ytdlpListener()> 
+
+
+0
+item:  0.2 <ytdlpListener()> 
+
+
+0
+item:  0.4 <ytdlpListener()> 
+
+
+0
+item:  0.8 <ytdlpListener()> 
+
+
+0
+item:  1.7 <ytdlpListener()> 
+
+
+0
+item:  3.4 <ytdlpListener()> 
+
+
+0
+item:  6.8 <ytdlpListener()> 
+
+
+0
+item:  13.7 <ytdlpListener()> 
+
+
+0
+item:  27.4 <ytdlpListener()> 
+
+
+0
+item:  54.8 <ytdlpListener()> 
+
+
+0
+item:  100.0 <ytdlpListener()> 
+
+
+0
+item:  100.0 <ytdlpListener()> 
+
+
+[youtube] v6gxuxw69z0: Downloading ios player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading android player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading m3u8 information 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'm3u8', 'information']
+[info] v6gxuxw69z0: Downloading 1 format(s): 22 
+ ['[info]', 'v6gxuxw69z0:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[download] Destination: C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Cemeteries of London [v6gxuxw69z0].mp4 
+ ['[download]', 'Destination:', 'C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Cemeteries', 'of', 'London', '[v6gxuxw69z0].mp4']
+[download]   0.0% of    4.95MiB at  999.83KiB/s ETA 00:05 
+ ['[download]', '', '', '0.0%', 'of', '', '', '', '4.95MiB', 'at', '', '999.83KiB/s', 'ETA', '00:05']
+[download]   0.1% of    4.95MiB at    2.93MiB/s ETA 00:01 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '2.93MiB/s', 'ETA', '00:01']
+item:  __filename <ytdlpListener()> 
+
+
+item:  0.0 <ytdlpListener()> 
+
+
+1
+item:  0.1 <ytdlpListener()> 
+
+
+1
+[download]   0.1% of    4.95MiB at  583.35KiB/s ETA 00:08 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '4.95MiB', 'at', '', '583.35KiB/s', 'ETA', '00:08']
+item:  0.1 <ytdlpListener()> 
+
+
+[download]   0.3% of    4.95MiB at    1.22MiB/s ETA 00:04 
+ ['[download]', '', '', '0.3%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '1.22MiB/s', 'ETA', '00:04']
+1
+item:  0.3 <ytdlpListener()> 
+
+
+1
+[download]   0.6% of    4.95MiB at    1.89MiB/s ETA 00:02 
+ ['[download]', '', '', '0.6%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '1.89MiB/s', 'ETA', '00:02']
+item:  0.6 <ytdlpListener()> 
+
+
+1
+[download]   1.2% of    4.95MiB at    1.86MiB/s ETA 00:02 
+ ['[download]', '', '', '1.2%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '1.86MiB/s', 'ETA', '00:02']
+item:  1.2 <ytdlpListener()> 
+
+
+1
+[download]   2.5% of    4.95MiB at    2.30MiB/s ETA 00:02 
+ ['[download]', '', '', '2.5%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '2.30MiB/s', 'ETA', '00:02']
+item:  2.5 <ytdlpListener()> 
+
+
+1
+[download]   5.0% of    4.95MiB at    3.51MiB/s ETA 00:01 
+ ['[download]', '', '', '5.0%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '3.51MiB/s', 'ETA', '00:01']
+item:  5.0 <ytdlpListener()> 
+
+
+1
+[download]  10.1% of    4.95MiB at    4.27MiB/s ETA 00:01 
+ ['[download]', '', '10.1%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '4.27MiB/s', 'ETA', '00:01']
+item:  10.1 <ytdlpListener()> 
+
+
+1
+[download]  20.2% of    4.95MiB at    7.80MiB/s ETA 00:00 
+ ['[download]', '', '20.2%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '7.80MiB/s', 'ETA', '00:00']
+item:  20.2 <ytdlpListener()> 
+
+
+1
+[download]  40.4% of    4.95MiB at   12.34MiB/s ETA 00:00 
+ ['[download]', '', '40.4%', 'of', '', '', '', '4.95MiB', 'at', '', '', '12.34MiB/s', 'ETA', '00:00']
+item:  40.4 <ytdlpListener()> 
+
+
+1
+[download]  80.8% of    4.95MiB at   15.21MiB/s ETA 00:00 
+ ['[download]', '', '80.8%', 'of', '', '', '', '4.95MiB', 'at', '', '', '15.21MiB/s', 'ETA', '00:00']
+item:  80.8 <ytdlpListener()> 
+
+
+1
+[download] 100.0% of    4.95MiB at   15.86MiB/s ETA 00:00 
+ ['[download]', '100.0%', 'of', '', '', '', '4.95MiB', 'at', '', '', '15.86MiB/s', 'ETA', '00:00']
+item:  100.0 <ytdlpListener()> 
+
+
+[download] 100% of    4.95MiB in 00:00:00 at 8.61MiB/s 
+ ['[download]', '100%', 'of', '', '', '', '4.95MiB', 'in', '00:00:00', 'at', '8.61MiB/s']
+[youtube] Extracting URL: https://youtu.be/B5KjwuD3hEg 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/B5KjwuD3hEg']
+[youtube] B5KjwuD3hEg: Downloading webpage 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'webpage']
+1
+item:  100.0 <ytdlpListener()> 
+
+
+[youtube] B5KjwuD3hEg: Downloading ios player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading android player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading m3u8 information 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'm3u8', 'information']
+[info] B5KjwuD3hEg: Downloading 1 format(s): 22 
+ ['[info]', 'B5KjwuD3hEg:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[download] Destination: C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Lost! [B5KjwuD3hEg].mp4 
+ ['[download]', 'Destination:', 'C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Lost!', '[B5KjwuD3hEg].mp4']
+[download]   0.0% of    5.81MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.0%', 'of', '', '', '', '5.81MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+[download]   0.1% of    5.81MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '5.81MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+item:  __filename <ytdlpListener()> 
+
+
+item:  0.0 <ytdlpListener()> 
+
+
+2
+item:  0.1 <ytdlpListener()> 
+
+
+2
+[download]   0.1% of    5.81MiB at  411.78KiB/s ETA 00:14 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '5.81MiB', 'at', '', '411.78KiB/s', 'ETA', '00:14']
+item:  0.1 <ytdlpListener()> 
+
+
+[download]   0.3% of    5.81MiB at  833.31KiB/s ETA 00:07 
+ ['[download]', '', '', '0.3%', 'of', '', '', '', '5.81MiB', 'at', '', '833.31KiB/s', 'ETA', '00:07']
+[download]   0.5% of    5.81MiB at    1.44MiB/s ETA 00:04 
+ ['[download]', '', '', '0.5%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '1.44MiB/s', 'ETA', '00:04']
+2
+item:  0.3 <ytdlpListener()> 
+
+
+2
+item:  0.5 <ytdlpListener()> 
+
+
+2
+[download]   1.1% of    5.81MiB at    1.03MiB/s ETA 00:05 
+ ['[download]', '', '', '1.1%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '1.03MiB/s', 'ETA', '00:05']
+item:  1.1 <ytdlpListener()> 
+
+
+2
+[download]   2.1% of    5.81MiB at    1.70MiB/s ETA 00:03 
+ ['[download]', '', '', '2.1%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '1.70MiB/s', 'ETA', '00:03']
+item:  2.1 <ytdlpListener()> 
+
+
+2
+[download]   4.3% of    5.81MiB at    2.42MiB/s ETA 00:02 
+ ['[download]', '', '', '4.3%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '2.42MiB/s', 'ETA', '00:02']
+item:  4.3 <ytdlpListener()> 
+
+
+2
+[download]   8.6% of    5.81MiB at    3.87MiB/s ETA 00:01 
+ ['[download]', '', '', '8.6%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '3.87MiB/s', 'ETA', '00:01']
+item:  8.6 <ytdlpListener()> 
+
+
+2
+[download]  17.2% of    5.81MiB at    6.84MiB/s ETA 00:00 
+ ['[download]', '', '17.2%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '6.84MiB/s', 'ETA', '00:00']
+item:  17.2 <ytdlpListener()> 
+
+
+2
+[download]  34.4% of    5.81MiB at   11.49MiB/s ETA 00:00 
+ ['[download]', '', '34.4%', 'of', '', '', '', '5.81MiB', 'at', '', '', '11.49MiB/s', 'ETA', '00:00']
+item:  34.4 <ytdlpListener()> 
+
+
+2
+[download]  68.9% of    5.81MiB at   17.85MiB/s ETA 00:00 
+ ['[download]', '', '68.9%', 'of', '', '', '', '5.81MiB', 'at', '', '', '17.85MiB/s', 'ETA', '00:00']
+item:  68.9 <ytdlpListener()> 
+
+
+2
+[download] 100.0% of    5.81MiB at   21.35MiB/s ETA 00:00 
+ ['[download]', '100.0%', 'of', '', '', '', '5.81MiB', 'at', '', '', '21.35MiB/s', 'ETA', '00:00']
+item:  100.0 <ytdlpListener()> 
+
+
+[download] 100% of    5.81MiB in 00:00:00 at 12.20MiB/s 
+ ['[download]', '100%', 'of', '', '', '', '5.81MiB', 'in', '00:00:00', 'at', '12.20MiB/s']
+2
+item:  100.0 <ytdlpListener()> 
+
+
+3
+3 ['https://youtu.be/sPD59NTahc0', 'https://youtu.be/v6gxuxw69z0', 'https://youtu.be/B5KjwuD3hEg']
+0
+[youtube] Extracting URL: https://youtu.be/sPD59NTahc0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/sPD59NTahc0']
+[youtube] sPD59NTahc0: Downloading webpage 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'webpage']
+[youtube] sPD59NTahc0: Downloading ios player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading android player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading m3u8 information 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'm3u8', 'information']
+[info] sPD59NTahc0: Downloading 1 format(s): 22 
+ ['[info]', 'sPD59NTahc0:', 'Downloading', '1', 'format(s):', '22']
+[youtube] Extracting URL: https://youtu.be/v6gxuxw69z0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/v6gxuxw69z0']
+[youtube] v6gxuxw69z0: Downloading webpage 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'webpage']
+item:  __info <ytdlpListener()> 
+
+
+1
+[youtube] v6gxuxw69z0: Downloading ios player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading android player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading m3u8 information 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'm3u8', 'information']
+[info] v6gxuxw69z0: Downloading 1 format(s): 22 
+ ['[info]', 'v6gxuxw69z0:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[youtube] Extracting URL: https://youtu.be/B5KjwuD3hEg 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/B5KjwuD3hEg']
+[youtube] B5KjwuD3hEg: Downloading webpage 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'webpage']
+2
+[youtube] B5KjwuD3hEg: Downloading ios player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading android player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading m3u8 information 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'm3u8', 'information']
+[info] B5KjwuD3hEg: Downloading 1 format(s): 22 
+ ['[info]', 'B5KjwuD3hEg:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+3
+3
+3 ['https://youtu.be/sPD59NTahc0', 'https://youtu.be/v6gxuxw69z0', 'https://youtu.be/B5KjwuD3hEg']
+0
+[youtube] Extracting URL: https://youtu.be/sPD59NTahc0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/sPD59NTahc0']
+[youtube] sPD59NTahc0: Downloading webpage 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'webpage']
+[youtube] sPD59NTahc0: Downloading ios player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading android player API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] sPD59NTahc0: Downloading m3u8 information 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'm3u8', 'information']
+[youtube] Incomplete data received in embedded initial data; re-fetching using API.
+[youtube] sPD59NTahc0: Downloading initial data API JSON 
+ ['[youtube]', 'sPD59NTahc0:', 'Downloading', 'initial', 'data', 'API', 'JSON']
+[info] sPD59NTahc0: Downloading 1 format(s): 22 
+ ['[info]', 'sPD59NTahc0:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[download] Destination: C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Life in Technicolor [sPD59NTahc0].mp4 
+ ['[download]', 'Destination:', 'C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Life', 'in', 'Technicolor', '[sPD59NTahc0].mp4']
+[download]   0.0% of    3.65MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.0%', 'of', '', '', '', '3.65MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+item:  __filename <ytdlpListener()> 
+
+
+item:  0.0 <ytdlpListener()> 
+
+
+[download]   0.1% of    3.65MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '3.65MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+[download]   0.2% of    3.65MiB at    3.42MiB/s ETA 00:01 
+ ['[download]', '', '', '0.2%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '3.42MiB/s', 'ETA', '00:01']
+[download]   0.4% of    3.65MiB at    7.32MiB/s ETA 00:00 
+ ['[download]', '', '', '0.4%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '7.32MiB/s', 'ETA', '00:00']
+0
+item:  0.1 <ytdlpListener()> 
+
+
+0
+item:  0.2 <ytdlpListener()> 
+
+
+0
+item:  0.4 <ytdlpListener()> 
+
+
+0
+[download]   0.8% of    3.65MiB at    1.16MiB/s ETA 00:03 
+ ['[download]', '', '', '0.8%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.16MiB/s', 'ETA', '00:03']
+item:  0.8 <ytdlpListener()> 
+
+
+0
+[download]   1.7% of    3.65MiB at    1.16MiB/s ETA 00:03 
+ ['[download]', '', '', '1.7%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.16MiB/s', 'ETA', '00:03']
+item:  1.7 <ytdlpListener()> 
+
+
+0
+[download]   3.4% of    3.65MiB at    1.43MiB/s ETA 00:02 
+ ['[download]', '', '', '3.4%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '1.43MiB/s', 'ETA', '00:02']
+item:  3.4 <ytdlpListener()> 
+
+
+0
+[download]   6.8% of    3.65MiB at    2.17MiB/s ETA 00:01 
+ ['[download]', '', '', '6.8%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '2.17MiB/s', 'ETA', '00:01']
+item:  6.8 <ytdlpListener()> 
+
+
+0
+[download]  13.7% of    3.65MiB at    3.24MiB/s ETA 00:00 
+ ['[download]', '', '13.7%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '3.24MiB/s', 'ETA', '00:00']
+item:  13.7 <ytdlpListener()> 
+
+
+0
+[download]  27.4% of    3.65MiB at    4.78MiB/s ETA 00:00 
+ ['[download]', '', '27.4%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '4.78MiB/s', 'ETA', '00:00']
+item:  27.4 <ytdlpListener()> 
+
+
+0
+[download]  54.8% of    3.65MiB at    6.99MiB/s ETA 00:00 
+ ['[download]', '', '54.8%', 'of', '', '', '', '3.65MiB', 'at', '', '', '', '6.99MiB/s', 'ETA', '00:00']
+item:  54.8 <ytdlpListener()> 
+
+
+0
+[download] 100.0% of    3.65MiB at   11.43MiB/s ETA 00:00 
+ ['[download]', '100.0%', 'of', '', '', '', '3.65MiB', 'at', '', '', '11.43MiB/s', 'ETA', '00:00']
+item:  100.0 <ytdlpListener()> 
+
+
+[download] 100% of    3.65MiB in 00:00:00 at 7.22MiB/s 
+ ['[download]', '100%', 'of', '', '', '', '3.65MiB', 'in', '00:00:00', 'at', '7.22MiB/s']
+[youtube] Extracting URL: https://youtu.be/v6gxuxw69z0 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/v6gxuxw69z0']
+[youtube] v6gxuxw69z0: Downloading webpage 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'webpage']
+0
+item:  100.0 <ytdlpListener()> 
+
+
+[youtube] v6gxuxw69z0: Downloading ios player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading android player API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] v6gxuxw69z0: Downloading m3u8 information 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'm3u8', 'information']
+[youtube] Incomplete data received in embedded initial data; re-fetching using API.
+[youtube] v6gxuxw69z0: Downloading initial data API JSON 
+ ['[youtube]', 'v6gxuxw69z0:', 'Downloading', 'initial', 'data', 'API', 'JSON']
+[info] v6gxuxw69z0: Downloading 1 format(s): 22 
+ ['[info]', 'v6gxuxw69z0:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[download] Destination: C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Cemeteries of London [v6gxuxw69z0].mp4 
+ ['[download]', 'Destination:', 'C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Cemeteries', 'of', 'London', '[v6gxuxw69z0].mp4']
+[download]   0.0% of    4.95MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.0%', 'of', '', '', '', '4.95MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+item:  __filename <ytdlpListener()> 
+
+
+item:  0.0 <ytdlpListener()> 
+
+
+[download]   0.1% of    4.95MiB at    2.93MiB/s ETA 00:01 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '2.93MiB/s', 'ETA', '00:01']
+1
+item:  0.1 <ytdlpListener()> 
+
+
+1
+[download]   0.1% of    4.95MiB at  875.04KiB/s ETA 00:05 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '4.95MiB', 'at', '', '875.04KiB/s', 'ETA', '00:05']
+[download]   0.3% of    4.95MiB at    1.63MiB/s ETA 00:03 
+ ['[download]', '', '', '0.3%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '1.63MiB/s', 'ETA', '00:03']
+[download]   0.6% of    4.95MiB at    3.36MiB/s ETA 00:01 
+ ['[download]', '', '', '0.6%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '3.36MiB/s', 'ETA', '00:01']
+item:  0.1 <ytdlpListener()> 
+
+
+1
+item:  0.3 <ytdlpListener()> 
+
+
+1
+item:  0.6 <ytdlpListener()> 
+
+
+1
+[download]   1.2% of    4.95MiB at    3.42MiB/s ETA 00:01 
+ ['[download]', '', '', '1.2%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '3.42MiB/s', 'ETA', '00:01']
+item:  1.2 <ytdlpListener()> 
+
+
+1
+[download]   2.5% of    4.95MiB at    1.97MiB/s ETA 00:02 
+ ['[download]', '', '', '2.5%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '1.97MiB/s', 'ETA', '00:02']
+item:  2.5 <ytdlpListener()> 
+
+
+1
+[download]   5.0% of    4.95MiB at    3.19MiB/s ETA 00:01 
+ ['[download]', '', '', '5.0%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '3.19MiB/s', 'ETA', '00:01']
+item:  5.0 <ytdlpListener()> 
+
+
+1
+[download]  10.1% of    4.95MiB at    3.67MiB/s ETA 00:01 
+ ['[download]', '', '10.1%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '3.67MiB/s', 'ETA', '00:01']
+item:  10.1 <ytdlpListener()> 
+
+
+1
+[download]  20.2% of    4.95MiB at    6.36MiB/s ETA 00:00 
+ ['[download]', '', '20.2%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '6.36MiB/s', 'ETA', '00:00']
+item:  20.2 <ytdlpListener()> 
+
+
+1
+[download]  40.4% of    4.95MiB at    8.73MiB/s ETA 00:00 
+ ['[download]', '', '40.4%', 'of', '', '', '', '4.95MiB', 'at', '', '', '', '8.73MiB/s', 'ETA', '00:00']
+item:  40.4 <ytdlpListener()> 
+
+
+1
+[download]  80.8% of    4.95MiB at   12.27MiB/s ETA 00:00 
+ ['[download]', '', '80.8%', 'of', '', '', '', '4.95MiB', 'at', '', '', '12.27MiB/s', 'ETA', '00:00']
+item:  80.8 <ytdlpListener()> 
+
+
+1
+[download] 100.0% of    4.95MiB at   13.94MiB/s ETA 00:00 
+ ['[download]', '100.0%', 'of', '', '', '', '4.95MiB', 'at', '', '', '13.94MiB/s', 'ETA', '00:00']
+item:  100.0 <ytdlpListener()> 
+
+
+[download] 100% of    4.95MiB in 00:00:00 at 11.90MiB/s 
+ ['[download]', '100%', 'of', '', '', '', '4.95MiB', 'in', '00:00:00', 'at', '11.90MiB/s']
+[youtube] Extracting URL: https://youtu.be/B5KjwuD3hEg 
+ ['[youtube]', 'Extracting', 'URL:', 'https://youtu.be/B5KjwuD3hEg']
+[youtube] B5KjwuD3hEg: Downloading webpage 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'webpage']
+1
+item:  100.0 <ytdlpListener()> 
+
+
+[youtube] B5KjwuD3hEg: Downloading ios player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'ios', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading android player API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'android', 'player', 'API', 'JSON']
+[youtube] B5KjwuD3hEg: Downloading m3u8 information 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'm3u8', 'information']
+[youtube] Incomplete data received in embedded initial data; re-fetching using API.
+[youtube] B5KjwuD3hEg: Downloading initial data API JSON 
+ ['[youtube]', 'B5KjwuD3hEg:', 'Downloading', 'initial', 'data', 'API', 'JSON']
+[info] B5KjwuD3hEg: Downloading 1 format(s): 22 
+ ['[info]', 'B5KjwuD3hEg:', 'Downloading', '1', 'format(s):', '22']
+item:  __info <ytdlpListener()> 
+
+
+[download] Destination: C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Lost! [B5KjwuD3hEg].mp4 
+ ['[download]', 'Destination:', 'C:/Users/Nathan/Documents/__Repos/ytdl-GUI/Lost!', '[B5KjwuD3hEg].mp4']
+[download]   0.0% of    5.81MiB at  Unknown B/s ETA Unknown 
+ ['[download]', '', '', '0.0%', 'of', '', '', '', '5.81MiB', 'at', '', 'Unknown', 'B/s', 'ETA', 'Unknown']
+[download]   0.1% of    5.81MiB at    2.93MiB/s ETA 00:01 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '2.93MiB/s', 'ETA', '00:01']
+item:  __filename <ytdlpListener()> 
+
+
+item:  0.0 <ytdlpListener()> 
+
+
+2
+item:  0.1 <ytdlpListener()> 
+
+
+2
+[download]   0.1% of    5.81MiB at  636.41KiB/s ETA 00:09 
+ ['[download]', '', '', '0.1%', 'of', '', '', '', '5.81MiB', 'at', '', '636.41KiB/s', 'ETA', '00:09']
+item:  0.1 <ytdlpListener()> 
+
+
+[download]   0.3% of    5.81MiB at    1.33MiB/s ETA 00:04 
+ ['[download]', '', '', '0.3%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '1.33MiB/s', 'ETA', '00:04']
+2
+item:  0.3 <ytdlpListener()> 
+
+
+2
+[download]   0.5% of    5.81MiB at    1.59MiB/s ETA 00:03 
+ ['[download]', '', '', '0.5%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '1.59MiB/s', 'ETA', '00:03']
+item:  0.5 <ytdlpListener()> 
+
+
+2
+[download]   1.1% of    5.81MiB at    1.71MiB/s ETA 00:03 
+ ['[download]', '', '', '1.1%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '1.71MiB/s', 'ETA', '00:03']
+item:  1.1 <ytdlpListener()> 
+
+
+2
+[download]   2.1% of    5.81MiB at    2.14MiB/s ETA 00:02 
+ ['[download]', '', '', '2.1%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '2.14MiB/s', 'ETA', '00:02']
+item:  2.1 <ytdlpListener()> 
+
+
+2
+[download]   4.3% of    5.81MiB at    2.96MiB/s ETA 00:01 
+ ['[download]', '', '', '4.3%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '2.96MiB/s', 'ETA', '00:01']
+item:  4.3 <ytdlpListener()> 
+
+
+2
+[download]   8.6% of    5.81MiB at    4.89MiB/s ETA 00:01 
+ ['[download]', '', '', '8.6%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '4.89MiB/s', 'ETA', '00:01']
+item:  8.6 <ytdlpListener()> 
+
+
+2
+[download]  17.2% of    5.81MiB at    6.80MiB/s ETA 00:00 
+ ['[download]', '', '17.2%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '6.80MiB/s', 'ETA', '00:00']
+item:  17.2 <ytdlpListener()> 
+
+
+2
+[download]  34.4% of    5.81MiB at    7.66MiB/s ETA 00:00 
+ ['[download]', '', '34.4%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '7.66MiB/s', 'ETA', '00:00']
+item:  34.4 <ytdlpListener()> 
+
+
+2
+[download]  68.9% of    5.81MiB at    9.92MiB/s ETA 00:00 
+ ['[download]', '', '68.9%', 'of', '', '', '', '5.81MiB', 'at', '', '', '', '9.92MiB/s', 'ETA', '00:00']
+item:  68.9 <ytdlpListener()> 
+
+
+2
+[download] 100.0% of    5.81MiB at   11.36MiB/s ETA 00:00 
+ ['[download]', '100.0%', 'of', '', '', '', '5.81MiB', 'at', '', '', '11.36MiB/s', 'ETA', '00:00']
+item:  100.0 <ytdlpListener()> 
+
+
+[download] 100% of    5.81MiB in 00:00:00 at 8.32MiB/s 
+ ['[download]', '100%', 'of', '', '', '', '5.81MiB', 'in', '00:00:00', 'at', '8.32MiB/s']
+2
+item:  100.0 <ytdlpListener()> 
+
+
+3
+3 ['https://youtu.be/sPD59NTahc0', 'https://youtu.be/v6gxuxw69z0', 'https://youtu.be/B5KjwuD3hEg']
+Traceback (most recent call last):
+  File "C:\Users\Nathan\Documents\__Repos\ytdl-GUI\ytdl-GUI\ytdl-GUI.py", line 61, in <module>
+    root.mainloop()
+  File "C:/msys64/mingw64/lib/python3.10/tkinter/__init__.py", line 1458, in mainloop
+    self.tk.mainloop(n)
+KeyboardInterrupt

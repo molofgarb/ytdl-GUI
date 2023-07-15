@@ -485,11 +485,13 @@ def downloadURLs(root: MainWindow) -> int:
 
         'logger': DownloadLogger(root, root.updateQueue)
     }
+    
 
     res = checkURLs(root, dl_options)
     if not res: #check URLs (if specified) (blocks until finished)
         root.finishDownload("unsuccessful") #wrap up stuff + reset if bad check
         return 1
+
 
     # reinitialize after possible simulation
     dl_options['simulate'] = False

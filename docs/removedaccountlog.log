@@ -1,0 +1,12 @@
+Exception in thread Thread-2 (ytdlpWrapper):
+Traceback (most recent call last):
+  File "C:/Users\Nathan\Documents\__Repos\ytdl-GUI\ytdl-GUI/yt_dlp/yt_dlp/YoutubeDL.py", line 1560, in wrapper
+  File "C:/Users\Nathan\Documents\__Repos\ytdl-GUI\ytdl-GUI/yt_dlp/yt_dlp/YoutubeDL.py", line 1688, in __extract_info
+    ie_result = ie.extract(url)
+  File "C:/Users\Nathan\Documents\__Repos\ytdl-GUI\ytdl-GUI/yt_dlp/yt_dlp/extractor/common.py", line 710, in extract
+    ie_result = self._real_extract(url)
+  File "C:/Users\Nathan\Documents\__Repos\ytdl-GUI\ytdl-GUI/yt_dlp/yt_dlp/extractor/youtube.py", line 4164, in _real_extract
+    self.raise_no_formats(reason, expected=True)
+  File "C:/Users\Nathan\Documents\__Repos\ytdl-GUI\ytdl-GUI/yt_dlp/yt_dlp/extractor/common.py", line 1188, in raise_no_formats
+    raise ExtractorError(msg, expected=expected, video_id=video_id)
+yt_dlp.yt_dlp.utils.ExtractorError: [youtube] fFxySUC2vPc: Video unavailable. This video is no longer available because the YouTube account associated with this video has been terminated.
