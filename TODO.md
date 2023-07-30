@@ -12,6 +12,14 @@
 
 - timeout a check if it takes more than ~15 seconds
 
+- maybe things would be easier if we used one video at a time from self.URLs instead of the whole thing
+
+- add support for picking format in the format table from yt-dlp
+    - add support for picking a video-only and audio-only format and then merging them (v+a)
+    - add ffmpeg binary and build along with rest of the script
+
+- add support for merging together all videos downloaded in batch (maybe even individual videos)
+
 - RELEASE
 - update readme for current version when release
 - keep track of version number and date in info box
