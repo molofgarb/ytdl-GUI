@@ -18,6 +18,9 @@
     - add support for picking a video-only and audio-only format and then merging them (v+a)
     - add ffmpeg binary and build along with rest of the script
 
+- fix bug where check button for options doesnt show correct state
+- make delete videos on success not default
+
 - add support for merging together all videos downloaded in batch (maybe even individual videos)
 
 - RELEASE
