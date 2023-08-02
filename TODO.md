@@ -23,6 +23,8 @@
 
 - add support for merging together all videos downloaded in batch (maybe even individual videos)
 
+- too many videos cannot be downloaded at once?
+
 - RELEASE
 - update readme for current version when release
 - keep track of version number and date in info box
