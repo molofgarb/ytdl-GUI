@@ -25,6 +25,8 @@
 
 - too many videos cannot be downloaded at once?
 
+- open the destination folder once a download is done, default on, toggleable option
+
 - RELEASE
 - update readme for current version when release
 - keep track of version number and date in info box
